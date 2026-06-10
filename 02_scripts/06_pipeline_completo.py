@@ -273,8 +273,8 @@ def main():
         logger.info("-"*80)
         limpiador = LimpiadoDatos(RUTA_CRUDOS, RUTA_PROCESADOS)
         crm = limpiador.cargar_crm(
-            'Copia_de_clienty-prospectos_1.xlsx',
-            'Copia_de_clienty-prospectos_2.xlsx'
+            'Copia de clienty-prospectos 1.xlsx',
+            'Copia de clienty-prospectos 2.xlsx'
         )
         whatsapp = limpiador.cargar_whatsapp('base_maestra_raw_total_rocktec.xlsx')
         crm_limpio = limpiador.limpiar_crm(crm)
