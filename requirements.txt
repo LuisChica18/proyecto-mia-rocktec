@@ -1,0 +1,34 @@
+# ROCKTEC MIA 2026 - Dependencias Python
+# Instalar con: pip install -r requirements.txt
+
+# Procesamiento de datos
+pandas==1.5.3
+numpy==1.24.3
+openpyxl==3.10.0
+
+# Machine Learning y NLP
+scikit-learn==1.3.0
+scipy==1.11.0
+nltk==3.8.1
+
+# Procesamiento de textos
+spacy==3.6.0
+pysentimiento==0.2.1
+
+# Análisis estadístico
+statsmodels==0.14.0
+
+# Visualización (opcional)
+matplotlib==3.7.0
+seaborn==0.12.0
+
+# Utilidades
+python-dateutil==2.8.2
+requests==2.31.0
+
+# Logging y debugging
+python-dotenv==1.0.0
+
+# Jupyter (para notebooks interactivos)
+jupyter==1.0.0
+ipython==8.14.0
