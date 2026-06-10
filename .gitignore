@@ -1,0 +1,14 @@
+# Datos crudos (muy grandes)
+01_datos_crudos/*.xlsx
+01_datos_crudos/*.csv
+
+# Carpetas de sistema
+__pycache__/
+.DS_Store
+*.pyc
+
+# Logs
+*.log
+
+# Datos procesados (opcional, puedes comentar si quieres subirlos)
+# 03_datos_procesados/*.csv
