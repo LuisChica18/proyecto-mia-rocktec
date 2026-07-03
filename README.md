@@ -19,17 +19,23 @@ Plataforma basada en **NLP y Machine Learning** para clasificar automáticamente
 ---
 
 ## 📂 Estructura del Repositorio
+
+```
 proyecto-mia-rocktec/
 ├── 01_datos_crudos/                    → Datos originales sin procesar
-│   ├── README_DATOS.txt
-│   └── [archivos Excel CRM y WhatsApp]
+│   ├── Copia_de_clienty-prospectos_1.xlsx
+│   ├── Copia_de_clienty-prospectos_2.xlsx
+│   ├── ROCKTEC_-_JEVA_base_datos.xlsx
+│   ├── base_maestra_raw_total_rocktec.xlsx
+│   └── README_DATOS.txt
 │
 ├── 02_scripts/                         → Scripts Python reutilizables
 │   ├── 01_limpieza_datos.py
 │   ├── 02_consolidar_datos.py
 │   ├── 03_validar_duplicados.py
 │   ├── 06_pipeline_completo.py
-│   └── calcular_kappa.py               ← NUEVO (Cohen's Kappa)
+│   ├── consolidar_4_bases.py           ← NUEVO (consolidación de 4 fuentes)
+│   └── calcular_kappa.py               (Cohen's Kappa)
 │
 ├── 03_datos_procesados/                → Datos limpios y normalizados
 │   ├── README.md
@@ -38,21 +44,24 @@ proyecto-mia-rocktec/
 │   └── rocktec_base_consolidada.csv
 │
 ├── 04_anotaciones/                     → Dataset etiquetado con intenciones
-│   └── ROCKTEC_ANOTACIONES_FINALES_v1.0.xlsx  (⏳ en progreso)
+│   └── ROCKTEC_ANOTACIONES_FINALES_v1.0.xlsx  (1,500 registros anotados)
 │
 ├── 05_documentacion/                   → Guías, metodología, cronogramas
-│   ├── METODOLOGIA_ANOTACION.md        (⏳ en progreso)
+│   ├── METODOLOGIA_ANOTACION.md
+│   ├── REPORTE_CONSOLIDACION_4_BASES.txt  ← NUEVO (trazabilidad)
 │   ├── GUIA_MEJORADA_ANOTACION_FASE1.txt
 │   ├── CRONOGRAMA_EJECUTIVO_FASE1.txt
 │   └── CATÁLOGO_INTENCIONES_ROCKTEC.docx
 │
 ├── 06_resultados/                      → Informes y documentos de diseño
 │   ├── INFORME_RESULTADOS_PRELIMINARES.docx
-│   └── DOCUMENTO_DISEÑO_S4.docx
+│   ├── DOCUMENTO_DISEÑO_S4.docx
+│   └── DOCUMENTO_DISEÑO_SOLUCION_VALIDACION_INICIAL.docx
 │
 ├── .gitignore                          → Archivos a excluir de Git
 ├── README.md                           → Este archivo
 └── requirements.txt                    → Dependencias Python
+```
 
 ---
 
@@ -74,24 +83,43 @@ proyecto-mia-rocktec/
 ### Cohen's Kappa Post-Alineación ✅
 
 Después de sesión de alineación entre anotadores:
+
+```
 PATRICIA vs LUIS CRUEL:        0.9360  (95.8% acuerdo)  ✅
 PATRICIA vs LUIS CHICA:        0.8735  (91.7% acuerdo)  ✅
 LUIS CRUEL vs LUIS CHICA:      0.8286  (88.9% acuerdo)  ✅
 ─────────────────────────────────────────────────────────
 PROMEDIO FINAL:                0.8794  (META: ≥ 0.70)   ✅
+```
 
 **Conclusión:** Equipo ALINEADO. Proceder a Fase 1B autorizado.
 
-### Mejora Post-Alineación 🚀
-Primer intento (sin alineación):    0.6767  ❌
-Después de sesión de alineación:    0.8794  ✅
-───────────────────────────────────────────────
-MEJORA TOTAL:                       +0.2027  (20 puntos)
+---
 
-**Análisis:**
-- Luis Cruel mejoró brutalmente: 0.6005 → 0.9360 (con Patricia)
-- Sesión de alineación fue efectiva
-- Equipo listo para 1,500 registros
+## 📥 Trazabilidad de Consolidación
+
+El dataset final de 1,500 registros fue consolidado desde 4 fuentes independientes:
+
+### Composición de fuentes
+
+| Fuente | Registros Brutos | Registros Válidos | Rol en Consolidación |
+|--------|------------------|------------------|----------------------|
+| **clienty-prospectos 1** | 5,000 | 5,000 (100%) | CRM con metadata de cliente |
+| **clienty-prospectos 2** | 3,143 | 3,143 (100%) | CRM complementario (clientes adicionales) |
+| **JEVA base datos** | 1,155 | 1,150 (99.6%) | Datos maestros de empresa |
+| **base_maestra_consolidada** | 5,676 | 5,676 (100%) | **FUENTE PRINCIPAL: Conversaciones textuales (WhatsApp + Instagram)** |
+| **TOTAL BRUTO** | **14,974** | **14,969** | - |
+
+### Proceso de consolidación
+
+El dataset se construyó seleccionando 1,500 conversaciones textuales válidas de las 14,974 disponibles:
+
+- **Deduplicación:** Eliminación de ~2,000 registros duplicados entre bases (mismo cliente/email/teléfono)
+- **Filtrado por conversación:** Selección de registros con texto completo (~8,000 CRM puros descartados)
+- **Limpieza final:** Eliminación de ~200 registros vacíos, corruptos o duplicados exactos
+- **Retención global:** 10% (1,500 / 14,974) — La mayoría de datos eran metadata de contacto
+
+**Detalles completos:** Ver `05_documentacion/REPORTE_CONSOLIDACION_4_BASES.txt`
 
 ---
 
@@ -119,11 +147,15 @@ MEJORA TOTAL:                       +0.2027  (20 puntos)
 pip install -r requirements.txt
 ```
 
-Incluye:
-- pandas, numpy
-- scikit-learn
-- openpyxl
-- spacy
+Incluye: pandas, numpy, scikit-learn, openpyxl, spacy
+
+### Consolidar 4 bases → 1,500 registros
+
+```bash
+python 02_scripts/consolidar_4_bases.py
+```
+
+**Salida:** `04_anotaciones/ROCKTEC_BASE_FINAL_ANOTACION_1500.xlsx`
 
 ### Calcular Cohen's Kappa (Validación Inter-Anotador)
 
@@ -134,7 +166,7 @@ python 02_scripts/calcular_kappa.py 04_anotaciones/ROCKTEC_ANOTACIONES_FINALES_v
 **Salida esperada:**
 - Kappa por pares
 - Kappa promedio
-- Matriz de confusión por intención
+- Matriz de confusión
 - Análisis de desacuerdos
 
 ### Ejecutar Pipeline Completo
@@ -143,11 +175,7 @@ python 02_scripts/calcular_kappa.py 04_anotaciones/ROCKTEC_ANOTACIONES_FINALES_v
 python 02_scripts/06_pipeline_completo.py
 ```
 
-Ejecuta:
-1. Limpieza de datos
-2. Consolidación de fuentes
-3. Validación de duplicados
-4. Versionado con DVC
+Ejecuta: limpieza → consolidación → validación → versionado con DVC
 
 ---
 
@@ -168,6 +196,14 @@ Ejecuta:
   - 1,500 registros reales de WhatsApp Business
   - Anotados por 3 anotadores independientes
   - Validación con Cohen's Kappa
+
+### Trazabilidad de Consolidación
+
+- **Reporte completo:** `05_documentacion/REPORTE_CONSOLIDACION_4_BASES.txt`
+  - Estado inicial de 4 bases
+  - Proceso de consolidación paso a paso
+  - Detalles de limpieza y filtrado
+  - Explicación de retención (10%)
 
 ### Resultados Preliminares
 
@@ -255,26 +291,26 @@ El dataset anotado es la "verdad absoluta" para entrenar modelos supervisados:
 ## 📝 Cómo Contribuir
 
 1. **Clone el repositorio:**
-```bash
+   ```bash
    git clone https://github.com/LuisChica18/proyecto-mia-rocktec.git
    cd proyecto-mia-rocktec
-```
+   ```
 
 2. **Cree una rama para su trabajo:**
-```bash
+   ```bash
    git checkout -b feature/nombre-descriptivo
-```
+   ```
 
 3. **Haga cambios y commit:**
-```bash
+   ```bash
    git add .
    git commit -m "Descripción clara de cambios"
-```
+   ```
 
 4. **Push y Pull Request:**
-```bash
+   ```bash
    git push origin feature/nombre-descriptivo
-```
+   ```
 
 ---
 
@@ -282,7 +318,7 @@ El dataset anotado es la "verdad absoluta" para entrenar modelos supervisados:
 
 | Rol | Nombre | Responsable |
 |-----|--------|-------------|
-| Datos y Anotación | Patricia Mosquera | `@patty` |
+| Datos y Anotación | Patricia Mosquera | `@PatriciaMC` |
 | Modelos y ML | Luis Cruel | `@luis-cruel` |
 | Arquitectura | Luis Chica | `@luis-chica` |
 
