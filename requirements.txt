@@ -4,7 +4,7 @@
 # Procesamiento de datos
 pandas==1.5.3
 numpy==1.24.3
-openpyxl==3.10.0
+openpyxl==3.1.0
 
 # Machine Learning y NLP
 scikit-learn==1.3.0
@@ -18,17 +18,26 @@ pysentimiento==0.2.1
 # Análisis estadístico
 statsmodels==0.14.0
 
-# Visualización (opcional)
+# Visualización
 matplotlib==3.7.0
 seaborn==0.12.0
 
 # Utilidades
 python-dateutil==2.8.2
 requests==2.31.0
-
-# Logging y debugging
 python-dotenv==1.0.0
 
-# Jupyter (para notebooks interactivos)
+# Jupyter
 jupyter==1.0.0
 ipython==8.14.0
+
+# ── Fase 2: MLOps Pipeline ────────────────────────────────────────────────────
+
+# Experiment tracking
+mlflow==2.9.0
+
+# BETO fine-tuning (requiere ~2 GB de descarga en primer uso)
+# Con GPU: instalar torch con soporte CUDA desde https://pytorch.org/get-started/locally/
+torch>=2.0.0
+transformers==4.36.0
+accelerate==0.25.0

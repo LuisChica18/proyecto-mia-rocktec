@@ -1,3 +1,5 @@
+.idea/
+
 # Datos crudos (muy grandes)
 01_datos_crudos/*.xlsx
 01_datos_crudos/*.csv
@@ -9,6 +11,10 @@ __pycache__/
 
 # Logs
 *.log
+
+# MLflow tracking (generado localmente, no versionar)
+mlruns/
+mlflow.db
 
 # Datos procesados (opcional, puedes comentar si quieres subirlos)
 # 03_datos_procesados/*.csv

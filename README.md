@@ -34,8 +34,10 @@ proyecto-mia-rocktec/
 │   ├── 02_consolidar_datos.py
 │   ├── 03_validar_duplicados.py
 │   ├── 06_pipeline_completo.py
-│   ├── consolidar_4_bases.py           ← NUEVO (consolidación de 4 fuentes)
-│   └── calcular_kappa.py               (Cohen's Kappa)
+│   ├── consolidar_4_bases.py           (consolidación de 4 fuentes)
+│   ├── calcular_kappa.py               (Cohen's Kappa)
+│   ├── 04_feature_engineering.py       (TF-IDF + features manuales)
+│   └── 05_entrenar_modelos.py          ← NUEVO (LR + SVM + BETO, MLflow)
 │
 ├── 03_datos_procesados/                → Datos limpios y normalizados
 │   ├── README.md
@@ -53,10 +55,15 @@ proyecto-mia-rocktec/
 │   ├── CRONOGRAMA_EJECUTIVO_FASE1.txt
 │   └── CATÁLOGO_INTENCIONES_ROCKTEC.docx
 │
-├── 06_resultados/                      → Informes y documentos de diseño
-│   ├── INFORME_RESULTADOS_PRELIMINARES.docx
+├── 06_resultados/                      → Informes, modelos y artefactos de evaluación
+│   ├── INFORME_RESULTADOS_PRELIMINARES.docx  ← ACTUALIZADO (baseline LR/SVM)
 │   ├── DOCUMENTO_DISEÑO_S4.docx
-│   └── DOCUMENTO_DISEÑO_SOLUCION_VALIDACION_INICIAL.docx
+│   ├── DOCUMENTO_DISEÑO_SOLUCION_VALIDACION_INICIAL.docx
+│   └── modelos/                        ← NUEVO
+│       ├── vectorizador_tfidf.pkl
+│       ├── modelo_lr.pkl / modelo_svm.pkl
+│       ├── confusion_matrix_logistic_regression.png / confusion_matrix_svm.png
+│       └── reporte_lr.txt / reporte_svm.txt
 │
 ├── .gitignore                          → Archivos a excluir de Git
 ├── README.md                           → Este archivo
@@ -71,9 +78,10 @@ proyecto-mia-rocktec/
 |------|-------------|--------|---------|------|
 | **Fase 1** | Validación inter-anotador (100 registros) | ✅ **COMPLETA** | Kappa = **0.8794** | Alineación exitosa |
 | **Fase 1B** | Anotación completa (1,500 registros) | ⏳ **EN PROGRESO** | Kappa ≥ 0.70 | Target: 20 Jul 2026 |
-| **Fase 2** | Diseño MLOps Pipeline | 📋 Planificada | UML + Arquitectura | Target: 10 Ago 2026 |
+| **Fase 2** | Diseño MLOps Pipeline | ✅ **DISEÑADO** | UML + Arquitectura | Scripts implementados |
+| **Checkpoint** | Baseline preliminar (LR + SVM, etiquetas heurísticas) | ⚠️ **EJECUTADO** | F1-macro SVM = **0.9363** | Ver nota de cautela abajo |
 | **Fase 3** | Desarrollo e implementación | 🔜 Por hacer | Pipeline funcional | Target: 31 Ago 2026 |
-| **Fase 4** | Evaluación del modelo baseline | 🔜 Por hacer | F1-score ≥ 0.75 | Target: 14 Sep 2026 |
+| **Fase 4** | Evaluación del modelo baseline (con anotación real) | 🔜 Por hacer | F1-score ≥ 0.75 | Target: 14 Sep 2026 |
 | **Fase 5** | Piloto y defensa final | 🔜 Por hacer | Presentación exitosa | Target: 21 Sep 2026 |
 
 ---
@@ -120,6 +128,48 @@ El dataset se construyó seleccionando 1,500 conversaciones textuales válidas d
 - **Retención global:** 10% (1,500 / 14,974) — La mayoría de datos eran metadata de contacto
 
 **Detalles completos:** Ver `05_documentacion/REPORTE_CONSOLIDACION_4_BASES.txt`
+
+---
+
+## 🏗️ Diseño MLOps Pipeline (Fase 2)
+
+### Arquitectura de 5 Etapas
+
+```
+┌──────────┐   ┌──────────────┐   ┌─────────────┐   ┌──────────┐   ┌──────────┐
+│ ETAPA 1  │ → │   ETAPA 2    │ → │  ETAPA 3    │ → │ ETAPA 4  │ → │ ETAPA 5  │
+│  Ingesta │   │   Feature    │   │Entrenamiento│   │Evaluación│   │Monitoreo │
+│   & ETL  │   │ Engineering  │   │  + MLflow   │   │          │   │  Drift   │
+└──────────┘   └──────────────┘   └─────────────┘   └──────────┘   └──────────┘
+```
+
+### Modelos Comparados
+
+| Modelo | Features | Validación | Métrica objetivo |
+|--------|----------|------------|-----------------|
+| **Logistic Regression** (baseline) | TF-IDF (1-2 gramas) + 8 features manuales | Stratified K-Fold (k=5) | F1-macro ≥ 0.75 |
+| **LinearSVC** | TF-IDF (1-2 gramas) + 8 features manuales | Stratified K-Fold (k=5) | F1-macro ≥ 0.75 |
+| **BETO fine-tuned** | `dccuchile/bert-base-spanish-wwm-cased` | Train/val split | F1-macro ≥ 0.75 |
+
+Todos los experimentos se registran en **MLflow** con parámetros, métricas por clase y artefactos.
+
+**Diseño completo:** Ver `05_documentacion/DISEÑO_MLOPS_FASE2.md`
+
+---
+
+## ⚠️ Resultados Preliminares del Baseline (Checkpoint)
+
+Se ejecutó `02_scripts/05_entrenar_modelos.py --skip-beto` de extremo a extremo sobre los **9,317 registros** de `03_datos_procesados/rocktec_base_validada.csv` (split 80/20 estratificado). **Importante:** este checkpoint usa las **etiquetas heurísticas** de `intencion_catalogo` como sustituto temporal, no el consenso humano de Fase 1B (aún en progreso). Los números deben leerse como una prueba de que el pipeline corre correctamente, no como el resultado definitivo del proyecto.
+
+| Métrica (test, 1,864 registros) | Logistic Regression | LinearSVC |
+|---|---|---|
+| Accuracy | 0.7924 | 0.9737 |
+| F1-macro | 0.7162 | 0.9363 |
+| Mejor hiperparámetro (C) | 0.1 | 1 |
+
+**Por qué el F1 de SVM (0.9363) debe tomarse con cautela:** las etiquetas de evaluación fueron generadas por la misma heurística de palabras clave que el TF-IDF puede aprender a reproducir casi exactamente (circularidad). El número real de generalización solo se conocerá al reentrenar contra el consenso humano de Fase 1B.
+
+Durante esta ejecución se encontraron y corrigieron 4 bugs reales en `02_scripts/05_entrenar_modelos.py` (registro faltante en `sys.modules` que rompía el guardado del vectorizador; mezcla de etiquetas codificadas/string que rompía `confusion_matrix`; parámetro `multi_class` obsoleto en scikit-learn reciente; orden incorrecto de inicialización de MLflow). Detalle completo, matrices de confusión y F1 por clase en `06_resultados/INFORME_RESULTADOS_PRELIMINARES.docx`.
 
 ---
 
@@ -175,7 +225,26 @@ python 02_scripts/calcular_kappa.py 04_anotaciones/ROCKTEC_ANOTACIONES_FINALES_v
 python 02_scripts/06_pipeline_completo.py
 ```
 
-Ejecuta: limpieza → consolidación → validación → versionado con DVC
+Ejecuta: limpieza → consolidación → validación
+
+### Entrenar modelos (Fase 2)
+
+```bash
+# Validar anotaciones y generar consenso (requiere archivo de anotaciones)
+python 02_scripts/calcular_kappa.py 04_anotaciones/ROCKTEC_ANOTACIONES_FINALES_v1.0.xlsx
+
+# Verificar pipeline de features
+python 02_scripts/04_feature_engineering.py
+
+# Entrenar LR + SVM + BETO con MLflow
+python 02_scripts/05_entrenar_modelos.py
+
+# Solo LR + SVM (sin GPU)
+python 02_scripts/05_entrenar_modelos.py --skip-beto
+
+# Ver experimentos en MLflow
+mlflow ui --backend-store-uri mlruns
+```
 
 ---
 
@@ -207,12 +276,21 @@ Ejecuta: limpieza → consolidación → validación → versionado con DVC
 
 ### Resultados Preliminares
 
-- **Informe Fase 1:** `06_resultados/INFORME_RESULTADOS_PRELIMINARES.docx`
-  - Análisis de Cohen's Kappa
-  - Distribución de intenciones
-  - Próximos pasos
+- **Informe de checkpoint:** `06_resultados/INFORME_RESULTADOS_PRELIMINARES.docx`
+  - Descripción del prototipo y del baseline (LR + LinearSVC sobre TF-IDF + features manuales)
+  - Métricas reales (accuracy, F1-macro, F1 por clase) sobre etiquetas heurísticas
+  - Análisis crítico: bugs encontrados, desbalance de clases, riesgo de circularidad en el F1 de SVM
+  - Ajustes técnicos y backlog priorizado para Fase 3/4
 
-### Diseño Técnico
+### Fase 2: Diseño MLOps
+
+- **Diseño MLOps:** `05_documentacion/DISEÑO_MLOPS_FASE2.md`
+  - Arquitectura de 5 etapas (ETL → Features → Entrenamiento → Evaluación → Drift)
+  - Especificación de 3 modelos (LR, LinearSVC, BETO)
+  - Feature engineering: TF-IDF + 8 features manuales
+  - Integración MLflow: parámetros, métricas por clase, artefactos
+  - Monitoreo de drift con PSI
+  - Decisiones de diseño justificadas
 
 - **Documento S4:** `06_resultados/DOCUMENTO_DISEÑO_S4.docx`
   - Capítulo 7.1: Diseño detallado de la solución
@@ -366,8 +444,8 @@ Preguntas o problemas:
 
 ---
 
-**Última actualización:** Junio 2026  
-**Estado:** Fase 1B en progreso  
+**Última actualización:** 12 Julio 2026  
+**Estado:** Fase 1B en progreso — checkpoint de baseline preliminar ejecutado (ver sección de Resultados Preliminares)  
 **Próxima revisión:** Julio 20, 2026  
 
 ---
