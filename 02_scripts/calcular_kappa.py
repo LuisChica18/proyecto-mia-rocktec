@@ -19,6 +19,62 @@ import pandas as pd
 import numpy as np
 from sklearn.metrics import cohen_kappa_score
 import sys
+import importlib.util
+from pathlib import Path
+
+_PIPELINE_PATH = Path(__file__).parent / '06_pipeline_completo.py'
+_spec = importlib.util.spec_from_file_location('pipeline_completo', _PIPELINE_PATH)
+_pipeline = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_pipeline)
+MapeoIntenciones = _pipeline.MapeoIntenciones
+
+CODIGOS_VALIDOS = {'INF', 'COT', 'TEC', 'CUR', 'VEN', 'SEG', 'QUE'}
+RUTA_CONSENSO = Path(__file__).parent.parent / '04_anotaciones' / 'dataset_consenso_final.csv'
+
+
+def generar_dataset_consenso(df, anotadores, ruta_salida=RUTA_CONSENSO):
+    """
+    Genera el dataset de consenso (voto mayoritario 2/3) por fila, junto con una
+    etiqueta heurística baseline calculada sobre el mismo texto (MapeoIntenciones),
+    para permitir una comparación pareada baseline-vs-consenso en las mismas filas.
+    """
+    nombres = list(anotadores.keys())
+    filas = []
+
+    for idx in range(len(df)):
+        anots = [df[anotadores[n]].fillna('').astype(str).str.strip().str.upper().iloc[idx]
+                 for n in nombres]
+
+        if all(a in CODIGOS_VALIDOS for a in anots):
+            consenso = None
+            for a in anots:
+                if anots.count(a) >= 2:
+                    consenso = a
+                    break
+            if consenso is None:
+                consenso = 'SIN_CONSENSO'
+        else:
+            consenso = 'SIN_CONSENSO'
+
+        texto = str(df.iloc[idx]['TEXTO'])
+        filas.append({
+            'id': df.iloc[idx]['ID'],
+            'texto_conversacion': texto,
+            'fuente': df.iloc[idx].get('FUENTE', ''),
+            'intencion_consenso': consenso,
+            'intencion_heuristica_baseline': MapeoIntenciones.mapear_desde_texto(texto),
+            'n_acuerdo': max((anots.count(a) for a in set(anots)), default=0),
+        })
+
+    out = pd.DataFrame(filas)
+    ruta_salida.parent.mkdir(parents=True, exist_ok=True)
+    out.to_csv(ruta_salida, index=False, encoding='utf-8')
+
+    n_consenso = (out['intencion_consenso'] != 'SIN_CONSENSO').sum()
+    print(f"\n✓ Dataset de consenso guardado: {ruta_salida}")
+    print(f"  Filas totales: {len(out)}  |  Con consenso válido: {n_consenso}  "
+          f"|  Sin consenso: {len(out) - n_consenso}")
+
 
 def calcular_kappa(archivo):
     """Calcular Cohen's Kappa para anotaciones"""
@@ -170,7 +226,8 @@ def calcular_kappa(archivo):
     if kappa_promedio >= 0.70:
         print(f"✓ Dataset validado con Kappa = {kappa_promedio:.4f}")
         print(f"✓ Proceder a Fase 2: MLOps Pipeline")
-        print(f"✓ Guardar dataset etiquetado para entrenamiento")
+        print(f"✓ Guardando dataset etiquetado para entrenamiento...")
+        generar_dataset_consenso(df, anotadores)
     else:
         print(f"✗ Kappa = {kappa_promedio:.4f} (meta: ≥ 0.70)")
         print(f"✗ Acciones recomendadas:")
