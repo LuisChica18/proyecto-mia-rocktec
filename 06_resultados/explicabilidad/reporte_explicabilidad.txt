@@ -1,0 +1,24 @@
+
+================================================================================
+REPORTE EXPLICABILIDAD — ROCKTEC MIA 2026
+================================================================================
+
+SHAP (SHapley Additive exPlanations):
+  - Método: LinearExplainer (optimizado para Logistic Regression)
+  - Muestra: 300 registros aleatorios
+  - Output: importancia global de features por clase
+  - Archivo: shap_top_features.png
+
+LIME (Local Interpretable Model-agnostic Explanations):
+  - Método: LimeTextExplainer
+  - Output: explicación local por ejemplo representativo de cada clase
+  - Archivo: lime_ejemplos.txt
+
+INTERPRETACIÓN:
+  SHAP responde: ¿qué palabras son más importantes GLOBALMENTE para cada clase?
+  LIME responde: ¿por qué se clasificó ESTE mensaje específico en esta clase?
+
+  Ejemplo: para COT, SHAP muestra que 'precio', 'costo', 'presupuesto' son
+  las features más relevantes. LIME confirma esto en ejemplos individuales.
+
+================================================================================

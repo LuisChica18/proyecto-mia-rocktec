@@ -1,0 +1,62 @@
+TOP FEATURES POR CLASE (SHAP)
+============================================================
+
+INF:
+  feat_longitud_chars: 0.7704
+  feat_curso: 0.2878
+  feat_saludo: 0.1997
+  cotización: 0.1426
+  cotizacion: 0.1409
+  feat_num_palabras: 0.1238
+  materiales: 0.1067
+  cliente: 0.0906
+  precio: 0.0895
+  obra: 0.0688
+
+COT:
+  feat_longitud_chars: 4.7816
+  feat_num_palabras: 3.3916
+  feat_curso: 1.5567
+  feat_saludo: 1.2235
+  feat_es_pregunta: 0.4476
+  información: 0.1047
+  curso: 0.0960
+  envió: 0.0894
+  envió información: 0.0889
+  notas envió: 0.0847
+
+TEC:
+  feat_num_palabras: 2.5996
+  feat_longitud_chars: 2.1299
+  feat_curso: 0.6175
+  feat_saludo: 0.3001
+  mensaje: 0.0833
+  cotizacion: 0.0791
+  etiqueta informacion: 0.0766
+  contactado notas: 0.0751
+  ciudad: 0.0740
+  cotización: 0.0721
+
+CUR:
+  feat_longitud_chars: 1.4859
+  feat_num_palabras: 0.6305
+  feat_es_pregunta: 0.3072
+  feat_curso: 0.0999
+  feat_saludo: 0.0947
+  contactado notas: 0.0875
+  microcemento: 0.0810
+  construex: 0.0696
+  cliente: 0.0654
+  quito mensaje: 0.0617
+
+VEN:
+  feat_saludo: 0.8184
+  feat_curso: 0.5515
+  feat_longitud_chars: 0.3954
+  venta: 0.1557
+  ganada: 0.1313
+  venta ganada: 0.1313
+  feat_venta: 0.0706
+  feat_es_pregunta: 0.0659
+  etiqueta informacion: 0.0643
+  general: 0.0589
