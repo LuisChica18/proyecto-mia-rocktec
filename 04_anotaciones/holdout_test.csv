@@ -1,0 +1,198 @@
+texto_conversacion,intencion_consenso,intencion_heuristica_baseline,fuente,fecha,estado_crm,etiqueta_crm
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: hola Asesor: ¿Cómo estás? Cuéntame, ¿en que te puedo servir? Cliente: queria saber donde comprar vuestro producto de acidos para concre | NOTAS: se envio informacion general y catalogo por correo",INF,VEN,CRM2,21/06/2024,Contactado,Informacion General
+ETIQUETA: Desuscripto | ESTADO: En seguimiento | NOTAS: CLIENTE BASE CONSTRUEX,INF,SEG,CRM2,11/04/2024,En seguimiento,Desuscripto
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: Se envió información general y catálogos,INF,INF,CRM2,18/08/2023,Contactado,Informacion General
+CIUDAD: Quito | MENSAJE: Buenas tardes arquitecta,INF,INF,WhatsApp,30/6/2025,,
+"ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: BASE CLIENTE/FERRETERIA,se envio información general y catálogos",INF,INF,CRM2,13/05/2024,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: se envio presentacion y catalogos JEVA,INF,INF,CRM1,11/04/2023,Contactado,Informacion General
+"ETIQUETA: Envio masivo whasapp | ESTADO: Contactado | CONSULTA: se envió WhatsApp información completa | NOTAS: se envió WhatsApp información completa,Se envió WhatsApp masivo",INF,INF,CRM1,22/02/2023,Contactado,Envio masivo whasapp
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Hola buenas Asesor: ¿Cómo estás? Cuéntame, ¿en que te puedo servir? Asesor: Sigues ahí? Cliente: Mi consulta es: cuánto tiempo se esper | NOTAS: cuarzo flotado con helicopteco info",INF,INF,CRM2,07/04/2024,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: Se envió información general y catálogos,Información sobre microcemento, se encuentra en Guayaquil",INF,INF,CRM2,21/09/2023,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Buen día que precio tiene el metro que diseños hay ,es resbaloso y si el piso es un poco irregular también sirve? Asesor: Cual es tu no | NOTAS: Se envío información general y catálogos, por correo. SJ",COT,COT,CRM1,15/05/2023,Contactado,Informacion General
+ETIQUETA: Cotización Obra | ESTADO: En seguimiento | NOTAS: 250 m2 C/E FUNDICION,COT,SEG,CRM2,29/11/2023,En seguimiento,Cotización Obra
+"ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: BASE CLIENTE/FERRETERIA,se envió información general y catálogos",INF,INF,CRM2,13/05/2024,Contactado,Informacion General
+ETIQUETA: Cotizacion Materiales | ESTADO: Contactado | NOTAS: se le cotizo microcemento materiales para 120m2 en loja,COT,COT,CRM1,08/06/2023,Contactado,Cotizacion Materiales
+CIUDAD: Loja | MENSAJE: Recuerden que el precio final dependerá del concreto u hormigon quw vayan a usar. Espesor resistencia etc etc,COT,COT,WhatsApp,25/6/2024,,
+CIUDAD: Loja | MENSAJE: No quiero para el sabado,INF,INF,WhatsApp,22/4/2026,,
+"ETIQUETA: Informacion General, Asesoramiento Tecnico | ESTADO: Contactado | NOTAS: Asesoramiento Tecnico",TEC,INF,CRM1,19/05/2023,Contactado,"Informacion General, Asesoramiento Tecnico"
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: CLIENTE DE CONSTRUEX - DESEABA CEMENTRO PULIDO EN IMBABURA,INF,INF,CRM2,12/03/2024,Contactado,Informacion General
+"ETIQUETA: Venta ganada | ESTADO: Contactado | NOTAS: venta de materiales por $5,227.04 para Guayaquil, después de la entrega realizarle la encuesta al cliente.",VEN,INF,CRM1,22/06/2023,Contactado,Venta ganada
+CIUDAD: Quito | MENSAJE: Tenga la amabilidad quiero hacer esta aplicación en la,INF,INF,WhatsApp,21/4/2026,,
+CIUDAD: Guayaquil | MENSAJE: Cuando estarán pasando lusta de producto con precios y fichas técnicas? Ya quiero pedir 🤭,COT,COT,WhatsApp,5/3/2026,,
+"ETIQUETA: Indo sobre concreto estampado | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Buenas tardes Asesor: ¿Cómo estás? Cuéntame, ¿en que te puedo servir? Cliente: Venden tálvez los moldes para hacer diseños en cemento A | NOTAS: Se encia mensaje al cliente y se adjunta catalogo de Concreto Estampado.",INF,INF,CRM2,13/12/2024,Contactado,Indo sobre concreto estampado
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: SE ENVIO CATALOGOS Y PRESENTACION,INF,INF,CRM1,14/03/2023,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: se envio catalogos y presentacion,INF,INF,CRM1,05/05/2023,Contactado,Informacion General
+"CIUDAD: Quito | MENSAJE: Hola buen dia, solo por confirmar el valor 28 m2 es material + lnstalacion en Quito?",COT,INF,WhatsApp,19/2/2025,,
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: se envió el WhatsApp de información y mail pigmentos,INF,INF,CRM1,13/02/2023,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Hola Asesor: ¿Cómo estás? Cuéntame, ¿en que te puedo servir? Cliente: Estoy interesado en comprar o alquilar moldes de estampado de con | NOTAS: INFO MOLDES",INF,VEN,CRM2,19/04/2024,Contactado,Informacion General
+CIUDAD: Manta | MENSAJE: Buenas noches gracias por la invitación,INF,INF,WhatsApp,4/3/2025,,
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: INFORACION CURSO LOJA BASE DE DATOS,CUR,CUR,CRM2,09/11/2023,Contactado,Informacion General
+"ETIQUETA: Cotización Obra, Venta ganada, Informacion General | ESTADO: Venta ganada | NOTAS: 10 M2 OBRA",VEN,INF,CRM2,22/11/2023,Venta ganada,"Cotización Obra, Venta ganada, Informacion General"
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: hola tneogo una consulta este tipo de cemento puede ayuda a revestir un piso de edificio que no ha sido mantenido Asesor: Cual es tu no | NOTAS: se le envió precio de Microcemento mañana nos dice cuantos m2 para cotización mas presisa",COT,COT,CRM1,24/05/2023,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: se envio catalogp y presentacion agendas,INF,INF,CRM1,28/03/2023,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: SE EMVIO CATALOGOS Y PRESENTACION,INF,INF,CRM1,14/03/2023,Contactado,Informacion General
+"ETIQUETA: Cotización Obra, Cotizacion Materiales, Informacion General | ESTADO: En seguimiento | NOTAS: oficina Erika,Se envió WhatsApp de seguimiento",COT,COT,CRM1,21/04/2023,En seguimiento,"Cotización Obra, Cotizacion Materiales, Informacio"
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: se envió información y molde general,INF,INF,CRM2,11/12/2023,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: CLIENTE FERIA CLAVE CUMBAYA. INF MICRO,INF,INF,CRM2,20/06/2024,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Nuevo | NOTAS: Se envia mensaje al cliente y se adjunta catalogo general de productos.,INF,INF,CRM2,07/10/2024,Nuevo,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: Se le envió información general y del curso,base de datos",CUR,CUR,CRM2,05/09/2023,Contactado,Informacion General
+"ETIQUETA: Cotizacion Materiales, Informacion General | ESTADO: Contactado | NOTAS: 40 M2 MICRO PISO",COT,COT,CRM2,28/09/2023,Contactado,"Cotizacion Materiales, Informacion General"
+"ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: SE ENVIO CATALOGOS Y PRESENTACION,pidió numero para hacer unas consultas",INF,INF,CRM1,05/05/2023,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: FERIA CLAVE CUMBAYA. DISEÑADORES,INF,INF,CRM2,21/06/2024,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: SE ENVIO CATALGO Y PRESENTACION JEVA,INF,INF,CRM1,10/04/2023,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Hola buenos días, me ayuda como salen los moldes Asesor: Cual es tu nombre? Cliente: JACKSON Asesor: Excelente Jackson. Yo me encargo d | NOTAS: información sobre moldes",INF,INF,CRM2,25/09/2023,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Hola Mariana, por favor tu ayudar con una cotización para el recubrimiento con microcemento en pareces y piso de cerámica en un baño. T",COT,INF,CRM1,29/05/2023,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Buenas noches ,por favor quisiera cotizar para instalar microcemento en dos paredes en total son más o menos 11m2 en el valle de los ch | NOTAS: se envío información general y catálogos - desea hacer una aplicación de 11 m2 en el valle de los chillos",COT,INF,CRM2,23/01/2024,Contactado,Informacion General
+CIUDAD: Cuenca | MENSAJE: Vengan con ropa cómoda dispuestos a ensuciarse un poquito 😉,INF,INF,WhatsApp,21/11/2025,,
+ETIQUETA: Informacion General | ESTADO: En seguimiento | NOTAS: CLIENTE BASE CONSTRUEX,INF,SEG,CRM2,11/04/2024,En seguimiento,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Marina buenos días necesito ayuda mi número es 0992940496 Asesor: Cual es tu nombre? | NOTAS: SE ENVIÓ SALUDO GENERAL POR WHATSAPP",INF,INF,CRM2,05/08/2024,Contactado,Informacion General
+"ETIQUETA: Envio masivo whasapp | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Hola Asesor: Como estás? Contame, qué estabas buscando? Cliente: por favor me pueden llamar al 0999377172? Asesor: Cual es tu nombre? C | NOTAS: Se envió WhatsApp masivo,se envió presentación",INF,INF,CRM1,19/02/2023,Contactado,Envio masivo whasapp
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Buenos días me gustaría saber el precio por m2 de recubrimiento de suelo en microcemento Asesor: Cual es tu nombre? Asesor: Cliente: Ma | NOTAS: INFO MICRO PRECIO X M2",COT,COT,CRM2,06/03/2024,Contactado,Informacion General
+ETIQUETA: Cotización Obra | ESTADO: Contactado | NOTAS: COTIZACION DE GRADAS LINEALES SUR DE QUITO,COT,COT,CRM2,25/10/2023,Contactado,Cotización Obra
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: buenas tardes, necesito saber cual es el espesor mínimo para hacer el estampado tipo madera, que producto final se coloca para el brill | NOTAS: se envió información general y catalogo",TEC,INF,CRM2,04/07/2024,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Ayúdame con información Asesor: Cual es tu nombre? Cliente: Estefania Zuleta Asesor: Excelente Estefania. Yo me encargo de ponerte en c | NOTAS: Se envia catalogo general de nuestros productos.",INF,INF,CRM2,02/09/2024,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: BASE CLIENTE/CONSTRUCTORA,se envió información general y catálogos",INF,INF,CRM2,13/05/2024,Contactado,Informacion General
+CIUDAD: Manta | MENSAJE: Este momento me llegaron 2 correos gracias,INF,INF,WhatsApp,25/4/2024,,
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Buenas tardes! Asesor: ¿Cómo estás? Cuéntame, ¿en que te puedo servir? Cliente: Tengo un piso de cemento pulido y me gustaría darle alg | NOTAS: Info de acabados para piso",INF,INF,CRM2,22/02/2024,Contactado,Informacion General
+CIUDAD: Quito | MENSAJE: Asi aporta a que la transición  de los dos pisos se vea muy bien y se cubre  el desnivel,INF,INF,WhatsApp,26/3/2025,,
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Hola busco microcemento para mesones Asesor: Cual es tu nombre? Cliente: Oscar Asesor: Excelente Oscar. Yo me encargo de ponerte en con | NOTAS: se envió WhatsApp",INF,INF,CRM1,25/02/2023,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: se envió información general y catálogos Base de datos cas abierta UIO,INF,INF,CRM2,13/11/2023,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Buen día, cuanto es el precio por metro cuadrado de concreto estampado ? Asesor: Cual es tu nombre? Cliente: Fernando Asesor: Excelente | NOTAS: INFO C/E",COT,COT,CRM2,22/09/2023,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Buenos días, quisiera conocer más sobre el desmoldec | NOTAS: INFO DE DESMOLDANTE",INF,INF,CRM2,08/02/2024,Contactado,Informacion General
+ETIQUETA: Venta ganada | ESTADO: Cliente Frecuente,VEN,INF,CRM1,16/05/2023,Cliente Frecuente,Venta ganada
+CIUDAD: Loja | MENSAJE: Para instalaciones de ese tipo mejor hacerlo con pisos industriales que soportan choques térmicos y caída constante de agua y sangre,INF,TEC,WhatsApp,7/11/2024,,
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: PISO TEXTURIZADO PINTERES,INF,INF,CRM1,09/06/2023,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: se envio presentacion y catalogos Jeva,INF,INF,CRM1,28/03/2023,Contactado,Informacion General
+CIUDAD: Cuenca | MENSAJE: Todos los precios son más IVA,COT,COT,WhatsApp,24/11/2025,,
+ETIQUETA: Cotización Obra | ESTADO: Contactado | NOTAS: 400 m2 MICRO Y 100 m2 C/E PARED,COT,INF,CRM2,03/10/2023,Contactado,Cotización Obra
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Buenas tardes necesito hacer una superficie de Micro cemento. Es el tratamiento superficial final no se colocará ningún acabado adicion | NOTAS: Se adjunta catalogo de Microcemento.",INF,INF,CRM2,07/10/2024,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: En seguimiento | NOTAS: CLIENTE BASE CONSTRUEX,se envio información general y catálogos",INF,SEG,CRM2,11/04/2024,En seguimiento,Informacion General
+CIUDAD: Cuenca | MENSAJE: Buenos días estimados adjuntamos catálogos y manuales instructivos para su conocimiento,INF,INF,WhatsApp,4/12/2025,,
+CIUDAD: Quito | MENSAJE: Muchas gracias 🫂,INF,INF,WhatsApp,17/2/2025,,
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Precio de hormigón por metro cuadrado? Asesor: Cual es tu nombre? Cliente: Evelin Asesor: Yo me encargo de ponerte en contacto con un a | NOTAS: INFO GENERAL",COT,COT,CRM2,16/11/2023,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: se envió información general vía correo,INF,INF,CRM2,22/11/2023,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Buenos días, quisiera saber el costo del m2 de microcemento para piso. Asesor: Cual es tu nombre? Cliente: Mi nombre es Ricardo Rojas A | NOTAS: se envío información general, por temas de costos no desea colocar nuestro material",COT,COT,CRM2,07/06/2024,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: CONSTRUCTORA,se envio información y catalogo general.",INF,INF,CRM2,29/05/2024,Contactado,Informacion General
+CIUDAD: Manta | MENSAJE: En la 5 de junio y manabi,INF,INF,WhatsApp,4/3/2025,,
+CIUDAD: Cuenca | MENSAJE: Bueno chicos muchísimas gracias por todo fue un taller muy enriquecedor,CUR,CUR,WhatsApp,24/11/2025,,
+"ETIQUETA: Informacion General | ESTADO: En seguimiento | NOTAS: CLIENTE BASE CONSTRUEX,se envio información general y catalogo",INF,SEG,CRM2,11/04/2024,En seguimiento,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Nuevo | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: busco moldes para estampar concreto Asesor: Cual es tu nombre? Cliente: ll Asesor: Yo me encargo de ponerte en contacto con un asesor e",INF,INF,CRM1,15/05/2023,Nuevo,Informacion General
+CIUDAD: Quito | MENSAJE: Arq buenas noches el fondo blanco seria el mismo precio del fondo gris le pregunto por qué yo necesito para 225 M2 de fondo blanco,COT,COT,WhatsApp,17/2/2025,,
+"CIUDAD: Quito | MENSAJE: Buen dia, es un gusto para nosotros poder integrarlos a este grupo donde vamos a compartir información de gran relevancia para sus aplicaciones.",INF,TEC,WhatsApp,29/5/2024,,
+"ETIQUETA: Info sobre microcemento | ESTADO: Nuevo | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Precio del micro cemento por favor? Asesor: Cual es tu nombre? Cliente: Rodrigo Asesor: Excelente Rodrigo. Yo me encargo de ponerte en  | NOTAS: SE CONTACTÓ POR WHATSAPP",COT,COT,CRM2,04/09/2024,Nuevo,Info sobre microcemento
+CIUDAD: Quito | MENSAJE: Muy buenas tardes con  una maquina  pulirdora para pisos de hormigon,INF,INF,WhatsApp,8/4/2026,,
+CIUDAD: Guayaquil | MENSAJE: ok el dia de manana les enviamos mas material para no saturar el chat,INF,INF,WhatsApp,5/3/2026,,
+ETIQUETA: Envio masivo whasapp | ESTADO: Contactado | NOTAS: SE ENVIO MAIL Y CATALOGOS,INF,INF,CRM1,09/03/2023,Contactado,Envio masivo whasapp
+"ETIQUETA: Informacion General | ESTADO: En seguimiento | NOTAS: CLIENTE CONSTRUEX,se envio información general y catálogos",INF,SEG,CRM2,27/05/2024,En seguimiento,Informacion General
+CIUDAD: Manta | MENSAJE: Aún no hemos recibido la información por correo,INF,INF,WhatsApp,25/4/2024,,
+"ETIQUETA: Informacion General, Email inválido | ESTADO: Contactado | NOTAS: se envió información general y catálogos,base de datos",INF,INF,CRM2,05/09/2023,Contactado,"Informacion General, Email inválido"
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: BUEN DIA Asesor: Como estás? Contame, qué estabas buscando? Cliente: USTEDES REALIZAN PANELES DE MICROCEMENTO AQUI EN GUAYAQUIL Asesor: | NOTAS: se envió WhatsApp y catálogos 08/03",INF,INF,CRM1,08/03/2023,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: SE ENVIO INFROMACION GENERAL Y CATALOGOS,INF,INF,CRM2,20/11/2023,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: Se le envió información general y catálogos,esta interesado en estampar 70m2 vive en cuenca",INF,INF,CRM2,28/08/2023,Contactado,Informacion General
+CIUDAD: Guayaquil | MENSAJE: ¡Saludos a todos 🙋🏻‍♀️!,INF,INF,WhatsApp,30/6/2025,,
+"ETIQUETA: Cotizacion Materiales, Informacion General | ESTADO: Contactado | NOTAS: 7 m2 c/e",COT,COT,CRM1,09/06/2023,Contactado,"Cotizacion Materiales, Informacion General"
+"CIUDAD: Guayaquil | MENSAJE: Amigos buenos dias ,, Tenemos un proyecto de 100 m2 de MIcrocemento en Ayangue , por favor alguien que quiera que le remita el cliente , me avisan",INF,INF,WhatsApp,2/4/2026,,
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Buenas tardes. Asesor: ¿Cómo estás? Cuéntame, ¿en que te puedo servir? Cliente: Necesito colocar un recubrimiento de micro cemento en u | NOTAS: cotizacion de una pared en microcemento ( pagina web )",COT,COT,CRM1,31/05/2023,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: se le envió precio del eco color,COT,COT,CRM1,06/04/2023,Contactado,Informacion General
+CIUDAD: Guayaquil | MENSAJE: Le escribo por interno,INF,INF,WhatsApp,25/3/2026,,
+CIUDAD: Quito | MENSAJE: Buen dia Gracias 👍🏽,INF,INF,WhatsApp,17/2/2025,,
+CIUDAD: Manta | MENSAJE: Nos puede enviar costos de productos porfavor,COT,COT,WhatsApp,27/5/2024,,
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Buen día, ayúdeme con sus catálogos y precios del microcemento, puede ser el normal o cualquier variante Asesor: Cual es tu nombre? Cli | NOTAS: se envió información sobre microcemento",COT,COT,CRM2,12/04/2024,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: Se va a enviar correo electrónico adjuntando catalogo de nuestros productos.,INF,INF,CRM2,07/10/2024,Contactado,Informacion General
+"ETIQUETA: Cotización Obra, Asesoramiento Tecnico | ESTADO: Contactado | NOTAS: ASISTENCIA TECNICA C/E",TEC,TEC,CRM2,24/08/2023,Contactado,"Cotización Obra, Asesoramiento Tecnico"
+"ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: PROSPECTO FERIA CLAVE,INF MICRO,información general, catalogo",INF,INF,CRM2,14/06/2024,Contactado,Informacion General
+CIUDAD: Quito | MENSAJE: Por favor tengo un cliente que necesita saber los precios más detallados en cuanto a concreto estampado,COT,COT,WhatsApp,29/3/2026,,
+ETIQUETA: Aplicador | ESTADO: APLICADORES | NOTAS: Curso Quito Febrero,CUR,CUR,CRM2,27/02/2024,APLICADORES,Aplicador
+"ETIQUETA: Email - Numero inválido | ESTADO: Nuevo | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Muy buenas tardes disculpe q precio tiene el galón d aditivo y para cuantos metros rinde ? Asesor: Cual es tu nombre? Cliente: Antonio  | NOTAS: el numero es incorrecto, se le envió un correo",COT,COT,CRM2,26/07/2023,Nuevo,Email - Numero inválido
+ETIQUETA: Cotizacion Materiales | ESTADO: Contactado | NOTAS: MATERIALES 33 M2 C/E,COT,COT,CRM2,01/11/2023,Contactado,Cotizacion Materiales
+"CIUDAD: Quito | MENSAJE: Buenas tardes arquitecta, gracias por mantenernos informados, estaré haciendo llegar mis consultas.",INF,INF,WhatsApp,17/2/2025,,
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: BUENAS DIAS Asesor: ¿Cómo estás? Cuéntame, ¿en que te puedo servir? Asesor: Sigues ahí? Cliente: estoy buscando pigmentos, negro y diox | NOTAS: info pigmentos",INF,INF,CRM2,15/05/2024,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: SELLO POLIURETANO,INF,INF,CRM1,12/07/2023,Contactado,Informacion General
+CIUDAD: Loja | MENSAJE: Saludos claro lo puedes mirar en la pagina web en la parte  que dice videos,INF,INF,WhatsApp,18/12/2024,,
+CIUDAD: Loja | MENSAJE: Resiste bien a la fricción de las llantas del vehículo siempre y cuando se selle con poliuretanos.,TEC,INF,WhatsApp,20/10/2025,,
+"ETIQUETA: Informacion General, Email inválido | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Buenos días quisiera saber si tienen esos moldes para piso de concreto que dan un acabado en forma de piedra con diseño Asesor: Excelen | NOTAS: MOLDES",INF,INF,CRM2,18/08/2023,Contactado,"Informacion General, Email inválido"
+CIUDAD: Loja | MENSAJE: Muy buenas tardes a los nuevos aplicadores de Rocktec se les da la bienvenida a nuestro grupo....,INF,INF,WhatsApp,26/8/2025,,
+"ETIQUETA: Informacion General | ESTADO: En seguimiento | CONSULTA: Servicio de microcemento en piso, y también educarnos con cursos para este acabafo | NOTAS: se le envió información general y catálogos,,Se le remitió con el aplicador de Guayaquil",CUR,CUR,CRM2,06/08/2023,En seguimiento,Informacion General
+CIUDAD: Quito | MENSAJE: Más adelante se les hará llegar todos nuestros catálogos y la lista de precios actualizados obviamente con los descuentos para nuestros aplicadores,COT,COT,WhatsApp,21/5/2025,,
+"ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: se envió información sobre ácidos oxidantes, en espera de respuesta",INF,INF,CRM2,19/06/2024,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: buenas tardes necesito Desmoldante en base a agua para moldes DE inyección DE plásticos Asesor: Cual es tu nombre? Asesor: Cliente: eri",INF,INF,CRM2,09/05/2024,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: SE ENVIO INFORMACION CURSO LOJA BASE DE DATOS,CUR,CUR,CRM2,09/11/2023,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: En seguimiento | NOTAS: CLIENTE BASE CONSTRUEX,se envio información y catalogo general",INF,SEG,CRM2,11/04/2024,En seguimiento,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Saludos, quisiera saber en que lugar puedo ir a adquirir este material y obterner más información sobre sus beneficios y características. | NOTAS: SE ENVIÓ INFO POR WHATSAPP",INF,INF,CRM2,10/08/2024,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: CLIENTE FERIA CLAVE CUMBAYA,",INF,INF,CRM2,20/06/2024,Contactado,Informacion General
+CIUDAD: Loja | MENSAJE: Aproximadamente?,INF,INF,WhatsApp,6/11/2024,,
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: CLIENTE FERIA CLAVE CUMBATA,INF,INF,CRM2,28/06/2024,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: se envió información curso LOJA,CUR,CUR,CRM2,09/11/2023,Contactado,Informacion General
+CIUDAD: Quito | MENSAJE: Porfavor en  qué ciudad  sería esta aplicación,INF,INF,WhatsApp,29/11/2025,,
+CIUDAD: Quito | MENSAJE: y el acabado final logra con la experiencia del maestro o tecnico de aplicacion...,INF,TEC,WhatsApp,21/4/2026,,
+CIUDAD: Quito | MENSAJE: Buenos días nesesito un litro de sellador de microcemento y un litro de componente para mezclar el microcemento por favor,INF,INF,WhatsApp,10/2/2026,,
+ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Hola quisiera cotizar el acabado de microcemento para un piso interior. Gracias | NOTAS: INFO MICRO,COT,INF,CRM2,19/10/2023,Contactado,Informacion General
+ETIQUETA: Seguimiento de presentacion | ESTADO: Contactado | NOTAS: SE ENVIO CATALOGOS Y PRESENTACION,INF,SEG,CRM1,03/05/2023,Contactado,Seguimiento de presentacion
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: buenas tardes busco información sobre el piso plantillado, costos , materiales Asesor: Cual es tu nombre? Cliente: Paul Asesor: Excelen | NOTAS: INFO C/E 30 m2 mitad del mundo",COT,COT,CRM2,10/09/2023,Contactado,Informacion General
+CIUDAD: Quito | MENSAJE: Ambato presente,INF,INF,WhatsApp,21/10/2025,,
+"ETIQUETA: Cotización Obra, Cotizacion Materiales, Informacion General, Email inválido | ESTADO: En seguimiento | NOTAS: Se envió WhatsApp de seguimiento",INF,COT,CRM2,29/04/2024,En seguimiento,"Cotización Obra, Cotizacion Materiales, Informacio"
+ETIQUETA: Cotizacion Materiales | ESTADO: Contactado | NOTAS: COTIZACION MATERIALES 40 M2,COT,COT,CRM2,28/03/2024,Contactado,Cotizacion Materiales
+ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Estoy intentando en comprar el pigmento | NOTAS: INFO PIGMENTOS,VEN,VEN,CRM2,22/04/2024,Contactado,Informacion General
+CIUDAD: Quito | MENSAJE: Los precios de los kits son en cemento gris??,COT,COT,WhatsApp,17/2/2025,,
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Nese cito el cupo para el curso . Asesor: Cual es tu nombre? Cliente: Victor Andy Asesor: Excelente Andy. Yo me encargo de ponerte en c | NOTAS: Cliente interesado en el curso",CUR,CUR,CRM2,28/05/2024,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Hola buen día., estoy buscando un producto sellador a base de agua mate o semi mate, para una losa de hormigon de 25 m2 totalmente al e | NOTAS: se envio información general y catalogo",INF,INF,CRM2,18/06/2024,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: En seguimiento | NOTAS: Cliente interesado en microcemento - Cliente de Construex,INF,SEG,CRM2,03/04/2024,En seguimiento,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Nuevo | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Buenos días, tienen representante en Guayaquil? Asesor: Cual es tu nombre? Cliente: Fernando Rodríguez Asesor: Excelente Fernando. Yo m | NOTAS: Se contactó por medio de whatsapp",INF,INF,CRM2,10/09/2024,Nuevo,Informacion General
+"ETIQUETA: Envio masivo whasapp | ESTADO: Contactado | NOTAS: se envió información y presentación,Se envió WhatsApp masivo",INF,INF,CRM1,22/02/2023,Contactado,Envio masivo whasapp
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Saludos , me interesa sus productos para pigmentar el cemento y piedras decorativas de jardin Asesor: Cual es tu nombre? Cliente: Mario | NOTAS: Se envia mensaje al cliente y se adjunta catalogo general de productos.",INF,INF,CRM2,08/12/2024,Contactado,Informacion General
+"ETIQUETA: Informacion General, Asesoramiento Tecnico | ESTADO: En seguimiento | NOTAS: 300 m2 micro piso FLACSO",TEC,SEG,CRM1,12/07/2023,En seguimiento,"Informacion General, Asesoramiento Tecnico"
+CIUDAD: Quito | MENSAJE: Bendecido día a todos,INF,INF,WhatsApp,1/12/2025,,
+"ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: CLIENTE FERIS CLAVE CUMBAYA,INF, MICRO",INF,INF,CRM2,27/06/2024,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: En seguimiento | NOTAS: CLIENTE CONSTRUEX,INF,SEG,CRM2,12/06/2024,En seguimiento,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Buenos días Marina, tengo una pared interior, subsuelo, con humedad, necesito saber si existe algún panel para cubrir esa pared? Asesor | NOTAS: paredes con humedad",INF,INF,CRM2,04/03/2024,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Hola Buenos días tal vez me puede ayudar cotizando unos microcementos por favor. Gracias Asesor: Cual es tu nombre? Cliente: Geovanna R | NOTAS: información micro",COT,INF,CRM2,09/05/2024,Contactado,Informacion General
+CIUDAD: Manta | MENSAJE: Este lo tenemos y cuesta 15 dol,COT,INF,WhatsApp,12/6/2024,,
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: Se envio información general y catálogos,INF,INF,CRM2,21/09/2023,Contactado,Informacion General
+ETIQUETA: Email - Numero inválido | ESTADO: Nuevo | NOTAS: se envió WhatsApp y catálogos,INF,INF,CRM1,09/03/2023,Nuevo,Email - Numero inválido
+"ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: CLIENTE FERIA CLAVE CUMBAYA, CLIENTE INTERESADO EN MICROCEMENTO ESTAMPADO",INF,INF,CRM2,20/06/2024,Contactado,Informacion General
+ETIQUETA: Cotización Obra | ESTADO: Contactado | NOTAS: 100 m2 C/E FUNDICION WYMPER,COT,INF,CRM2,05/09/2023,Contactado,Cotización Obra
+"ETIQUETA: Email inválido | ESTADO: En seguimiento | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Hola por favor quiero que me ayudes con información y una cotización de microcemento y cemento decorativo Asesor: Cual es tu nombre? Cl | NOTAS: estar pendiente de que envíe las fotos a ver si necesita mortero",COT,SEG,CRM2,02/08/2023,En seguimiento,Email inválido
+CIUDAD: Guayaquil | MENSAJE: Ya me comunico con usted por interno,INF,INF,WhatsApp,7/11/2025,,
+"ETIQUETA: Pichincha, Construex | ESTADO: Construex | CONSULTA: INTERESADO EN MICROCEMENTO PARA BAÑOS",INF,INF,CRM2,22/08/2024,Construex,"Pichincha, Construex"
+CIUDAD: Quito | MENSAJE: Muy buenas tardes tengan cada uno de ustedes compañeros y bienvenidos sean todos a esta maravillosa comunidad,INF,INF,WhatsApp,27/3/2026,,
+"CIUDAD: Manta | MENSAJE: ubicación: https://maps.google.com/?q=-1.0448622,-80.4787361",INF,INF,WhatsApp,4/3/2025,,
+CIUDAD: Cuenca | MENSAJE: Orgullosos de que seas parte de esta nueva y gran familia 😊,INF,INF,WhatsApp,23/11/2025,,
+"ETIQUETA: Cotización Obra, Informacion General | ESTADO: Contactado | NOTAS: 70 m2 micro",COT,INF,CRM1,19/06/2023,Contactado,"Cotización Obra, Informacion General"
+ETIQUETA: Envio masivo whasapp | ESTADO: Contactado | NOTAS: Se envió WhatsApp masivo 07/03,INF,INF,CRM1,06/03/2023,Contactado,Envio masivo whasapp
+CIUDAD: Cuenca | MENSAJE: Buenas noches por favor me pueden confirmar nuevamente con es te documento,INF,INF,WhatsApp,15/1/2026,,
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: porfavor comuniquese conmigo 0984230802 Asesor: Cual es tu nombre? Asesor: Sigues ahí? Cliente: Ana lucia Asesor: Te puedo pedir además | NOTAS: se envió información y catalogo general",INF,INF,CRM2,10/06/2024,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: Se envió información general y catálogos,180m2 micro - Guayaquil",INF,INF,CRM2,27/09/2023,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: ARQUITECTOS Se envió catálogo general,INF,INF,CRM2,29/05/2024,Contactado,Informacion General
+CIUDAD: Quito | MENSAJE: Les voy a compartir  algunos videos de este tipo de pisos,INF,INF,WhatsApp,2/7/2025,,
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: CLIENTE FERIA CLAVE CUMBAYA. INF. MICRO,INF,INF,CRM2,28/06/2024,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: Se le envío información general y catálogos,está interesado en microcemento para acceso principal, estacionamiento y porche de una vivienda",INF,INF,CRM2,16/08/2023,Contactado,Informacion General
+ETIQUETA: Envio masivo whasapp | ESTADO: Contactado | NOTAS: se envió presentación,INF,INF,CRM1,16/02/2023,Contactado,Envio masivo whasapp
+CIUDAD: Cuenca | MENSAJE: Muy amable le escribo por interno,INF,INF,WhatsApp,24/11/2025,,
+"ETIQUETA: Envio masivo whasapp | ESTADO: Contactado | NOTAS: JEVA,Se envió WhatsApp masivo se envió catálogos y presentación JEVA",INF,INF,CRM1,21/03/2023,Contactado,Envio masivo whasapp
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: FERIA CLAVE CUMBAYA,INF,INF,CRM2,21/06/2024,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Hola Asesor: ¿Cómo estás? Cuéntame, ¿en que te puedo servir? Cliente: mas información del precio del kit d microcemento de 20m2 y d 10m | NOTAS: Se adjunta catalogo general de nuestros productos.",COT,COT,CRM2,28/08/2024,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Trabajo de acabado en pardes | NOTAS: se envió información general y catalogo,INF,INF,CRM2,29/06/2024,Contactado,Informacion General
+"ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: CLIENTE FERIA CLAVE CUMBAYA, INF MICRO Y C/E",INF,INF,CRM2,20/06/2024,Contactado,Informacion General
+"ETIQUETA: Venta ganada, Informacion General | ESTADO: Contactado | NOTAS: se le facturo materiales para microcemento para 30m2",VEN,INF,CRM1,29/05/2023,Contactado,"Venta ganada, Informacion General"
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Buenas tardes tienen microcemento color verde como para piso? Asesor: Cual es tu nombre? Cliente: Ana Arias Asesor: Excelente Ana. Yo m | NOTAS: cliente interesado en microcemento verde",INF,INF,CRM2,31/05/2024,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: 200 M2 PISO,INF,INF,CRM1,12/07/2023,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: numero repetido-base de datos,INF,INF,CRM2,05/09/2023,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: Se envia mensaje al cliente y se adjunta catlogo general de productos.,INF,INF,CRM2,07/10/2024,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: info moldes y acabados,INF,INF,CRM1,11/05/2023,Contactado,Informacion General
+ETIQUETA: Informacion General | ESTADO: En seguimiento | NOTAS: CLIENTE INTERESADO EN ADITIVO LIGANTE - CLIENTE DE CONSTRUEX,TEC,SEG,CRM2,03/04/2024,En seguimiento,Informacion General
+"ETIQUETA: Email - Numero inválido | ESTADO: Nuevo | NOTAS: BASE DE DATOS,SE ENVIO CATALOGOS Y PRESENTACION BASE DE DATOS",INF,INF,CRM1,23/03/2023,Nuevo,Email - Numero inválido
+ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Ayúdame con la preparación??? Por fa | NOTAS: INFO MICRO,TEC,INF,CRM2,30/10/2023,Contactado,Informacion General
+"CIUDAD: Quito | MENSAJE: ""Estimados aplicadores certificados de ROCKTEC,",CUR,INF,WhatsApp,29/5/2024,,
+"ETIQUETA: Cliente Derivado provincias | ESTADO: Cliente Frecuente | NOTAS: Se envió WhatsApp masivo,se envio contacto de arq Miguel Vera",INF,INF,CRM1,22/02/2023,Cliente Frecuente,Cliente Derivado provincias
+CIUDAD: Quito | MENSAJE: Tengan cuidado de usar pulidoras o productos muy abrasivos,TEC,INF,WhatsApp,8/4/2026,,
+"ETIQUETA: Envio masivo whasapp, Informacion General | ESTADO: En seguimiento | NOTAS: BASE DE DATOS CONSTRUEX - INTERESADO EN PRODUCTO/APLIACION",INF,SEG,CRM2,06/03/2024,En seguimiento,"Envio masivo whasapp, Informacion General"
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: se direccionó a Vicente vallejos cotizacion para Manabi y a Velastegui para santo domingo,COT,COT,CRM1,06/06/2023,Contactado,Informacion General
+"CIUDAD: Loja | MENSAJE: Gracias, el ácido se mezcla con agua 1,1, además el valor galón de ácido y sellador si puedo compilar en Loja, caso contrario la cuenta para depositar.",COT,INF,WhatsApp,14/11/2024,,
+CIUDAD: Loja | MENSAJE: Eso es lo que dice específicamente la normativa,INF,INF,WhatsApp,7/11/2024,,
+ETIQUETA: Venta ganada | ESTADO: Contactado | NOTAS: C/E PARED 36 M2,VEN,INF,CRM2,04/10/2023,Contactado,Venta ganada
+"ETIQUETA: Cotizacion Materiales, Informacion General | ESTADO: Contactado | NOTAS: enviar cotización para pared de microcemento",COT,COT,CRM1,14/06/2023,Contactado,"Cotizacion Materiales, Informacion General"
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: se envio catalogo y presentacion agendas,INF,INF,CRM1,28/03/2023,Contactado,Informacion General
+CIUDAD: Manta | MENSAJE: Sera una gran muestra  de lo que podemos hacer con el material y seria fantastico que Usted lo vayan incluyendo  en sus ofertas !! 😉👍🏻,INF,INF,WhatsApp,4/3/2025,,
+ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: C/E Y MICRO JARDIN - REFERIDO A MAESTROS,INF,INF,CRM2,25/07/2023,Contactado,Informacion General
+"ETIQUETA: Cotizacion Materiales, Informacion General | ESTADO: Contactado | NOTAS: 70 m2 en micro en galapagos",COT,COT,CRM2,30/11/2023,Contactado,"Cotizacion Materiales, Informacion General"
+"ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te puedo ayudar en algo? Cliente: Hola Asesor: ¿Cómo estás? Cuéntame, ¿en que te puedo servir? Cliente: Uds realizan fundiciones de pisos con colores Asesor: Cual es tu  | NOTAS: FUNDICION CON COLORES",INF,INF,CRM2,18/04/2024,Contactado,Informacion General

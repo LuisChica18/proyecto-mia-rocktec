@@ -1,0 +1,26 @@
+
+================================================================================
+REPORTE HOLDOUT SET — ROCKTEC MIA 2026
+================================================================================
+Generado: 2026-07-22 13:18:34
+Random state: 42 (reproducible)
+Clases: ['INF', 'COT', 'TEC', 'CUR', 'VEN']
+
+SPLIT:
+  Dataset completo (5 clases): 1312 registros
+  Train+Val (85%):             1115 registros
+  Holdout test (15%):          197 registros
+
+DISTRIBUCIÓN HOLDOUT:
+  INF: 131  (66.5%)
+  COT:  43  (21.8%)
+  CUR:   9  (4.6%)
+  TEC:   8  (4.1%)
+  VEN:   6  (3.0%)
+
+INSTRUCCIONES:
+  - train_val.csv   → usar para entrenar y validar modelos (cross-validation)
+  - holdout_test.csv → usar UNA SOLA VEZ al final para reportar métricas finales
+  - NUNCA usar holdout_test.csv para ajustar hiperparámetros o seleccionar modelos
+
+================================================================================
