@@ -26,7 +26,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from datetime import datetime
 
-from sklearn.model_selection import StratifiedKFold, GridSearchCV, train_test_split
+from sklearn.model_selection import StratifiedKFold, KFold, GridSearchCV, train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
 from sklearn.calibration import CalibratedClassifierCV
@@ -115,14 +115,15 @@ def guardar_confusion_matrix(y_true, y_pred, clases, nombre, ruta_dir):
 # Modelo 1: Logistic Regression
 # ─────────────────────────────────────────────────────────────────────────────
 
-def entrenar_lr(X_train, y_train, X_test, y_test, clases, ruta_artefactos):
+def entrenar_lr(X_train, y_train, X_test, y_test, clases, ruta_artefactos,
+                 n_folds=N_FOLDS, fuente_datos='desconocida'):
     print("\n[1/3] Logistic Regression")
     print("─" * 50)
 
-    param_grid = {'C': [0.1, 1, 10, 100], 'max_iter': [1000]}
+    param_grid = {'C': [0.01, 0.1, 1, 10, 100], 'max_iter': [1000]}
     base_lr    = LogisticRegression(class_weight='balanced', solver='lbfgs',
                                     random_state=SEED)
-    cv         = StratifiedKFold(n_splits=N_FOLDS, shuffle=True, random_state=SEED)
+    cv         = StratifiedKFold(n_splits=n_folds, shuffle=True, random_state=SEED)
     gs         = GridSearchCV(base_lr, param_grid, cv=cv, scoring='f1_macro',
                               n_jobs=-1, verbose=0)
     gs.fit(X_train, y_train)
@@ -141,7 +142,9 @@ def entrenar_lr(X_train, y_train, X_test, y_test, clases, ruta_artefactos):
 
     with mlflow.start_run(run_name='logistic_regression'):
         mlflow.log_params({'modelo': 'LogisticRegression', **gs.best_params_,
-                           'class_weight': 'balanced', 'cv_folds': N_FOLDS})
+                           'class_weight': 'balanced', 'cv_folds': n_folds,
+                           'fuente_datos': fuente_datos})
+        mlflow.set_tag('fuente_datos', fuente_datos)
         mlflow.log_metrics(m)
         mlflow.log_artifact(str(ruta_cm))
 
@@ -150,7 +153,11 @@ def entrenar_lr(X_train, y_train, X_test, y_test, clases, ruta_artefactos):
         mlflow.log_artifact(str(ruta_reporte))
 
         ruta_modelo = ruta_artefactos / 'modelo_lr.pkl'
-        mlflow.sklearn.save_model(modelo, str(ruta_modelo))
+        # serialization_format='pickle': el formato 'skops' (default en mlflow>=2.11)
+        # rechaza por seguridad tipos como CalibratedClassifierCV/KFold salvo que se
+        # declaren explícitamente como confiables; se usa pickle porque el modelo
+        # se genera y consume dentro del mismo repo/equipo (no de terceros).
+        mlflow.sklearn.save_model(modelo, str(ruta_modelo), serialization_format='pickle')
         mlflow.log_artifact(str(ruta_modelo))
 
     return modelo, m
@@ -160,15 +167,36 @@ def entrenar_lr(X_train, y_train, X_test, y_test, clases, ruta_artefactos):
 # Modelo 2: LinearSVC
 # ─────────────────────────────────────────────────────────────────────────────
 
-def entrenar_svm(X_train, y_train, X_test, y_test, clases, ruta_artefactos):
+def entrenar_svm(X_train, y_train, X_test, y_test, clases, ruta_artefactos,
+                  n_folds=N_FOLDS, fuente_datos='desconocida'):
     print("\n[2/3] LinearSVC")
     print("─" * 50)
 
-    param_grid = {'estimator__C': [0.01, 0.1, 1, 10]}
-    base_svm   = CalibratedClassifierCV(
-        LinearSVC(class_weight='balanced', max_iter=2000, random_state=SEED)
-    )
-    cv         = StratifiedKFold(n_splits=N_FOLDS, shuffle=True, random_state=SEED)
+    # Clases con muy pocos ejemplos (p.ej. QUE/SEG en el dataset de consenso)
+    # impiden calibrar probabilidades con CalibratedClassifierCV (exige >= k
+    # ejemplos por clase para cualquier k-fold, estratificado o no). Se usa
+    # calibración solo si la clase más pequeña de y_train lo permite (>=2);
+    # en caso contrario se entrena LinearSVC sin calibrar (no se necesitan
+    # probabilidades para las métricas de este pipeline, solo predicciones).
+    # Cada fold externo de GridSearchCV retiene ~(n_folds-1)/n_folds de cada
+    # clase; se exige margen suficiente para que sobrevivan >=2 ejemplos de
+    # la clase más rara y así poder calibrar con un cv interno de 2 folds.
+    _, conteos = np.unique(y_train, return_counts=True)
+    usar_calibracion = conteos.min() * (n_folds - 1) / n_folds >= 2
+    clave_C = 'estimator__C' if usar_calibracion else 'C'
+    param_grid = {clave_C: [0.001, 0.01, 0.1, 1, 10, 100]}
+
+    if usar_calibracion:
+        cv_interno = KFold(n_splits=2, shuffle=True, random_state=SEED)
+        base_svm = CalibratedClassifierCV(
+            LinearSVC(class_weight='balanced', max_iter=2000, random_state=SEED),
+            cv=cv_interno,
+        )
+    else:
+        print("  ⚠ Clase con <2 ejemplos en train: omitiendo calibración de probabilidades")
+        base_svm = LinearSVC(class_weight='balanced', max_iter=2000, random_state=SEED)
+
+    cv         = StratifiedKFold(n_splits=n_folds, shuffle=True, random_state=SEED)
     gs         = GridSearchCV(base_svm, param_grid, cv=cv, scoring='f1_macro',
                               n_jobs=-1, verbose=0)
     gs.fit(X_train, y_train)
@@ -181,13 +209,15 @@ def entrenar_svm(X_train, y_train, X_test, y_test, clases, ruta_artefactos):
     reporte = classification_report(y_test_lbl, y_pred_lbl, labels=clases, zero_division=0)
     ruta_cm = guardar_confusion_matrix(y_test_lbl, y_pred_lbl, clases, 'svm', ruta_artefactos)
 
-    print(f"  Mejor C: {gs.best_params_['estimator__C']}")
+    print(f"  Mejor C: {gs.best_params_[clave_C]}")
     print(f"  F1-macro (test): {m['f1_macro']:.4f}")
     print(f"  Accuracy (test): {m['accuracy']:.4f}")
 
     with mlflow.start_run(run_name='linear_svc'):
         mlflow.log_params({'modelo': 'LinearSVC', **gs.best_params_,
-                           'class_weight': 'balanced', 'cv_folds': N_FOLDS})
+                           'class_weight': 'balanced', 'cv_folds': n_folds,
+                           'fuente_datos': fuente_datos})
+        mlflow.set_tag('fuente_datos', fuente_datos)
         mlflow.log_metrics(m)
         mlflow.log_artifact(str(ruta_cm))
 
@@ -196,7 +226,11 @@ def entrenar_svm(X_train, y_train, X_test, y_test, clases, ruta_artefactos):
         mlflow.log_artifact(str(ruta_reporte))
 
         ruta_modelo = ruta_artefactos / 'modelo_svm.pkl'
-        mlflow.sklearn.save_model(modelo, str(ruta_modelo))
+        # serialization_format='pickle': el formato 'skops' (default en mlflow>=2.11)
+        # rechaza por seguridad tipos como CalibratedClassifierCV/KFold salvo que se
+        # declaren explícitamente como confiables; se usa pickle porque el modelo
+        # se genera y consume dentro del mismo repo/equipo (no de terceros).
+        mlflow.sklearn.save_model(modelo, str(ruta_modelo), serialization_format='pickle')
         mlflow.log_artifact(str(ruta_modelo))
 
     return modelo, m
@@ -408,7 +442,8 @@ def main():
     RUTA_REPORTES.mkdir(parents=True, exist_ok=True)
 
     # ── Dataset ──
-    df = cargar_dataset()
+    df, fuente_datos = cargar_dataset()
+    print(f"✓ Fuente de datos: {fuente_datos}")
 
     X_texto    = df['texto_conversacion'].values
     y_raw      = df['label'].values
@@ -416,6 +451,15 @@ def main():
     X_train_txt, X_test_txt, y_train_raw, y_test_raw = train_test_split(
         X_texto, y_raw, test_size=TEST_SIZE, stratify=y_raw, random_state=SEED
     )
+
+    # Clases raras (p.ej. QUE/SEG con muy pocos registros en el dataset de
+    # consenso) pueden tener menos miembros en train que N_FOLDS deseados;
+    # StratifiedKFold exige n_splits <= tamaño de la clase más pequeña.
+    _, conteos_train = np.unique(y_train_raw, return_counts=True)
+    n_folds_efectivo = max(2, min(N_FOLDS, int(conteos_train.min())))
+    if n_folds_efectivo < N_FOLDS:
+        print(f"⚠ Clase minoritaria con {conteos_train.min()} registros en train: "
+              f"usando cv_folds={n_folds_efectivo} en vez de {N_FOLDS}")
 
     # ── Codificación ──
     cod      = CodificadorIntenciones()
@@ -440,12 +484,14 @@ def main():
 
     # ── Modelo 1: LR ──
     _, resultados['logistic_regression'] = entrenar_lr(
-        X_train, y_train, X_test, y_test, clases, RUTA_MODELOS
+        X_train, y_train, X_test, y_test, clases, RUTA_MODELOS,
+        n_folds=n_folds_efectivo, fuente_datos=fuente_datos
     )
 
     # ── Modelo 2: SVM ──
     _, resultados['linear_svc'] = entrenar_svm(
-        X_train, y_train, X_test, y_test, clases, RUTA_MODELOS
+        X_train, y_train, X_test, y_test, clases, RUTA_MODELOS,
+        n_folds=n_folds_efectivo, fuente_datos=fuente_datos
     )
 
     # ── Modelo 3: BETO ──

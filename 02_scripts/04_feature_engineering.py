@@ -181,6 +181,7 @@ def cargar_dataset():
         print(f"✓ Cargando consenso: {_RUTA_ANOTACIONES}")
         df = pd.read_csv(_RUTA_ANOTACIONES)
         col_label = 'intencion_consenso'
+        fuente = 'consenso_manual'
 
     elif _RUTA_XLSX.exists():
         print(f"✓ Cargando anotaciones xlsx: {_RUTA_XLSX}")
@@ -189,11 +190,13 @@ def cargar_dataset():
         if cols:
             df['intencion_consenso'] = df.apply(_consenso_fila, cols=cols, axis=1)
         col_label = 'intencion_consenso'
+        fuente = 'xlsx_bruto'
 
     elif _RUTA_FALLBACK.exists():
         print(f"⚠ Usando etiquetas heurísticas (fallback): {_RUTA_FALLBACK}")
         df        = pd.read_csv(_RUTA_FALLBACK)
         col_label = 'intencion_catalogo'
+        fuente = 'heuristico_fallback'
     else:
         raise FileNotFoundError(
             "No se encontró ningún dataset. "
@@ -210,7 +213,7 @@ def cargar_dataset():
     for lbl, n in df['label'].value_counts().items():
         print(f"    {lbl}: {n:4d}  ({n/len(df)*100:.1f}%)")
 
-    return df[['texto_conversacion', 'label']]
+    return df[['texto_conversacion', 'label']], fuente
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -246,8 +249,8 @@ if __name__ == '__main__':
     print(f"✓ Clases codificadas:   {cod.clases}")
 
     try:
-        df = cargar_dataset()
-        print(f"\n✓ cargar_dataset() OK: {len(df)} registros")
+        df, fuente = cargar_dataset()
+        print(f"\n✓ cargar_dataset() OK: {len(df)} registros (fuente: {fuente})")
     except FileNotFoundError as e:
         print(f"\n⚠ {e}")
 

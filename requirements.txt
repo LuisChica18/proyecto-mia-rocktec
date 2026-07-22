@@ -41,3 +41,8 @@ mlflow==2.9.0
 torch>=2.0.0
 transformers==4.36.0
 accelerate==0.25.0
+
+# ── Fase 1C: Ajustes de prototipo y reporte ──────────────────────────────────
+
+# Generación del informe Word (generar_informe_docx.py)
+python-docx==1.2.0
