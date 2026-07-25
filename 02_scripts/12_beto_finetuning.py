@@ -11,14 +11,29 @@ A diferencia de 11_beto_clasificador.py (BETO como extractor de embeddings fijos
 hiperparámetros documentados en 05_documentacion/DISEÑO_MLOPS_FASE2.md
 (Etapa 3 — Modelo 3: BETO Fine-tuned).
 
+IMPORTANTE — evita fuga de datos hacia el holdout: este script entrena
+EXCLUSIVAMENTE con `04_anotaciones/train_val.csv` (las 1,115 filas que
+09_crear_holdout_set.py separó para entrenamiento/validación). NUNCA lee
+`holdout_test.csv` ni `dataset_consenso_final.csv` completo — esas 197 filas
+de holdout deben quedar totalmente fuera del entrenamiento para que
+13_evaluacion_holdout.py pueda reportar una métrica final honesta. (Versiones
+anteriores de este script entrenaban sobre el dataset completo, incluyendo por
+error las filas de holdout — ver CHANGELOG.md Sprint 7, 25 Jul 2026.)
+
 Pensado para correr en un entorno con GPU (Google Colab / Kaggle Notebooks con
 runtime T4 gratuito, o una máquina con CUDA). En CPU también corre, pero muy
 lento (no recomendado).
 
 Salida:
-    06_resultados/beto/reporte_beto_finetuned.txt
-    06_resultados/beto/comparacion_tfidf_vs_beto_finetuned.txt
-    06_resultados/modelos/beto_finetuned_best/   (checkpoint HuggingFace)
+    06_resultados/beto/reporte_beto_finetuned_val.txt       (métricas de validación interna,
+                                                               NO son la métrica final)
+    06_resultados/modelos/beto_finetuned_best/               (checkpoint HuggingFace)
+    06_resultados/modelos/beto_finetuned_best/FUENTE_ENTRENAMIENTO.txt
+        (marca de qué archivo se usó para entrenar — 13_evaluacion_holdout.py la valida
+        antes de evaluar sobre el holdout, para no reportar por error un resultado con fuga)
+
+La métrica final de este modelo (F1-macro sobre holdout_test.csv, una sola vez) la calcula
+13_evaluacion_holdout.py — no este script.
 
 Uso:
     python 02_scripts/12_beto_finetuning.py
@@ -43,7 +58,7 @@ warnings.filterwarnings('ignore')
 
 INTENCIONES     = ['INF', 'COT', 'TEC', 'CUR', 'VEN']
 RANDOM_STATE    = 42
-RUTA_CONSENSO   = Path('04_anotaciones/dataset_consenso_final.csv')
+RUTA_TRAIN_VAL  = Path('04_anotaciones/train_val.csv')
 RUTA_SALIDA     = Path('06_resultados/beto')
 RUTA_CHECKPOINT = Path('06_resultados/modelos/beto_finetuned_best')
 MODELO_BETO     = 'dccuchile/bert-base-spanish-wwm-cased'
@@ -56,14 +71,10 @@ WARMUP_RATIO  = 0.1
 WEIGHT_DECAY  = 0.01
 MAX_LENGTH    = 128
 
-# Resultados de referencia ya reportados (para la comparación final)
-F1_TFIDF_LR        = 0.7516  # 06_resultados/reporte_holdout.txt / CHANGELOG.md Sprint 7
-F1_BETO_EMBEDDINGS = 0.6370  # 06_resultados/beto/comparacion_tfidf_vs_beto.txt (script 11)
-
 
 def cargar_datos():
-    print("[1/5] Cargando dataset...")
-    df = pd.read_csv(RUTA_CONSENSO)
+    print("[1/5] Cargando train_val.csv (holdout_test.csv NO se toca en este script)...")
+    df = pd.read_csv(RUTA_TRAIN_VAL)
     df = df[df['intencion_consenso'].isin(INTENCIONES)].reset_index(drop=True)
     print(f"  ✓ {len(df)} registros, {len(INTENCIONES)} clases")
     for cls, n in df['intencion_consenso'].value_counts().items():
@@ -106,16 +117,13 @@ def entrenar_beto_finetuned(df):
     textos = df['texto_conversacion'].astype(str).tolist()
     labels = df['intencion_consenso'].map(label2id).tolist()
 
-    # Mismo split de test (80/20, seed=42, estratificado) que usan 11_beto_clasificador.py
-    # y la comparación TF-IDF+LR, para que el F1-macro final sea comparable entre los tres.
-    X_trainval, X_test, y_trainval, y_test = train_test_split(
-        textos, labels, test_size=0.20, random_state=RANDOM_STATE, stratify=labels
-    )
-    # Dentro del 80%, separa validación (para elegir la mejor época) del entrenamiento.
+    # Todo train_val.csv se reparte entre entrenamiento y validación (para elegir la mejor
+    # época). No se aparta un "test" interno aquí: el test final es holdout_test.csv, evaluado
+    # una sola vez por 13_evaluacion_holdout.py — nunca visto por este script.
     X_train, X_val, y_train, y_val = train_test_split(
-        X_trainval, y_trainval, test_size=0.15, random_state=RANDOM_STATE, stratify=y_trainval
+        textos, labels, test_size=0.15, random_state=RANDOM_STATE, stratify=labels
     )
-    print(f"  Train: {len(X_train)}  Val: {len(X_val)}  Test: {len(X_test)}")
+    print(f"  Train: {len(X_train)}  Val: {len(X_val)}")
 
     print("[3/5] Cargando BETO + tokenizer...")
     tokenizer = AutoTokenizer.from_pretrained(MODELO_BETO)
@@ -128,7 +136,6 @@ def entrenar_beto_finetuned(df):
 
     train_ds = DatasetIntenciones(tokenizar(X_train), y_train)
     val_ds = DatasetIntenciones(tokenizar(X_val), y_val)
-    test_ds = DatasetIntenciones(tokenizar(X_test), y_test)
 
     def compute_metrics(eval_pred):
         logits, etiquetas = eval_pred
@@ -166,21 +173,31 @@ def entrenar_beto_finetuned(df):
     print("[4/5] Fine-tuning (5 épocas)...")
     trainer.train()
 
-    print("[5/5] Evaluando en test set (held-out, no visto en entrenamiento/validación)...")
-    pred_output = trainer.predict(test_ds)
+    print("[5/5] Evaluando en validación interna (NO es la métrica final — "
+          "esa la calcula 13_evaluacion_holdout.py sobre holdout_test.csv)...")
+    pred_output = trainer.predict(val_ds)
     y_pred = np.argmax(pred_output.predictions, axis=-1)
-    y_test_lbl = [id2label[i] for i in y_test]
+    y_val_lbl = [id2label[i] for i in y_val]
     y_pred_lbl = [id2label[i] for i in y_pred]
 
-    f1 = f1_score(y_test_lbl, y_pred_lbl, labels=INTENCIONES, average='macro', zero_division=0)
-    reporte = classification_report(y_test_lbl, y_pred_lbl, labels=INTENCIONES, zero_division=0)
-    print(f"\n  [BETO fine-tuned]")
-    print(f"  F1-macro: {f1:.4f}")
+    f1 = f1_score(y_val_lbl, y_pred_lbl, labels=INTENCIONES, average='macro', zero_division=0)
+    reporte = classification_report(y_val_lbl, y_pred_lbl, labels=INTENCIONES, zero_division=0)
+    print(f"\n  [BETO fine-tuned — validación interna]")
+    print(f"  F1-macro (validación, NO final): {f1:.4f}")
     print(reporte)
 
     RUTA_CHECKPOINT.mkdir(parents=True, exist_ok=True)
     trainer.save_model(str(RUTA_CHECKPOINT))
     tokenizer.save_pretrained(str(RUTA_CHECKPOINT))
+    (RUTA_CHECKPOINT / 'FUENTE_ENTRENAMIENTO.txt').write_text(
+        f"fuente={RUTA_TRAIN_VAL}\n"
+        f"filas={len(df)}\n"
+        f"fecha={datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+        f"f1_macro_validacion_interna={f1:.4f}\n"
+        f"nota=Checkpoint entrenado SOLO con train_val.csv — holdout_test.csv no fue visto.\n"
+        f"     13_evaluacion_holdout.py verifica esta marca antes de evaluar en el holdout.\n",
+        encoding='utf-8'
+    )
     print(f"  ✓ Checkpoint guardado en {RUTA_CHECKPOINT}")
 
     return f1, reporte
@@ -188,48 +205,39 @@ def entrenar_beto_finetuned(df):
 
 def main():
     print("=" * 70)
-    print("BETO FINE-TUNING — ROCKTEC MIA 2026")
+    print("BETO FINE-TUNING — ROCKTEC MIA 2026 (solo train_val.csv)")
     print("=" * 70)
 
     RUTA_SALIDA.mkdir(parents=True, exist_ok=True)
 
     df = cargar_datos()
-    f1_ft, rep_ft = entrenar_beto_finetuned(df)
+    f1_val, rep_val = entrenar_beto_finetuned(df)
 
-    comparacion = f"""
+    resumen = f"""
 ================================================================================
-COMPARACIÓN TF-IDF vs BETO (embeddings) vs BETO (fine-tuned) — ROCKTEC MIA 2026
+BETO FINE-TUNED — VALIDACIÓN INTERNA (NO ES LA MÉTRICA FINAL) — ROCKTEC MIA 2026
 ================================================================================
 Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-Dataset: consenso humano ({len(df)} registros, 5 clases)
-Split test: 80/20 estratificado, random_state=42 (mismo split que script 11)
+Dataset de entrenamiento: {RUTA_TRAIN_VAL} ({len(df)} registros, 5 clases)
+Split interno: 85% train / 15% validación, estratificado, random_state=42
 
-RESULTADOS:
-  TF-IDF + LR (full dataset):              F1-macro = {F1_TFIDF_LR:.4f}  ✅ META ≥ 0.75
-  BETO embeddings + LR (sin fine-tuning):  F1-macro = {F1_BETO_EMBEDDINGS:.4f}
-  BETO fine-tuned ({EPOCAS} épocas):              F1-macro = {f1_ft:.4f}{"  ✅ META ≥ 0.75" if f1_ft >= 0.75 else ""}
+F1-macro (validación interna): {f1_val:.4f}
 
-INTERPRETACIÓN:
-  - BETO fine-tuned {"supera" if f1_ft > F1_TFIDF_LR else "no supera"} a TF-IDF + LR
-  - BETO fine-tuned {"supera" if f1_ft > F1_BETO_EMBEDDINGS else "no supera"} a BETO sin fine-tuning (como era de esperar,
-    el ajuste de pesos sobre el dominio de construcción/concreto decorativo
-    ecuatoriano debería mejorar sobre los embeddings genéricos)
+Este número NO es la métrica final del modelo — es solo la señal usada para elegir la
+mejor época durante el entrenamiento. La métrica final (F1-macro sobre holdout_test.csv,
+evaluada una única vez, comparada con TF-IDF+LR) la calcula:
 
-CONCLUSIÓN:
-  {"El fine-tuning de BETO iguala o mejora el F1-macro sobre TF-IDF+LR; evaluar" if f1_ft >= F1_TFIDF_LR else "TF-IDF + LR sigue siendo el modelo recomendado para producción:"}
-  {"si el costo de infraestructura GPU se justifica para producción." if f1_ft >= F1_TFIDF_LR else "- Ya alcanza la meta F1-macro ≥ 0.75, es interpretable y no requiere GPU."}
+    python 02_scripts/13_evaluacion_holdout.py
 
 ================================================================================
 """
-    print(comparacion)
+    print(resumen)
 
-    (RUTA_SALIDA / 'reporte_beto_finetuned.txt').write_text(rep_ft, encoding='utf-8')
-    (RUTA_SALIDA / 'comparacion_tfidf_vs_beto_finetuned.txt').write_text(
-        comparacion, encoding='utf-8'
-    )
-    print(f"✓ Guardado: {RUTA_SALIDA}/reporte_beto_finetuned.txt")
-    print(f"✓ Guardado: {RUTA_SALIDA}/comparacion_tfidf_vs_beto_finetuned.txt")
-    print("\n✅ BETO FINE-TUNING COMPLETADO")
+    (RUTA_SALIDA / 'reporte_beto_finetuned_val.txt').write_text(rep_val, encoding='utf-8')
+    (RUTA_SALIDA / 'resumen_beto_finetuned_val.txt').write_text(resumen, encoding='utf-8')
+    print(f"✓ Guardado: {RUTA_SALIDA}/reporte_beto_finetuned_val.txt")
+    print(f"✓ Guardado: {RUTA_SALIDA}/resumen_beto_finetuned_val.txt")
+    print("\n✅ BETO FINE-TUNING (VALIDACIÓN) COMPLETADO — corre 13_evaluacion_holdout.py para la métrica final")
 
 
 if __name__ == '__main__':

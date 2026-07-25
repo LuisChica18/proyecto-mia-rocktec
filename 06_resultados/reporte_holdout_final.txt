@@ -1,0 +1,25 @@
+================================================================================
+REPORTE FINAL — EVALUACIÓN ÚNICA SOBRE HOLDOUT — ROCKTEC MIA 2026
+================================================================================
+Fecha: 2026-07-25 12:32:59
+Holdout: 04_anotaciones/holdout_test.csv (197 filas, 5 clases, nunca antes evaluadas)
+Entrenamiento: 04_anotaciones/train_val.csv (1115 filas) — sin fuga de datos
+
+RESULTADOS:
+  TF-IDF + LR (C=10):  F1-macro = 0.7938  Accuracy = 0.8832  ✅ META ≥ 0.75
+  BETO fine-tuned:            NO EVALUADO (checkpoint ausente o con fuga de datos — ver log)
+
+REPORTE DETALLADO — TF-IDF + LR:
+              precision    recall  f1-score   support
+
+         INF       0.94      0.90      0.92       131
+         COT       0.84      0.88      0.86        43
+         TEC       0.44      0.50      0.47         8
+         CUR       0.90      1.00      0.95         9
+         VEN       0.71      0.83      0.77         6
+
+    accuracy                           0.88       197
+   macro avg       0.77      0.82      0.79       197
+weighted avg       0.89      0.88      0.88       197
+
+================================================================================
