@@ -14,18 +14,20 @@
 Rocktec recibe mensajes por WhatsApp Business e Instagram sin clasificar. El equipo de ventas atiende sin priorización, perdiendo oportunidades de cotización y seguimiento.
 
 ### Solución
-Pipeline MLOps que clasifica automáticamente la intención de cada mensaje entrante en una de 7 categorías, con trazabilidad completa de experimentos y monitoreo de drift.
+Pipeline MLOps que clasifica automáticamente la intención de cada mensaje entrante en una de 5 categorías modeladas (de un catálogo de 7 definidas), con trazabilidad completa de experimentos y monitoreo de drift.
 
 ### Métricas de éxito
 | Métrica | Umbral |
 |---------|--------|
-| F1-macro (test) | ≥ 0.75 |
+| F1-macro (test, 5 clases modeladas) | ≥ 0.75 |
 | Cohen's Kappa (inter-anotador) | ≥ 0.70 |
-| Cobertura de clases (F1 por clase) | ≥ 0.60 en todas |
+| Cobertura de clases (F1 por clase) | ≥ 0.60 en todas las clases modeladas |
 
 ---
 
 ## 2. Catálogo de Intenciones
+
+**Clases modeladas (5)** — el clasificador se entrena y evalúa solo sobre estas:
 
 | Código | Nombre | Ejemplo real |
 |--------|--------|--------------|
@@ -34,6 +36,13 @@ Pipeline MLOps que clasifica automáticamente la intención de cada mensaje entr
 | **TEC** | Consulta Técnica | "¿Cómo se aplica sobre cerámica existente?" |
 | **CUR** | Consulta de Cursos | "¿Cuándo es el próximo taller de concreto decorativo?" |
 | **VEN** | Venta / Confirmación | "Confirmo la compra, envíenme la factura" |
+
+**Clases fuera de alcance (2)** — definidas en el catálogo de negocio pero excluidas del modelo por
+falta de datos anotados (`dataset_consenso_final.csv`: SEG = 5 filas, QUE = 4 filas de 1,297 válidas).
+Decisión de alcance para esta fase, no un pendiente:
+
+| Código | Nombre | Ejemplo real |
+|--------|--------|--------------|
 | **SEG** | Seguimiento | "¿En qué estado está mi cotización del 15 de junio?" |
 | **QUE** | Queja / Reclamo | "El producto llegó dañado, quiero hacer un reclamo" |
 

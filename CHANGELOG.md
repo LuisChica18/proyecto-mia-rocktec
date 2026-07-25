@@ -51,5 +51,22 @@ Ajustes realizados:
 - **Entrega**: `06_resultados/INFORME_AJUSTES_Y_VALIDACION.docx`, generado de forma reproducible
   por `02_scripts/generar_informe_docx.py`.
 
+## Sprint 7 — Ajustes de modelado y decisión de alcance (22 Jul 2026)
+
+- **Decisión de alcance — modelo de 5 clases:** SEG (5 filas) y QUE (4 filas) se excluyen
+  formalmente del entrenamiento y la evaluación por falta de datos anotados suficientes; el
+  catálogo de negocio sigue definiendo 7 categorías, pero el clasificador de producción cubre
+  solo INF, COT, TEC, CUR, VEN. No es un pendiente — se retomaría únicamente si una ronda futura
+  de anotación amplía significativamente esas dos clases. Reflejado en `README.md`
+  y `05_documentacion/DISEÑO_MLOPS_FASE2.md`.
+- **Holdout set** (`09_crear_holdout_set.py`): split 85/15 estratificado sobre las 1,312 filas de
+  5 clases → `train_val.csv` (1,115) / `holdout_test.csv` (197), a usarse una sola vez al final.
+- **Explicabilidad** (`10_shap_lime_explicabilidad.py`): SHAP y LIME sobre el modelo LR de 5 clases
+  → `06_resultados/explicabilidad/`.
+- **Comparación TF-IDF vs. BETO** (`11_beto_clasificador.py`): TF-IDF + LR sobre el dataset
+  completo (1,312 filas) alcanza F1-macro = **0.7516** (meta ≥ 0.75 cumplida); BETO por embeddings
+  sin fine-tuning (498 filas) da F1-macro = 0.6370, inferior. Fine-tuning de BETO con GPU queda
+  como trabajo futuro. Modelo elegido para producción: **TF-IDF + Logistic Regression**.
+
 ## Próxima — Fase 2: Diseño MLOps Pipeline
 Ver `05_documentacion/DISEÑO_MLOPS_FASE2.md`.

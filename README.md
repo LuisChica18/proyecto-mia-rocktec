@@ -34,17 +34,23 @@ Python 3.11 · pandas · scikit-learn · spaCy · pysentimiento · nltk · stats
 
 ### Métricas Finales
 ## 📂 Estructura del Repositorio
-## 🏷️ Las 7 Categorías de Intención
+## 🏷️ Catálogo de Intención (7 definidas · 5 modeladas)
 
-| Código | Definición | Ejemplo |
-|--------|-----------|---------|
-| **INF** | Información General | "¿Qué colores tienen?" |
-| **COT** | Cotización / Presupuesto | "¿Cuánto cuesta?" |
-| **TEC** | Consulta Técnica | "¿Cómo se aplica?" |
-| **CUR** | Consulta de Cursos | "¿Cuándo es el curso?" |
-| **SEG** | Seguimiento | "¿Estado mi cotización?" |
-| **VEN** | Venta / Confirmación | "Confirmo compra" |
-| **QUE** | Queja / Reclamo | "Llegó dañado" |
+| Código | Definición | Ejemplo | ¿En el modelo? |
+|--------|-----------|---------|:---:|
+| **INF** | Información General | "¿Qué colores tienen?" | ✅ |
+| **COT** | Cotización / Presupuesto | "¿Cuánto cuesta?" | ✅ |
+| **TEC** | Consulta Técnica | "¿Cómo se aplica?" | ✅ |
+| **CUR** | Consulta de Cursos | "¿Cuándo es el curso?" | ✅ |
+| **VEN** | Venta / Confirmación | "Confirmo compra" | ✅ |
+| **SEG** | Seguimiento | "¿Estado mi cotización?" | ❌ excluida |
+| **QUE** | Queja / Reclamo | "Llegó dañado" | ❌ excluida |
+
+> **Decisión de alcance:** SEG y QUE se excluyen por completo del entrenamiento y evaluación del
+> modelo. En `dataset_consenso_final.csv` (1,297 filas válidas) solo hay 5 registros SEG y 4 QUE —
+> insuficiente para entrenar o medir de forma confiable. El clasificador de producción cubre las
+> 5 clases restantes. No es un pendiente a resolver en esta fase; se retomaría solo si una ronda
+> futura de anotación amplía significativamente esas dos clases.
 
 ---
 
