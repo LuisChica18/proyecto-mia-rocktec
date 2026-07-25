@@ -102,6 +102,9 @@ python 02_scripts/07_validacion_estadistica.py
 | **Fase 4** | Evaluación del modelo | 🔜 Por hacer (meta ya validada en holdout, falta cerrar el resto de entregables de fase) | F1 >= 0.75 — **alcanzado: 0.7938–0.7967** | 14 Sep |
 | **Fase 5** | Piloto y defensa final | 🔜 Por hacer | Presentación exitosa | 21 Sep |
 
+> Diagnóstico detallado de estado (hecho vs. pendiente) para Fases 3, 4 y 5: ver
+> [`05_documentacion/DIAGNOSTICO_FASES_3_4_5.md`](05_documentacion/DIAGNOSTICO_FASES_3_4_5.md).
+
 ---
 
 ## 📈 Resultados: Baseline vs. Ajustado
@@ -228,11 +231,11 @@ Checkpoint del modelo: `06_resultados/modelos/beto_finetuned_best/` (no versiona
 **Plazo:** Semanas 6-7 (20 Julio - 3 Agosto)
 
 **Entregables:**
-1. Diagrama UML (arquitectura modular)
+1. Diagrama UML (arquitectura modular) — ver [`05_documentacion/DISEÑO_MLOPS_FASE2.md` §9](05_documentacion/DISEÑO_MLOPS_FASE2.md#9-diagramas-uml-mermaid) (componentes, clases, secuencia, flujo de datos)
 2. Pipeline detallado (5 etapas)
-3. Propuesta revisada (ajustes obligatorios)
+3. Propuesta revisada (ajustes obligatorios) — ver [`05_documentacion/PROPUESTA_REVISADA_FASE2.md`](05_documentacion/PROPUESTA_REVISADA_FASE2.md)
 4. Cronograma semanal con responsables
-5. Análisis de riesgos
+5. Análisis de riesgos — ver [`05_documentacion/ANALISIS_RIESGOS_FASE2.md`](05_documentacion/ANALISIS_RIESGOS_FASE2.md)
 
 ---
 

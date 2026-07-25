@@ -387,4 +387,209 @@ todo el dataset) en vez de seguir iterando sobre arquitectura.
 
 ---
 
+## 9. Diagramas UML (Mermaid)
+
+Entregable de Fase 2 (`README.md` §"Próxima Fase (FASE 2)", ítem 1: "Diagrama UML — arquitectura
+modular"). Cuatro vistas complementarias del mismo sistema: componentes, clases, secuencia y flujo
+de datos.
+
+### 9.1 Diagrama de componentes — arquitectura del pipeline (5 etapas)
+
+Versión Mermaid del diagrama ASCII de la §3.
+
+```mermaid
+flowchart LR
+    subgraph E1["Etapa 1 · Ingesta & ETL"]
+        direction TB
+        C1[LimpiadoDatos]
+        C2[ConsolidadorDatos]
+        C3[DetectorDuplicados]
+        C1 --> C2 --> C3
+    end
+
+    subgraph E2["Etapa 2 · Feature Engineering"]
+        direction TB
+        C4[PreprocessadorTexto]
+        C5[VectorizadorTFIDF]
+        C6[Tokenización BERT]
+        C4 --> C5
+        C4 --> C6
+    end
+
+    subgraph E3["Etapa 3 · Entrenamiento + MLflow"]
+        direction TB
+        C7[Logistic Regression]
+        C8[LinearSVC]
+        C9[BETO fine-tuned]
+    end
+
+    subgraph E4["Etapa 4 · Evaluación"]
+        direction TB
+        C10[Métricas F1-macro / accuracy]
+        C11[Matrices de confusión]
+        C12[SHAP / LIME]
+    end
+
+    subgraph E5["Etapa 5 · Monitoreo de Drift"]
+        direction TB
+        C13[PSI sobre predicciones]
+    end
+
+    E1 --> E2 --> E3 --> E4 --> E5
+
+    style E1 fill:#e8f0fe,stroke:#4285f4
+    style E2 fill:#fef7e0,stroke:#f9ab00
+    style E3 fill:#e6f4ea,stroke:#34a853
+    style E4 fill:#fce8e6,stroke:#ea4335
+    style E5 fill:#f3e8fd,stroke:#a142f4
+```
+
+### 9.2 Diagrama de clases
+
+Basado en las clases reales definidas en `02_scripts/06_pipeline_completo.py` (Etapas 1–3) y
+`02_scripts/04_feature_engineering.py` (Etapa 2). `MapeoIntenciones` solo produce las **etiquetas
+heurísticas iniciales**; el consenso humano (`calcular_kappa.py`) las reemplaza en
+`dataset_consenso_final.csv` para el modelado real.
+
+```mermaid
+classDiagram
+    class LimpiadoDatos {
+        -Path ruta_crudos
+        -Path ruta_salida
+        -dict estadisticas
+        +__init__(ruta_crudos, ruta_salida)
+        +cargar_crm(archivo_1, archivo_2) DataFrame
+        +cargar_whatsapp(archivo) DataFrame
+        +normalizar_columnas(df) DataFrame
+        +limpiar_crm(crm) DataFrame
+        +limpiar_whatsapp(whatsapp) DataFrame
+        +guardar_datos(crm, whatsapp)
+    }
+
+    class MapeoIntenciones {
+        <<static>>
+        +mapear_desde_texto(texto)$ str
+        +mapear_desde_crm(row)$ str
+    }
+
+    class ConsolidadorDatos {
+        -Path ruta_limpios
+        -Path ruta_salida
+        -dict estadisticas
+        +__init__(ruta_datos_limpios, ruta_salida)
+        +consolidar_crm(crm) list
+        +consolidar_whatsapp(whatsapp) list
+        +crear_base_final(crm_consolidado, wa_consolidado) DataFrame
+        +guardar_base(df)
+    }
+
+    class DetectorDuplicados {
+        -Path ruta_entrada
+        -Path ruta_salida
+        -list duplicados_similares
+        +__init__(ruta_entrada, ruta_salida)
+        +detectar_duplicados_exactos(df) DataFrame
+        +eliminar_duplicados(df) DataFrame
+        +guardar_datos(df_limpio)
+    }
+
+    class PreprocessadorTexto {
+        +limpiar(texto) str
+        +limpiar_serie(serie) Series
+        +features_manuales(serie) DataFrame
+    }
+
+    class VectorizadorTFIDF {
+        -int max_features
+        -tuple ngram_range
+        +__init__(max_features, ngram_range)
+        +fit_transform(textos) sparse
+        +transform(textos) sparse
+        +guardar(ruta)
+        +cargar(ruta)$ VectorizadorTFIDF
+    }
+
+    class CodificadorIntenciones {
+        -LabelEncoder encoder
+        +__init__()
+        +encode(labels) ndarray
+        +decode(indices) list
+        +clases() ndarray
+        +n_clases() int
+    }
+
+    ConsolidadorDatos ..> MapeoIntenciones : usa (etiqueta heurística inicial)
+    LimpiadoDatos --> ConsolidadorDatos : crm_limpio.csv / whatsapp_limpio.csv
+    ConsolidadorDatos --> DetectorDuplicados : rocktec_base_consolidada.csv
+    DetectorDuplicados ..> PreprocessadorTexto : rocktec_base_validada.csv
+    PreprocessadorTexto --> VectorizadorTFIDF : texto limpio
+    VectorizadorTFIDF --> CodificadorIntenciones : features + labels
+```
+
+### 9.3 Diagrama de secuencia — mensaje de WhatsApp → predicción de intención
+
+Flujo de inferencia en producción con el modelo elegido (TF-IDF + LR, §8).
+
+```mermaid
+sequenceDiagram
+    actor Cliente
+    participant WA as WhatsApp Business API
+    participant Prep as PreprocessadorTexto
+    participant Vec as VectorizadorTFIDF
+    participant Model as Modelo LR (modelo_lr.pkl)
+    participant Explic as SHAP/LIME
+    participant Vendedor as Equipo de ventas
+
+    Cliente ->> WA: Envía mensaje ("¿Cuánto cuesta el microcemento para 30 m²?")
+    WA ->> Prep: texto_conversacion
+    Prep ->> Prep: limpiar() + features_manuales()
+    Prep ->> Vec: texto normalizado
+    Vec ->> Vec: transform() → TF-IDF + 8 features manuales
+    Vec ->> Model: vector disperso (1 × ~15,008)
+    Model ->> Model: predict_proba()
+    Model -->> Explic: (opcional) explicar predicción
+    Explic -->> Vendedor: top features que explican la etiqueta
+    Model -->> WA: intención predicha = COT
+    WA -->> Vendedor: mensaje + etiqueta COT (prioridad: cotización)
+    Vendedor -->> Cliente: respuesta priorizada
+```
+
+### 9.4 Diagrama de flujo de datos — trazabilidad de archivos
+
+Versión Mermaid del flujo ASCII de la §4, extendido con la corrección de fuga de holdout (Sprint 7).
+
+```mermaid
+flowchart TD
+    A1["01_datos_crudos/<br/>clienty-prospectos 1+2 (~8,143)"]
+    A2["01_datos_crudos/<br/>JEVA base datos (~1,155)"]
+    A3["01_datos_crudos/<br/>base_maestra_raw (~5,676)"]
+
+    A1 & A2 & A3 --> B["03_datos_procesados/<br/>crm_limpio.csv + whatsapp_limpio.csv"]
+    B --> C["rocktec_base_consolidada.csv (13,413)"]
+    C --> D["rocktec_base_validada.csv (9,317, sin duplicados)"]
+
+    D --> E["04_anotaciones/<br/>ROCKTEC_BASE_FINAL_ANOTACION_1500.xlsx<br/>(PATRICIA / LUIS_CRUEL / LUIS_CHICA)"]
+    E --> F["calcular_kappa.py<br/>Kappa = 0.8851 ✅"]
+    F --> G["dataset_consenso_final.csv<br/>(1,297 filas, voto mayoritario 2/3)"]
+
+    G --> H["09_crear_holdout_set.py<br/>split estratificado 85/15"]
+    H --> I["train_val.csv (1,115 filas)"]
+    H --> J["holdout_test.csv (197 filas) — nunca visto en entrenamiento"]
+
+    I --> K1["05_entrenar_modelos.py<br/>TF-IDF + LR / SVM"]
+    I --> K2["12_beto_finetuning.py<br/>BETO fine-tuned (Colab GPU T4)"]
+    K2 --> K3["FUENTE_ENTRENAMIENTO.txt<br/>marca: train_val.csv"]
+
+    K1 --> L["13_evaluacion_holdout.py"]
+    K3 --> L
+    J --> L
+    L --> M["06_resultados/<br/>reporte_holdout_final.txt<br/>TF-IDF+LR F1=0.7938 · BETO F1=0.7967"]
+
+    style G fill:#e6f4ea,stroke:#34a853
+    style J fill:#fce8e6,stroke:#ea4335
+    style M fill:#e8f0fe,stroke:#4285f4
+```
+
+---
+
 *Documento generado: Julio 2026 — Equipo MIA Rocktec*
