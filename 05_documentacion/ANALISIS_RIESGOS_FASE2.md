@@ -88,7 +88,7 @@ quadrantChart
 
 | ID | Riesgo | Probabilidad | Impacto | Severidad | Mitigación | Responsable |
 |----|--------|:---:|:---:|:---:|------------|-------------|
-| **R8** | Roles muy especializados y sin redundancia (Patricia = datos, Luis Cruel = modelos, Luis Chica = arquitectura). Si alguno se bloquea, esa área queda sin cobertura inmediata. | Baja | Alto | 🟡 Media | La disciplina de documentación ya practicada (`CLAUDE.md`, `CHANGELOG.md`, `README.md` actualizados en cada sprint) reduce el costo de que otro miembro retome un área — mantenerla es la mitigación, no un proceso nuevo. | Equipo completo |
+| **R8** | Roles muy especializados y sin redundancia (Patricia = datos, Luis Cruel = modelos, Luis Chica = arquitectura). Si alguno se bloquea, esa área queda sin cobertura inmediata. | Baja | Alto | 🟡 Media | La disciplina de documentación ya practicada (`CHANGELOG.md`, `README.md` actualizados en cada sprint) reduce el costo de que otro miembro retome un área — mantenerla es la mitigación, no un proceso nuevo. | Equipo completo |
 | **R9** | De los 5 entregables de Fase 2, solo 2 están completos hoy (Diagrama UML, Pipeline detallado). **Propuesta revisada** y **Cronograma semanal con responsables** siguen pendientes, con Fase 3 venciendo el 31 Ago (~5 semanas). | Media | Alto | 🟠 Alta | Cerrar el cronograma semanal como siguiente entregable inmediato y usarlo para trackear el resto de Fase 2 y el arranque de Fase 3, en vez de dejarlo implícito. | Luis Chica |
 
 ---

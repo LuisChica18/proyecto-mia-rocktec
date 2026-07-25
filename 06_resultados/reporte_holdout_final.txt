@@ -1,7 +1,7 @@
 ================================================================================
 REPORTE FINAL — EVALUACIÓN ÚNICA SOBRE HOLDOUT — ROCKTEC MIA 2026
 ================================================================================
-Fecha: 2026-07-25 12:55:41
+Fecha: 2026-07-25 16:47:48
 Holdout: 04_anotaciones/holdout_test.csv (197 filas, 5 clases, nunca antes evaluadas)
 Entrenamiento: 04_anotaciones/train_val.csv (1115 filas) — sin fuga de datos
 
