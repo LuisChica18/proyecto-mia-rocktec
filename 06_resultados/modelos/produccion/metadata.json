@@ -1,0 +1,20 @@
+{
+  "version": "v1.0",
+  "fecha_entrenamiento": "2026-07-25T17:00:22",
+  "n_filas_entrenamiento": 1312,
+  "fuente_datos": [
+    "04_anotaciones/train_val.csv",
+    "04_anotaciones/holdout_test.csv"
+  ],
+  "clases": [
+    "INF",
+    "COT",
+    "TEC",
+    "CUR",
+    "VEN"
+  ],
+  "mejor_C": 10,
+  "f1_macro_cv_interna_100pct_datos": 0.7868,
+  "f1_macro_referencia_honesto_holdout": 0.7938,
+  "nota_f1_referencia": "El F1=0.7938 viene de 13_evaluacion_holdout.py, medido sobre un modelo entrenado SOLO con train_val.csv (sin las filas de holdout). Este artefacto de producción se reentrena incluyendo esas mismas filas de holdout, por lo que ya no queda ningún conjunto reservado para remedir F1 sin fuga — 0.7938 sigue siendo la mejor estimación honesta disponible del desempeño esperado en producción."
+}

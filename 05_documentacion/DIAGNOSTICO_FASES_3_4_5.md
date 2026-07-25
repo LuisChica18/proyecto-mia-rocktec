@@ -31,18 +31,17 @@ de cada fase implica típicamente en un proyecto de este tipo, y (c) evidencia r
 | Etapa 4 (Evaluación) implementada y reportada | ✅ | Ver Fase 4 más abajo — meta cuantitativa ya alcanzada |
 | Etapa 5 (Monitoreo de drift vía PSI) implementada como job real | ❌ | Solo **diseñada** en `DISEÑO_MLOPS_FASE2.md` §3; no existe ningún script que calcule PSI sobre predicciones reales. Ya documentado como riesgo **R7** en `ANALISIS_RIESGOS_FASE2.md`. |
 | Pipeline orquestado end-to-end en un solo punto de entrada (ETL → features → entrenamiento → evaluación) | 🟡 | `06_pipeline_completo.py` orquesta **solo** la Etapa 1 (ETL). No hay un comando único que corra desde datos crudos hasta el modelo evaluado — hoy se ejecuta script por script, manualmente. |
-| Componente de inferencia / serving (tomar 1 mensaje nuevo y devolver una predicción) | ❌ | Todo lo construido es entrenamiento y evaluación **offline** sobre CSVs históricos. No existe una función, CLI ni API de `predecir(texto) → intención` reutilizable sobre un mensaje entrante real. Sin esto, no hay forma de ejecutar el piloto de Fase 5. |
-| Integración con WhatsApp Business (el problema de negocio original, `DISEÑO_MLOPS_FASE2.md` §1) | ❌ | El proyecto trabaja sobre exportaciones históricas en Excel, no sobre mensajes en vivo. No implementada ni diseñada en detalle todavía. |
-| Base de datos (PostgreSQL) para log de mensajes/predicciones | ❌ (pospuesto) | Sin integración en vivo con WhatsApp, no hay flujo de mensajes que loguear — CSV/Excel bastan para el pipeline offline actual. Se retoma junto con el componente de inferencia de esta misma fila: cuando exista ingesta en vivo, PostgreSQL pasa a ser necesario para loguear conversación + predicción + confianza (insumo del monitoreo de drift). Ver `PROPUESTA_REVISADA_FASE2.md` §2, ajuste #8. |
-| CI/CD | ❌ | Confirmado en `PROPUESTA_REVISADA_FASE2.md` §3 — no existe `.github/workflows` ni equivalente. |
-| Empaquetado versionado del modelo de producción (TF-IDF+LR) | 🟡 | Existen los artefactos (`vectorizador_tfidf.pkl`, modelo LR serializado, tracking en `mlruns/`), pero no hay un paso formal de "release" (p. ej. registrar la versión ganadora en el Model Registry de MLflow o taggear un `v1.0` explícito). |
+| Componente de inferencia / serving (tomar 1 mensaje nuevo y devolver una predicción) | ✅ (batch) | Implementado 25 Jul 2026: `02_scripts/15_entrenar_produccion.py` (reentrena sobre el 100% de los datos etiquetados, guarda artefacto versionado en `06_resultados/modelos/produccion/`) + `02_scripts/16_inferencia.py` (`predecir(textos)` y CLI). Diseño deliberado por lotes, no API en vivo — ver fila siguiente. Marca `revisar_manual` bajo confianza 0.50 (mitigación de R1/R2). Detalle en `DISEÑO_MLOPS_FASE2.md`, Etapa 4.5. |
+| Integración con WhatsApp Business (el problema de negocio original, `DISEÑO_MLOPS_FASE2.md` §1) | ❌ | El proyecto trabaja sobre exportaciones históricas en Excel, no sobre mensajes en vivo — por eso la inferencia se diseñó por lotes en vez de como API. No implementada ni diseñada en detalle todavía. |
+| Base de datos (PostgreSQL) para log de mensajes/predicciones | ❌ (pospuesto) | `16_inferencia.py` ya escribe un log a `06_resultados/predicciones/log_predicciones.csv` como sustituto interino. Sin integración en vivo con WhatsApp, CSV basta — PostgreSQL se retoma cuando exista ingesta en vivo. Ver `PROPUESTA_REVISADA_FASE2.md` §2, ajuste #8. |
+| CI/CD | 🟡 | **CI implementado** (`.github/workflows/ci.yml`): compila los scripts y reentrena+evalúa TF-IDF+LR sobre `holdout_test.csv` en cada push a `main`, con gate de F1-macro ≥ 0.75. **CD sigue pendiente** — ya existe un artefacto de inferencia que desplegar (`06_resultados/modelos/produccion/`), pero aún no hay a dónde desplegarlo (sin integración en vivo con WhatsApp no hay un servicio real que actualizar automáticamente). Ver `PROPUESTA_REVISADA_FASE2.md` §2, ajuste #9. |
+| Empaquetado versionado del modelo de producción (TF-IDF+LR) | ✅ | Resuelto por `15_entrenar_produccion.py`: `06_resultados/modelos/produccion/metadata.json` registra versión (`v1.0`), fecha, hiperparámetro ganador y la referencia de F1 honesto — separado del experimento de `05_entrenar_modelos.py`. |
 
-**Conclusión Fase 3:** las 5 etapas del diseño MLOps existen como **scripts individuales ejecutables
-manualmente**, y ese es un logro real. Lo que falta para que sea un "pipeline funcional" en sentido
-de producto — no de experimento — es: (1) orquestación end-to-end en un solo entrypoint, (2) un
-componente de inferencia/serving para mensajes nuevos, y (3) el monitoreo de drift activo. De estos
-tres, **el componente de inferencia es el bloqueante crítico**: sin él, Fase 5 (piloto) no puede
-empezar sin importar cuánto tiempo quede.
+**Conclusión Fase 3:** las 5 etapas del diseño MLOps ya existen como scripts ejecutables, y ahora
+también el **componente de inferencia** (batch) que era el bloqueante crítico — ya no bloquea el
+arranque de Fase 5. Quedan dos brechas para que sea un "pipeline funcional" completo: (1)
+orquestación end-to-end en un solo entrypoint, y (2) el monitoreo de drift activo (Etapa 5), que
+ahora sí tiene de dónde leer datos gracias al log de `16_inferencia.py`.
 
 ---
 
@@ -91,7 +90,7 @@ ningún artefacto de "defensa final" (ni presentación ni documento de tesis con
 
 | Fase | Meta formal | Estado de la meta | Mayor brecha para cerrar la fase |
 |------|-------------|:---:|-----------------------------------|
-| **Fase 3** | Pipeline funcional | 🟡 Etapas implementadas por separado, sin orquestación end-to-end ni serving | Construir el paso de inferencia (mensaje → predicción) + un entrypoint único para todo el pipeline |
+| **Fase 3** | Pipeline funcional | 🟡 Inferencia batch ya implementada (25 Jul); falta orquestación end-to-end | Un entrypoint único para todo el pipeline (ETL→features→entrenamiento→evaluación); el resto (inferencia) ya no bloquea |
 | **Fase 4** | F1-macro ≥ 0.75 | ✅ Meta cuantitativa alcanzada (0.7938–0.7967), metodología ya validada y sin fuga | Informe de evaluación formal + análisis de errores cualitativo — la métrica ya existe, el "entregable" no |
 | **Fase 5** | Piloto + presentación exitosa | ❌ No iniciada — bloqueada por Fase 3 | Todo: piloto real, monitoreo de drift activo, documento/presentación de defensa |
 
@@ -101,22 +100,24 @@ ningún artefacto de "defensa final" (ni presentación ni documento de tesis con
 
 ```mermaid
 flowchart LR
-    F3A["Fase 3: componente de\ninferencia/serving"] --> F5A["Fase 5: piloto real"]
+    F3A["Fase 3: componente de\ninferencia/serving ✅"] --> F5A["Fase 5: piloto real"]
     F3B["Fase 3: monitoreo de\ndrift (PSI) activo"] --> F5B["Fase 5: monitoreo\ndurante el piloto"]
     F4["Fase 4: informe de\nevaluación formal"] --> F5C["Fase 5: documento de\ndefensa final"]
     F5A --> F5D["Fase 5: presentación\nexitosa"]
     F5B --> F5D
     F5C --> F5D
 
-    style F3A fill:#fce8e6,stroke:#ea4335
+    style F3A fill:#e6f4ea,stroke:#34a853
     style F3B fill:#fce8e6,stroke:#ea4335
     style F4 fill:#fef7e0,stroke:#f9ab00
     style F5D fill:#e6f4ea,stroke:#34a853
 ```
 
-Fase 4 ya está sustancialmente resuelta en su aspecto cuantitativo (el nodo más urgente del
-diagrama no es F4, es F3): el camino crítico real hasta el 21 Sep pasa por que Fase 3 entregue el
-componente de inferencia y el monitoreo de drift — sin eso, Fase 5 no tiene sobre qué pilotar.
+El componente de inferencia (F3A) ya está resuelto (25 Jul 2026) — el bloqueante crítico restante
+para Fase 5 pasó a ser el monitoreo de drift (F3B), que ahora sí tiene de dónde leer datos gracias
+al log de `16_inferencia.py`. Fase 4 ya está sustancialmente resuelta en su aspecto cuantitativo, así
+que el camino crítico real hasta el 21 Sep se reduce a implementar ese monitoreo de drift y cerrar
+los entregables formales (informe de evaluación, cronograma, documento de defensa).
 
 ---
 

@@ -36,20 +36,20 @@ Se distingue entre dos tipos de cambio:
 | **6** | Decisión de modelo de producción | Elegir el modelo con mejor F1-macro | Con la fuga corregida y el F1-macro prácticamente empatado, el criterio de selección pasó de "mejor F1" a un **análisis multicriterio**: latencia de inferencia (2.86 ms vs. 65.14 ms), tamaño de artefacto (~150KB vs. ~420MB), necesidad de GPU para reentrenar, y explicabilidad ya construida. | Rocktec es una PYME ecuatoriana sin infraestructura GPU ni equipo de MLOps dedicado — el criterio técnico puro (F1) ya no discriminaba entre opciones. | Alto — decisión formal de arquitectura de producción, con BETO documentado como upgrade candidato (no descartado). | `05_documentacion/DISEÑO_MLOPS_FASE2.md` §8 |
 | **7** | Explicabilidad del modelo | No estaba contemplada como entregable en las fases originales | Se añadió SHAP/LIME sobre el modelo LR de producción, y (pendiente de commit) el equivalente para BETO fine-tuned. | Necesidad de justificar las predicciones del modelo ante Rocktec y ante el comité, no solo reportar una métrica agregada. | Medio — mejora la defendibilidad de la decisión de modelo. | `02_scripts/10_shap_lime_explicabilidad.py`, `02_scripts/14_explicabilidad_beto.py` |
 | **8** | Base de datos (PostgreSQL) | El rol de Patricia incluye explícitamente "PostgreSQL" como parte del stack de datos | **Pospuesto a trabajo futuro**, no descartado: no se implementa mientras la ingesta de mensajes de WhatsApp siga siendo manual (descarga periódica de exportaciones Excel, sin integración en vivo). Se retomará cuando exista el componente de inferencia/serving de Fase 3 que reciba mensajes en tiempo real y necesite loguear conversación + predicción + confianza para el monitoreo de drift. | Con archivos planos (CSV/Excel) alcanza para 1,297 filas anotadas manualmente; una base de datos relacional solo aporta valor real frente a un flujo de mensajes en vivo que loguear, no para el pipeline de entrenamiento offline actual. | Bajo hoy (no bloquea el alcance académico actual); pasa a Alto en cuanto exista integración en vivo con WhatsApp, ya que ahí sí sería necesaria para el log de mensajes y el drift monitoring. | `05_documentacion/DIAGNOSTICO_FASES_3_4_5.md` §2 (Fase 3, componente de inferencia pendiente), `CLAUDE.md` §Team Roles |
+| **9** | CI/CD | El rol de Luis Chica incluye "CI/CD" desde el primer commit de `README.md` | **CI implementado** (`.github/workflows/ci.yml`, commit `19f05d6`): compila todos los scripts de `02_scripts/` y reentrena+evalúa TF-IDF+LR sobre `holdout_test.csv` en cada push a `main`, fallando el build si el F1-macro cae por debajo de la meta de Fase 4 (0.75). **CD queda pospuesto**, por la misma razón que PostgreSQL (ajuste #8): no hay ningún artefacto/servicio de inferencia todavía que desplegar — se retoma junto con el componente de inferencia de Fase 3. | No tenía sentido automatizar el despliegue de un servicio que aún no existe; CI sí podía aportar valor inmediato como gate de regresión sobre la métrica central del proyecto. | Medio — cierra la mitad de la divergencia original; la otra mitad (CD) queda ligada al mismo bloqueante de Fase 3 que PostgreSQL. | `.github/workflows/ci.yml`, `05_documentacion/DIAGNOSTICO_FASES_3_4_5.md` §2 |
 
 ---
 
 ## 3. Divergencias de Alcance Aún No Formalizadas
 
-Estas dos diferencias existen entre lo planeado en la estructura inicial del repositorio
-(commit `ab79b72`, roles de equipo en `README.md`) y el estado actual, pero **nadie las
-ha decidido ni documentado explícitamente** como los ajustes de la §2. Se listan aquí para que el
-equipo las cierre (aceptarlas formalmente como fuera de alcance, o retomarlas) antes de cerrar
-Fase 2 — quedan también reflejadas como riesgo **R9** en `ANALISIS_RIESGOS_FASE2.md`.
+Esta diferencia existe entre lo planeado en la estructura inicial del repositorio
+(commit `ab79b72`, roles de equipo en `README.md`) y el estado actual, pero **nadie la
+ha decidido ni documentado explícitamente** como los ajustes de la §2. Se lista aquí para que el
+equipo la cierre (aceptarla formalmente como fuera de alcance, o retomarla) antes de cerrar
+Fase 2 — queda también reflejada como riesgo **R9** en `ANALISIS_RIESGOS_FASE2.md`.
 
 | Área | Plan original | Estado actual | Nota |
 |------|----------------|----------------|------|
-| CI/CD | El rol de Luis Chica incluye "CI/CD" desde el primer commit de `README.md` | No existe pipeline de CI/CD (`.github/workflows` u otro) en el repositorio | Pendiente genuino, no una decisión de alcance — sería razonable que se resuelva como parte del propio Fase 2 (arquitectura) o se declare explícitamente fuera de alcance del proyecto académico. |
 | Documentos planeados en la estructura inicial | `CRONOGRAMA_EJECUTIVO_FASE1.txt`, `METODOLOGIA_ANOTACION.md`, `DOCUMENTO_DISEÑO_S4.docx` (listados en el primer README, commit `ab79b72`) | Ninguno de los tres existe con ese nombre; su contenido parece haberse cubierto con otros documentos (`README.md`, `DISEÑO_MLOPS_FASE2.md`, este mismo documento) | Confirmar explícitamente que estos tres se consideran reemplazados y no pendientes, para que no aparezcan como "entregable faltante" en una revisión externa. |
 
 ---

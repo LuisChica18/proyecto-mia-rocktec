@@ -208,6 +208,47 @@ mlflow ui --backend-store-uri mlruns
 # → http://localhost:5000
 ```
 
+### Etapa 4.5 — Inferencia (Fase 3, implementada 25 Jul 2026)
+
+**Estado:** cierra el gap identificado en `DIAGNOSTICO_FASES_3_4_5.md` (Fase 3) — hasta ahora todo
+el proyecto era entrenamiento/evaluación offline sobre CSVs históricos, sin ninguna forma de tomar
+un mensaje nuevo y devolver una predicción.
+
+**Diseño: inferencia por lotes (batch), no una API en vivo.** Decisión deliberada, no una limitación
+temporal: los mensajes de WhatsApp de Rocktec se descargan manualmente (no hay integración en vivo
+con la WhatsApp Business API — ver `PROPUESTA_REVISADA_FASE2.md` §2, ajuste #8, misma razón por la
+que PostgreSQL queda pospuesto). El flujo real es: alguien exporta un Excel/CSV nuevo de
+conversaciones → corre `16_inferencia.py` → recibe el mismo archivo con columnas de predicción
+añadidas, listo para priorizar al equipo de ventas. Una API viva no tendría ningún tráfico real que
+atender todavía.
+
+**Scripts:**
+- `02_scripts/15_entrenar_produccion.py` — reentrena el modelo sobre el **100% de los datos
+  etiquetados** (`train_val.csv` + `holdout_test.csv`, 1,312 filas). A diferencia de
+  `13_evaluacion_holdout.py`, no reserva holdout: ese F1 honesto (0.7938) ya se midió y quedó
+  reportado como cierre de Fase 4, así que seguir reservando esas 197 filas solo le restaría datos
+  al modelo que realmente sirve predicciones. Guarda un artefacto versionado y autocontenido en
+  `06_resultados/modelos/produccion/` (`vectorizador_tfidf.pkl`, `modelo_lr.pkl`, `metadata.json`
+  con versión, fecha, hiperparámetro ganador y la nota de que 0.7938 sigue siendo la referencia
+  honesta de desempeño esperado) — deliberadamente separado de `06_resultados/modelos/` (el
+  experimento de `05_entrenar_modelos.py`, en formato MLflow pensado para tracking, no para servir).
+- `02_scripts/16_inferencia.py` — componente de inferencia en sí. Expone `predecir(textos) -> DataFrame`
+  (columnas: `texto`, `intencion_predicha`, `confianza`, `revisar_manual`) y un CLI
+  (`--input`/`--output`/`--columna-texto`) para correr sobre un archivo completo.
+
+**Umbral de confianza y revisión manual:** mensajes con `confianza < 0.50` se marcan
+`revisar_manual=True` en vez de enrutarse automáticamente — mitigación directa de los riesgos **R1**
+(TEC débil) y **R2** (SEG/QUE fuera del alcance del modelo) de `ANALISIS_RIESGOS_FASE2.md`: evita
+forzar en silencio esos mensajes a una de las 5 clases modeladas. **Limitación observada al validar
+el script:** texto sin señal real (p. ej. una sola palabra sin relación al dominio) puede recibir de
+todos modos una confianza > 0.50 — el `intercept_` del modelo domina cuando no hay features de
+TF-IDF activas. El umbral de 0.50 es un punto de partida para el piloto de Fase 5, a calibrar con
+datos reales, no un valor validado estadísticamente.
+
+**Log de predicciones:** cada corrida agrega filas a `06_resultados/predicciones/log_predicciones.csv`
+(timestamp, texto, predicción, confianza, flag de revisión) — sustituto directo de la base de datos
+pospuesta (PostgreSQL, ajuste #8) y el insumo que alimentará el cálculo de PSI de la Etapa 5.
+
 ### Etapa 5 — Monitoreo de Drift
 
 **Alcance para el proyecto académico:** monitoreo offline sobre datos del piloto (Fase 5).
