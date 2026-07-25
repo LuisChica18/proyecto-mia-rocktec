@@ -18,5 +18,9 @@ mlruns/
 mlflow.db
 CLAUDE.md
 
+# Checkpoints de modelos grandes (BETO fine-tuned ~420MB, excede el límite de 100MB de GitHub)
+06_resultados/modelos/beto_finetuned_best/
+06_resultados/modelos/beto_finetuned_checkpoints/
+
 # Datos procesados (opcional, puedes comentar si quieres subirlos)
 # 03_datos_procesados/*.csv

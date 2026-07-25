@@ -67,6 +67,30 @@ Ajustes realizados:
   completo (1,312 filas) alcanza F1-macro = **0.7516** (meta ≥ 0.75 cumplida); BETO por embeddings
   sin fine-tuning (498 filas) da F1-macro = 0.6370, inferior. Fine-tuning de BETO con GPU queda
   como trabajo futuro. Modelo elegido para producción: **TF-IDF + Logistic Regression**.
+  *(Actualizado: ver Sprint 7 — BETO fine-tuning, 25 Jul 2026, más abajo)*.
+
+## Sprint 7 — BETO fine-tuning (25 Jul 2026)
+
+- **Fine-tuning real de BETO** (`12_beto_finetuning.py`, nuevo script, corrido en Google Colab con
+  GPU T4 gratuita — sin GPU local disponible en el entorno de desarrollo): `AutoModelForSequenceClassification`
+  sobre `dccuchile/bert-base-spanish-wwm-cased`, 5 épocas, batch 16, lr 2e-5, warmup 10%, max_length
+  128 (hiperparámetros de `DISEÑO_MLOPS_FASE2.md`, Etapa 3). Mismo split de test 80/20
+  (`random_state=42`) que `11_beto_clasificador.py`, para comparabilidad directa.
+- **Resultado: F1-macro = 0.8552** (accuracy 0.95) — supera tanto a TF-IDF+LR (0.7516) como a BETO
+  sin fine-tuning (0.6370). Por clase: INF 0.96, COT 0.98, VEN 0.94, CUR 0.83, **TEC 0.56** (sigue
+  siendo la clase más débil en los tres modelos, consistente con su bajo soporte: 51 filas).
+- **Conclusión actualizada:** BETO fine-tuned es ahora el modelo con mejor F1-macro de los tres
+  probados. La elección de modelo de producción entre TF-IDF+LR (liviano, interpretable, ya
+  validado con SHAP/LIME, sin GPU) y BETO fine-tuned (mejor F1, pero requiere GPU e infraestructura
+  de inferencia de ~440MB, sin explicabilidad todavía trabajada) queda abierta para Fase 3/4 —
+  ver `README.md` sección "Comparación de arquitecturas".
+- **Notas de infraestructura:** el checkpoint (`06_resultados/modelos/beto_finetuned_best/`,
+  ~420MB) se excluye de git vía `.gitignore` (excede el límite de 100MB de GitHub). Se documentó
+  también el flujo de Colab (`02_scripts/12_beto_finetuning_colab.ipynb`) y dos issues de entorno
+  resueltos en el camino: conflicto `peft`/`accelerate` (`cannot import name 'clear_device_cache'`,
+  resuelto desinstalando `peft` y no fijando versiones viejas de `transformers`/`accelerate`) y un
+  conflicto de `pandas` (no reinstalar `pandas`/`scikit-learn` en Colab — ya vienen compatibles con
+  `google-colab`/`cudf`, forzar `pandas` a 3.x rompe `google.colab.files.download`).
 
 ## Próxima — Fase 2: Diseño MLOps Pipeline
 Ver `05_documentacion/DISEÑO_MLOPS_FASE2.md`.

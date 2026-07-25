@@ -1,0 +1,11 @@
+              precision    recall  f1-score   support
+
+         INF       0.96      0.97      0.96       175
+         COT       0.98      0.98      0.98        58
+         TEC       0.62      0.50      0.56        10
+         CUR       0.83      0.83      0.83        12
+         VEN       0.89      1.00      0.94         8
+
+    accuracy                           0.95       263
+   macro avg       0.86      0.86      0.86       263
+weighted avg       0.94      0.95      0.95       263

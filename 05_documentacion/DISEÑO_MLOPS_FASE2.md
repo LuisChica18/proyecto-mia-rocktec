@@ -168,6 +168,12 @@ Texto raw
 
 > **Justificación BETO:** Es el BERT entrenado sobre corpus en español (Wikipedia ES + OPUS). Captura morfología del español y expresiones informales de WhatsApp mejor que modelos multilingüe.
 
+> **Estado (25 Jul 2026):** implementado en `02_scripts/12_beto_finetuning.py`, ejecutado en Google
+> Colab (GPU T4 gratuita — no hay GPU disponible en el entorno de desarrollo local). Resultado sobre
+> el mismo split de test 80/20 usado por los otros dos modelos: **F1-macro = 0.8552**, por encima de
+> TF-IDF+LR (0.7516) y de BETO sin fine-tuning (0.6370). Ver `06_resultados/beto/reporte_beto_finetuned.txt`
+> y la comparación completa en `README.md`.
+
 ### Etapa 4 — Evaluación
 
 **Métricas registradas por modelo en MLflow:**
@@ -320,13 +326,22 @@ mlflow ui --backend-store-uri mlruns
 Para matrices TF-IDF de alta dimensión (>10K features), el kernel lineal tiene complejidad O(n) en inferencia vs O(n²) del RBF, sin pérdida significativa de F1 en clasificación de texto.
 
 **¿Por qué F1-macro como métrica principal?**  
-El dataset tiene desbalance natural (COT e INF son más frecuentes; QUE y VEN son minoría). F1-macro trata todas las clases por igual, penalizando modelos que ignoren las minorías.
+El dataset tiene desbalance natural (INF y COT son más frecuentes; TEC y VEN son minoría dentro de las 5 clases modeladas). F1-macro trata todas las clases por igual, penalizando modelos que ignoren las minorías.
 
 **¿Por qué `class_weight='balanced'` en LR y SVM?**  
 Compensa el desbalance sin necesidad de oversampling, manteniendo el dataset original intacto para la evaluación.
 
 **¿Por qué BETO y no mBERT o XLM-R?**  
 BETO fue entrenado exclusivamente sobre corpus en español, capturando mejor la morfología flexional del español y las expresiones coloquiales de WhatsApp. XLM-R es superior en configuraciones multilingüe pero agrega latencia sin beneficio aquí.
+
+**TF-IDF+LR vs. BETO fine-tuned — ¿cuál va a producción? (actualizado 25 Jul 2026)**  
+Con fine-tuning real (F1-macro 0.8552) BETO supera a TF-IDF+LR (0.7516) por un margen amplio, así
+que la ganancia de F1 ya no es hipotética. La decisión de producción sigue abierta porque depende de
+más que el F1: TF-IDF+LR no requiere GPU, pesa ~150KB, corre en milisegundos en CPU y ya tiene
+explicabilidad SHAP/LIME construida; BETO fine-tuned necesita GPU para entrenar y (idealmente) para
+servir con baja latencia, pesa ~420MB, y su explicabilidad (atención, embeddings) todavía no está
+implementada. Se deja como decisión de Fase 3/4, con ambos modelos documentados y reproducibles
+(`05_entrenar_modelos.py` y `12_beto_finetuning.py`).
 
 ---
 

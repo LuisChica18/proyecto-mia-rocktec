@@ -124,6 +124,33 @@ Wilcoxon/t-test) en `06_resultados/validacion_estadistica.json` y en
 [`06_resultados/INFORME_AJUSTES_Y_VALIDACION.docx`](06_resultados/INFORME_AJUSTES_Y_VALIDACION.docx).
 Bitácora de cambios en [`CHANGELOG.md`](CHANGELOG.md).
 
+### Comparación de arquitecturas sobre el consenso humano (5 clases modeladas)
+
+Mismo split de test (80/20 estratificado, `random_state=42`) sobre las 1,312 filas de las 5 clases
+modeladas (INF, COT, TEC, CUR, VEN — ver alcance del modelo en la sección "Catálogo de Intención" más arriba):
+
+| Modelo | Requiere GPU | F1-macro (test) | Accuracy |
+|--------|:---:|-----------------:|---------:|
+| TF-IDF + Logistic Regression (`05_entrenar_modelos.py`) | No | 0.7516 ✅ | — |
+| BETO embeddings (sin ajustar) + LR (`11_beto_clasificador.py`) | No | 0.6370 | — |
+| **BETO fine-tuned, 5 épocas (`12_beto_finetuning.py`)** | **Sí** | **0.8552** ✅ | **0.95** |
+
+BETO fine-tuned (vía Google Colab, GPU T4 gratuita) supera claramente tanto a TF-IDF+LR como a los
+embeddings BETO sin ajustar — confirma la hipótesis de `DISEÑO_MLOPS_FASE2.md`: el ajuste de pesos
+sobre el dominio de construcción/concreto decorativo ecuatoriano sí aporta sobre representaciones
+genéricas. Por clase: INF F1=0.96, COT F1=0.98, VEN F1=0.94, CUR F1=0.83, **TEC F1=0.56** (sigue
+siendo la clase más difícil en los tres modelos — soporte bajo, 51 filas totales).
+
+Con esto, **BETO fine-tuned es el modelo con mejor F1-macro** para las 5 clases modeladas, a costa
+de requerir GPU e infraestructura de inferencia más pesada (~440MB) y de explicabilidad menos directa
+que TF-IDF+LR (que ya cuenta con SHAP/LIME — ver `06_resultados/explicabilidad/`). La elección final
+de modelo de producción (TF-IDF+LR interpretable y liviano vs. BETO fine-tuned de mayor F1) queda
+como decisión de Fase 3/4, no cerrada automáticamente por este resultado.
+
+Reportes: `06_resultados/beto/comparacion_tfidf_vs_beto_finetuned.txt`,
+`06_resultados/beto/reporte_beto_finetuned.txt`. Checkpoint del modelo:
+`06_resultados/modelos/beto_finetuned_best/` (no versionado en git — ver `.gitignore`).
+
 ---
 
 ## 📝 Documentación Técnica (FASE 1B)
