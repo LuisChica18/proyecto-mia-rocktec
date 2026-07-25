@@ -1,0 +1,30 @@
+
+================================================================================
+REPORTE EXPLICABILIDAD — BETO FINE-TUNED — ROCKTEC MIA 2026
+================================================================================
+
+A diferencia de 10_shap_lime_explicabilidad.py (LR), aquí SHAP también es LOCAL
+(un ejemplo por clase), no una importancia global de features — BETO no tiene
+un vocabulario de features TF-IDF sobre el cual calcular esa importancia global
+de forma barata; el equivalente honesto para un transformer sería agregar
+atribuciones locales sobre muchos ejemplos, que queda fuera de alcance aquí.
+
+LIME (Local Interpretable Model-agnostic Explanations):
+  - Método: LimeTextExplainer (igual que en LR — model-agnostic, no le importa
+    que el modelo por dentro sea TF-IDF+LR o un transformer)
+  - Output: explicación local por ejemplo representativo de cada clase
+  - Archivo: lime_beto_ejemplos.txt
+
+SHAP (SHapley Additive exPlanations) — variante de texto:
+  - Método: shap.Explainer con shap.maskers.Text (enmascara tokens y mide el
+    cambio en la probabilidad predicha — Partition explainer internamente)
+  - Output: atribución por token, local a cada ejemplo (NO comparable
+    directamente con el ranking global de shap_top_features.png de LR)
+  - Archivo: shap_beto_ejemplos.png, shap_beto_reporte.txt
+
+Mismos ejemplos que 10_shap_lime_explicabilidad.py (mismo dataset, mismo
+random_state=42) — compara lime_ejemplos.txt / shap_top_features_reporte.txt
+(LR) contra lime_beto_ejemplos.txt / shap_beto_reporte.txt (BETO) sobre el
+mismo texto para ver si ambos modelos se fijan en las mismas palabras.
+
+================================================================================

@@ -1,0 +1,72 @@
+EXPLICACIONES SHAP POR EJEMPLO (LOCAL) — BETO FINE-TUNED
+============================================================
+
+──────────────────────────────────────────────────
+Clase real:      INF
+Predicción:      INF
+Texto (preview): ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: INFO ACIDOS...
+Tokens que más influyeron (SHAP local, respecto a la clase real):
+  'IDOS': +0.0250  → FAVOR
+  'QUE': +0.0226  → FAVOR
+  ':': +0.0205  → FAVOR
+  ':': +0.0170  → FAVOR
+  'ETI': +0.0162  → FAVOR
+  'Conta': +0.0146  → FAVOR
+  ':': +0.0146  → FAVOR
+  'AC': +0.0140  → FAVOR
+
+──────────────────────────────────────────────────
+Clase real:      COT
+Predicción:      COT
+Texto (preview): ETIQUETA: Cotizacion Materiales, Informacion General | ESTADO: Contactado | NOTAS: se envio cotizaci...
+Tokens que más influyeron (SHAP local, respecto a la clase real):
+  'co': +0.1167  → FAVOR
+  'tiza': +0.0980  → FAVOR
+  'Co': +0.0706  → FAVOR
+  'tiza': +0.0605  → FAVOR
+  'por': +0.0469  → FAVOR
+  'm': +0.0296  → FAVOR
+  '2': +0.0275  → FAVOR
+  'micro': +0.0272  → FAVOR
+
+──────────────────────────────────────────────────
+Clase real:      TEC
+Predicción:      TEC
+Texto (preview): ETIQUETA: Informacion General | ESTADO: En seguimiento | NOTAS: CLIENTE CONSTRUEX, INF ADITIVO LIGAN...
+Tokens que más influyeron (SHAP local, respecto a la clase real):
+  'IT': +0.1640  → FAVOR
+  'AD': +0.1605  → FAVOR
+  'IV': +0.1046  → FAVOR
+  'acion': +0.0402  → FAVOR
+  ',': +0.0346  → FAVOR
+  'seguimiento': +0.0314  → FAVOR
+  'ETI': +0.0244  → FAVOR
+  'O': +0.0242  → FAVOR
+
+──────────────────────────────────────────────────
+Clase real:      CUR
+Predicción:      CUR
+Texto (preview): ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: BASE DE DATOS LOJA,Información curso LOJ...
+Tokens que más influyeron (SHAP local, respecto a la clase real):
+  'curso': +0.5195  → FAVOR
+  'do': +0.0302  → FAVOR
+  ':': +0.0299  → FAVOR
+  ':': +0.0298  → FAVOR
+  'BA': +0.0270  → FAVOR
+  'cta': +0.0201  → FAVOR
+  'ESTAD': +0.0199  → FAVOR
+  'O': +0.0188  → FAVOR
+
+──────────────────────────────────────────────────
+Clase real:      VEN
+Predicción:      VEN
+Texto (preview): ETIQUETA: Venta ganada | ESTADO: Cliente Frecuente | NOTAS: Se envia cotizaciones...
+Tokens que más influyeron (SHAP local, respecto a la clase real):
+  'gana': +0.5238  → FAVOR
+  'da': +0.1665  → FAVOR
+  'Venta': +0.0880  → FAVOR
+  'ETI': +0.0481  → FAVOR
+  'QUE': +0.0404  → FAVOR
+  ':': +0.0320  → FAVOR
+  'TA': +0.0204  → FAVOR
+  'Cli': +0.0067  → FAVOR
