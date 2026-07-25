@@ -127,6 +127,14 @@ Ajustes realizados:
   arquitectura la resuelve; probablemente necesite más anotación. La elección de modelo de
   producción (Fase 3/4) ahora se decide por trade-offs de infraestructura (GPU, latencia,
   explicabilidad) más que por una diferencia clara de F1 — ver `README.md`.
+- **Decisión de modelo de producción — cerrada:** se midió latencia real de inferencia en CPU:
+  TF-IDF+LR = 2.86 ms/mensaje vs. BETO fine-tuned = 65.14 ms/mensaje (23× más lento). Con el F1-macro
+  empatado, **se elige TF-IDF + Logistic Regression para producción (Fase 3)** — no requiere GPU,
+  pesa ~150KB, ya tiene explicabilidad SHAP/LIME, y es más sostenible de operar para una PYME sin
+  equipo de MLOps dedicado. BETO fine-tuned queda documentado como upgrade candidato dirigido a
+  COT/VEN (donde tiene ventaja real y esas clases tienen mayor impacto de negocio directo), a
+  reevaluar si el monitoreo en producción muestra errores costosos de TF-IDF+LR en esas categorías.
+  Ver la tabla de criterios completa en `05_documentacion/DISEÑO_MLOPS_FASE2.md` §8.
 
 ## Próxima — Fase 2: Diseño MLOps Pipeline
 Ver `05_documentacion/DISEÑO_MLOPS_FASE2.md`.

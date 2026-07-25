@@ -344,18 +344,46 @@ Compensa el desbalance sin necesidad de oversampling, manteniendo el dataset ori
 **¿Por qué BETO y no mBERT o XLM-R?**  
 BETO fue entrenado exclusivamente sobre corpus en español, capturando mejor la morfología flexional del español y las expresiones coloquiales de WhatsApp. XLM-R es superior en configuraciones multilingüe pero agrega latencia sin beneficio aquí.
 
-**TF-IDF+LR vs. BETO fine-tuned — ¿cuál va a producción? (actualizado 25 Jul 2026)**  
+**TF-IDF+LR vs. BETO fine-tuned — decisión de modelo de producción (cerrada 25 Jul 2026)**
+
 La primera corrida de fine-tuning (F1-macro 0.8552) tenía fuga de datos hacia el holdout — no era
 comparable como métrica final (ver Sprint 7 en `CHANGELOG.md`). Sobre el holdout real, sin fuga,
 TF-IDF+LR = 0.7938 y BETO fine-tuned = 0.7967 — prácticamente empatados (la brecha de +0.10 que
 sugería la corrida contaminada era en buena parte artefacto de la fuga, no una ventaja real de BETO).
-Con el F1 casi idéntico, la decisión de producción se resuelve más por infraestructura que por
-desempeño: TF-IDF+LR no requiere GPU, pesa ~150KB, corre en milisegundos en CPU y ya tiene
-explicabilidad SHAP/LIME construida; BETO fine-tuned necesita GPU para entrenar y (idealmente) para
-servir con baja latencia, pesa ~420MB, tiene mejor accuracy (0.92 vs. 0.88) y mejor F1 en COT/VEN,
-pero su explicabilidad (atención, embeddings) todavía no está implementada, y ambos modelos siguen
-siendo débiles en TEC. Se deja como decisión de Fase 3/4, con ambos modelos documentados y
-reproducibles (`05_entrenar_modelos.py`, `12_beto_finetuning.py`, `13_evaluacion_holdout.py`).
+Con el F1 ya no siendo un diferenciador, la decisión se resolvió por los demás criterios relevantes
+para el contexto real de despliegue (Rocktec, PYME ecuatoriana, sin equipo de MLOps dedicado):
+
+| Criterio | TF-IDF + LR | BETO fine-tuned | Gana |
+|---|---|---|---|
+| F1-macro (holdout) | 0.7938 | 0.7967 | Empate (Δ=0.003, no significativo) |
+| Accuracy (holdout) | 0.8832 | 0.9239 | BETO |
+| F1 en COT (cotización — oportunidad de venta) | 0.86 | 0.98 | BETO |
+| F1 en VEN (venta confirmada — ingreso directo) | 0.77 | 0.91 | BETO |
+| F1 en CUR (cursos) | 0.95 | 0.75 | TF-IDF+LR |
+| F1 en TEC (consulta técnica) | 0.47 | 0.40 | Ninguno — débil en ambos, cuello de botella es dato (8 filas en holdout), no arquitectura |
+| Latencia de inferencia (CPU, medida) | **2.86 ms/mensaje** | 65.14 ms/mensaje | TF-IDF+LR (23×), pero ambos son instantáneos al volumen real de mensajes de Rocktec (decenas/día) |
+| Tamaño del artefacto | ~150KB | ~420MB | TF-IDF+LR |
+| Requiere GPU para (re)entrenar | No | Sí (Colab T4 gratuita funciona, ~2 min) | TF-IDF+LR |
+| Explicabilidad ya construida | Sí (SHAP/LIME, `06_resultados/explicabilidad/`) | No (pendiente) | TF-IDF+LR |
+| Facilidad de mantenimiento post-tesis (equipo sin MLOps dedicado) | Alta | Media-baja | TF-IDF+LR |
+
+**Decisión: TF-IDF + Logistic Regression pasa a producción para Fase 3.** Con el F1-macro
+estadísticamente empatado, el criterio decisivo es operativo: Rocktec es una PYME sin
+infraestructura GPU ni equipo de MLOps, y un modelo de 150KB con inferencia en milisegundos,
+sin dependencias pesadas, y ya explicado con SHAP/LIME es más sostenible de operar y defender
+ante el negocio que un modelo de 420MB que requiere GPU para reentrenarse.
+
+**BETO fine-tuned queda documentado como upgrade candidato, no descartado.** Su ventaja real y
+medible está en COT y VEN — las dos categorías con mayor impacto de negocio directo (cotizaciones
+y ventas). Si en producción se observa que TF-IDF+LR genera falsos negativos costosos en esas dos
+clases (p. ej. cotizaciones o confirmaciones de venta mal etiquetadas y perdidas), reevaluar el swap
+a BETO fine-tuned como una mejora dirigida, no como reemplazo total. Ambos modelos quedan
+documentados y reproducibles (`05_entrenar_modelos.py`, `12_beto_finetuning.py`,
+`13_evaluacion_holdout.py`), así que el cambio es de bajo costo si se decide más adelante.
+
+**Pendiente para que esta decisión sea completamente defendible:** ninguno de los dos modelos
+resuelve TEC (F1 ≤ 0.47) — antes de Fase 5 conviene anotar más ejemplos de esa clase (solo 51 en
+todo el dataset) en vez de seguir iterando sobre arquitectura.
 
 ---
 

@@ -99,7 +99,7 @@ python 02_scripts/07_validacion_estadistica.py
 | **Fase 1C** | Ajustes de prototipo + validación estadística | ✅ **COMPLETA** | Ver [resultados](#-resultados-baseline-vs-ajustado) | **19 Jul** |
 | **Fase 2** | Diseño MLOps Pipeline | 🔜 Próxima | UML + Arquitectura | 20 Ago |
 | **Fase 3** | Desarrollo e implementación | 🔜 Por hacer | Pipeline funcional | 31 Ago |
-| **Fase 4** | Evaluación del modelo | 🔜 Por hacer | F1 >= 0.75 | 14 Sep |
+| **Fase 4** | Evaluación del modelo | 🔜 Por hacer (meta ya validada en holdout, falta cerrar el resto de entregables de fase) | F1 >= 0.75 — **alcanzado: 0.7938–0.7967** | 14 Sep |
 | **Fase 5** | Piloto y defensa final | 🔜 Por hacer | Presentación exitosa | 21 Sep |
 
 ---
@@ -173,10 +173,15 @@ arquitectura la resuelve bien con los datos actuales; probablemente necesite má
 de que cualquier modelo mejore ahí. Fuera de eso, no hay un ganador claro: TF-IDF+LR es mejor en
 CUR, BETO es mejor en COT/VEN/INF, ambos son débiles en TEC.
 
-**Conclusión revisada:** con el F1-macro prácticamente empatado, la elección de producción pesa más
-hacia TF-IDF+LR (sin GPU, ~150KB, milisegundos de latencia, SHAP/LIME ya construido) salvo que la
-mejor accuracy y F1 por clase de BETO en COT/VEN se consideren determinantes para el negocio — sigue
-siendo una decisión de Fase 3/4, pero ahora con ambos números limpios sobre la mesa.
+**Decisión de modelo de producción (cerrada 25 Jul 2026): TF-IDF + Logistic Regression.** Con el
+F1-macro empatado, medimos también latencia real en CPU: TF-IDF+LR responde en **2.86 ms/mensaje**
+vs. **65.14 ms/mensaje** de BETO (23× más lento, aunque ambos son instantáneos al volumen real de
+mensajes de Rocktec). Sumado a que TF-IDF+LR no necesita GPU, pesa ~150KB (vs. ~420MB) y ya tiene
+explicabilidad SHAP/LIME construida, es el modelo más sostenible de operar para una PYME sin equipo
+de MLOps dedicado. **BETO fine-tuned queda documentado como upgrade candidato** — su ventaja real
+está en COT y VEN (cotizaciones y ventas, las clases de mayor impacto de negocio directo); si en
+producción TF-IDF+LR genera errores costosos ahí, vale reevaluar el swap. Ver la tabla de criterios
+completa y el razonamiento en `05_documentacion/DISEÑO_MLOPS_FASE2.md` §8.
 
 Reportes: `06_resultados/reporte_holdout_final.txt` (final, ambos modelos),
 `06_resultados/beto/reporte_beto_finetuned_val.txt` (validación interna de BETO, no final).
