@@ -124,32 +124,64 @@ Wilcoxon/t-test) en `06_resultados/validacion_estadistica.json` y en
 [`06_resultados/INFORME_AJUSTES_Y_VALIDACION.docx`](06_resultados/INFORME_AJUSTES_Y_VALIDACION.docx).
 Bitácora de cambios en [`CHANGELOG.md`](CHANGELOG.md).
 
-### Comparación de arquitecturas sobre el consenso humano (5 clases modeladas)
+### Comparación de arquitecturas — exploratoria (⚠️ con fuga de datos hacia el holdout)
 
-Mismo split de test (80/20 estratificado, `random_state=42`) sobre las 1,312 filas de las 5 clases
-modeladas (INF, COT, TEC, CUR, VEN — ver alcance del modelo en la sección "Catálogo de Intención" más arriba):
+Primera comparación de tres arquitecturas, todas entrenadas sobre un split 80/20 ad hoc del
+**dataset completo** (1,312 filas de las 5 clases modeladas). Sirve para elegir arquitectura, pero
+**no es una métrica final válida**: ese split 80/20 incluye filas que también están en
+`holdout_test.csv`, así que estos modelos ya "vieron" datos de holdout durante el entrenamiento
+(ver sección siguiente para el número correcto, sin fuga):
 
-| Modelo | Requiere GPU | F1-macro (test) | Accuracy |
-|--------|:---:|-----------------:|---------:|
-| TF-IDF + Logistic Regression (`05_entrenar_modelos.py`) | No | 0.7516 ✅ | — |
-| BETO embeddings (sin ajustar) + LR (`11_beto_clasificador.py`) | No | 0.6370 | — |
-| **BETO fine-tuned, 5 épocas (`12_beto_finetuning.py`)** | **Sí** | **0.8552** ✅ | **0.95** |
+| Modelo | Requiere GPU | F1-macro (split ad hoc, con fuga) |
+|--------|:---:|-----------------:|
+| TF-IDF + Logistic Regression (`05_entrenar_modelos.py`) | No | 0.7516 |
+| BETO embeddings (sin ajustar) + LR (`11_beto_clasificador.py`) | No | 0.6370 |
+| BETO fine-tuned, 5 épocas (corrida original, ya no reproducible con el script actual) | Sí | 0.8552 |
 
-BETO fine-tuned (vía Google Colab, GPU T4 gratuita) supera claramente tanto a TF-IDF+LR como a los
-embeddings BETO sin ajustar — confirma la hipótesis de `DISEÑO_MLOPS_FASE2.md`: el ajuste de pesos
-sobre el dominio de construcción/concreto decorativo ecuatoriano sí aporta sobre representaciones
-genéricas. Por clase: INF F1=0.96, COT F1=0.98, VEN F1=0.94, CUR F1=0.83, **TEC F1=0.56** (sigue
-siendo la clase más difícil en los tres modelos — soporte bajo, 51 filas totales).
+Por clase (BETO fine-tuned, corrida exploratoria): INF F1=0.96, COT F1=0.98, VEN F1=0.94,
+CUR F1=0.83, **TEC F1=0.56** (la clase más difícil en los tres modelos — soporte bajo, 51 filas).
+BETO fine-tuned superó claramente a los otros dos, confirmando que el ajuste de pesos sobre el
+dominio de construcción/concreto decorativo ecuatoriano aporta sobre representaciones genéricas —
+pero el número exacto no es fiable como métrica final.
 
-Con esto, **BETO fine-tuned es el modelo con mejor F1-macro** para las 5 clases modeladas, a costa
-de requerir GPU e infraestructura de inferencia más pesada (~440MB) y de explicabilidad menos directa
-que TF-IDF+LR (que ya cuenta con SHAP/LIME — ver `06_resultados/explicabilidad/`). La elección final
-de modelo de producción (TF-IDF+LR interpretable y liviano vs. BETO fine-tuned de mayor F1) queda
-como decisión de Fase 3/4, no cerrada automáticamente por este resultado.
+### Evaluación final honesta sobre holdout (una sola vez, sin fuga de datos)
 
-Reportes: `06_resultados/beto/comparacion_tfidf_vs_beto_finetuned.txt`,
-`06_resultados/beto/reporte_beto_finetuned.txt`. Checkpoint del modelo:
-`06_resultados/modelos/beto_finetuned_best/` (no versionado en git — ver `.gitignore`).
+`02_scripts/13_evaluacion_holdout.py` reentrena TF-IDF+LR usando **solo** `train_val.csv`
+(1,115 filas) y evalúa ambos modelos una única vez sobre `holdout_test.csv` (197 filas, nunca antes
+tocadas). El checkpoint de BETO se verificó contra su marca `FUENTE_ENTRENAMIENTO.txt` antes de
+evaluarlo (entrenado exclusivamente con `train_val.csv`, sin ver el holdout):
+
+| Modelo | F1-macro (holdout) | Accuracy (holdout) |
+|--------|-----------------:|---------:|
+| TF-IDF + Logistic Regression (C=10) | 0.7938 ✅ | 0.8832 |
+| **BETO fine-tuned** | **0.7967** ✅ | **0.9239** |
+
+**Con la fuga de datos corregida, los dos modelos quedan prácticamente empatados en F1-macro**
+(diferencia de 0.003) — muy lejos de la brecha de +0.10 que sugería la comparación exploratoria
+contaminada (0.7516 vs. 0.8552). BETO sí mantiene una accuracy más alta (0.92 vs. 0.88). Por clase:
+
+| Clase | TF-IDF+LR F1 | BETO fine-tuned F1 |
+|---|---:|---:|
+| INF | 0.92 | 0.95 |
+| COT | 0.86 | 0.98 |
+| CUR | 0.95 | 0.75 |
+| VEN | 0.77 | 0.91 |
+| TEC | 0.47 | 0.40 |
+
+TEC sigue siendo la clase más débil en ambos modelos (8 ejemplos en el holdout) — ninguna
+arquitectura la resuelve bien con los datos actuales; probablemente necesite más anotación antes
+de que cualquier modelo mejore ahí. Fuera de eso, no hay un ganador claro: TF-IDF+LR es mejor en
+CUR, BETO es mejor en COT/VEN/INF, ambos son débiles en TEC.
+
+**Conclusión revisada:** con el F1-macro prácticamente empatado, la elección de producción pesa más
+hacia TF-IDF+LR (sin GPU, ~150KB, milisegundos de latencia, SHAP/LIME ya construido) salvo que la
+mejor accuracy y F1 por clase de BETO en COT/VEN se consideren determinantes para el negocio — sigue
+siendo una decisión de Fase 3/4, pero ahora con ambos números limpios sobre la mesa.
+
+Reportes: `06_resultados/reporte_holdout_final.txt` (final, ambos modelos),
+`06_resultados/beto/reporte_beto_finetuned_val.txt` (validación interna de BETO, no final).
+Checkpoint del modelo: `06_resultados/modelos/beto_finetuned_best/` (no versionado en git — ver
+`.gitignore`, ~420MB).
 
 ---
 

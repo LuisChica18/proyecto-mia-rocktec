@@ -169,10 +169,20 @@ Texto raw
 > **Justificación BETO:** Es el BERT entrenado sobre corpus en español (Wikipedia ES + OPUS). Captura morfología del español y expresiones informales de WhatsApp mejor que modelos multilingüe.
 
 > **Estado (25 Jul 2026):** implementado en `02_scripts/12_beto_finetuning.py`, ejecutado en Google
-> Colab (GPU T4 gratuita — no hay GPU disponible en el entorno de desarrollo local). Resultado sobre
-> el mismo split de test 80/20 usado por los otros dos modelos: **F1-macro = 0.8552**, por encima de
-> TF-IDF+LR (0.7516) y de BETO sin fine-tuning (0.6370). Ver `06_resultados/beto/reporte_beto_finetuned.txt`
-> y la comparación completa en `README.md`.
+> Colab (GPU T4 gratuita — no hay GPU disponible en el entorno de desarrollo local). Primera corrida
+> exploratoria sobre un split 80/20 del dataset completo dio F1-macro = 0.8552, pero ese split incluía
+> filas de `holdout_test.csv` (fuga de datos) — no era válido como métrica final. Se corrigió
+> `12_beto_finetuning.py` para entrenar solo con `train_val.csv`, y `02_scripts/13_evaluacion_holdout.py`
+> evaluó ambos modelos una sola vez sobre `holdout_test.csv`, ya sin fuga:
+>
+> | Modelo | F1-macro (holdout) | Accuracy |
+> |---|---:|---:|
+> | TF-IDF + LR | 0.7938 | 0.8832 |
+> | BETO fine-tuned | 0.7967 | 0.9239 |
+>
+> Con la fuga corregida, ambos quedan prácticamente empatados en F1-macro (antes la brecha
+> "aparente" era de +0.10 a favor de BETO). Ver `06_resultados/reporte_holdout_final.txt` y
+> `CHANGELOG.md` Sprint 7 (25 Jul 2026) para el detalle completo del hallazgo y el fix.
 
 ### Etapa 4 — Evaluación
 
@@ -335,13 +345,17 @@ Compensa el desbalance sin necesidad de oversampling, manteniendo el dataset ori
 BETO fue entrenado exclusivamente sobre corpus en español, capturando mejor la morfología flexional del español y las expresiones coloquiales de WhatsApp. XLM-R es superior en configuraciones multilingüe pero agrega latencia sin beneficio aquí.
 
 **TF-IDF+LR vs. BETO fine-tuned — ¿cuál va a producción? (actualizado 25 Jul 2026)**  
-Con fine-tuning real (F1-macro 0.8552) BETO supera a TF-IDF+LR (0.7516) por un margen amplio, así
-que la ganancia de F1 ya no es hipotética. La decisión de producción sigue abierta porque depende de
-más que el F1: TF-IDF+LR no requiere GPU, pesa ~150KB, corre en milisegundos en CPU y ya tiene
+La primera corrida de fine-tuning (F1-macro 0.8552) tenía fuga de datos hacia el holdout — no era
+comparable como métrica final (ver Sprint 7 en `CHANGELOG.md`). Sobre el holdout real, sin fuga,
+TF-IDF+LR = 0.7938 y BETO fine-tuned = 0.7967 — prácticamente empatados (la brecha de +0.10 que
+sugería la corrida contaminada era en buena parte artefacto de la fuga, no una ventaja real de BETO).
+Con el F1 casi idéntico, la decisión de producción se resuelve más por infraestructura que por
+desempeño: TF-IDF+LR no requiere GPU, pesa ~150KB, corre en milisegundos en CPU y ya tiene
 explicabilidad SHAP/LIME construida; BETO fine-tuned necesita GPU para entrenar y (idealmente) para
-servir con baja latencia, pesa ~420MB, y su explicabilidad (atención, embeddings) todavía no está
-implementada. Se deja como decisión de Fase 3/4, con ambos modelos documentados y reproducibles
-(`05_entrenar_modelos.py` y `12_beto_finetuning.py`).
+servir con baja latencia, pesa ~420MB, tiene mejor accuracy (0.92 vs. 0.88) y mejor F1 en COT/VEN,
+pero su explicabilidad (atención, embeddings) todavía no está implementada, y ambos modelos siguen
+siendo débiles en TEC. Se deja como decisión de Fase 3/4, con ambos modelos documentados y
+reproducibles (`05_entrenar_modelos.py`, `12_beto_finetuning.py`, `13_evaluacion_holdout.py`).
 
 ---
 

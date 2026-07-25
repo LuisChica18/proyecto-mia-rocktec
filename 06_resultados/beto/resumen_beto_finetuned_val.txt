@@ -1,0 +1,17 @@
+
+================================================================================
+BETO FINE-TUNED — VALIDACIÓN INTERNA (NO ES LA MÉTRICA FINAL) — ROCKTEC MIA 2026
+================================================================================
+Fecha: 2026-07-25 17:43:31
+Dataset de entrenamiento: 04_anotaciones/train_val.csv (1115 registros, 5 clases)
+Split interno: 85% train / 15% validación, estratificado, random_state=42
+
+F1-macro (validación interna): 0.8560
+
+Este número NO es la métrica final del modelo — es solo la señal usada para elegir la
+mejor época durante el entrenamiento. La métrica final (F1-macro sobre holdout_test.csv,
+evaluada una única vez, comparada con TF-IDF+LR) la calcula:
+
+    python 02_scripts/13_evaluacion_holdout.py
+
+================================================================================

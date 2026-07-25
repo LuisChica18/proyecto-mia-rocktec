@@ -92,5 +92,41 @@ Ajustes realizados:
   conflicto de `pandas` (no reinstalar `pandas`/`scikit-learn` en Colab — ya vienen compatibles con
   `google-colab`/`cudf`, forzar `pandas` a 3.x rompe `google.colab.files.download`).
 
+## Sprint 7 — Fix de fuga de datos + evaluación final en holdout (25 Jul 2026)
+
+**Hallazgo:** los tres modelos comparados arriba (TF-IDF+LR 0.7516, BETO embeddings 0.6370, BETO
+fine-tuned 0.8552) se entrenaron sobre un split 80/20 ad hoc de `dataset_consenso_final.csv`
+**completo**, el cual incluye las 197 filas que `09_crear_holdout_set.py` había apartado como
+`holdout_test.csv`. Es decir, esos modelos ya habían "visto" datos de holdout durante su propio
+entrenamiento — ninguno de esos tres números es válido como métrica final de Fase 4, aunque siguen
+siendo útiles como comparación exploratoria entre arquitecturas.
+
+Ajustes realizados:
+- **`12_beto_finetuning.py` corregido:** ahora entrena exclusivamente con
+  `04_anotaciones/train_val.csv` (1,115 filas), nunca con el dataset completo ni con
+  `holdout_test.csv`. Ya no reporta una métrica de "test" final (eso ahora lo hace el script 13);
+  reporta solo F1-macro de validación interna (para elegir la mejor época) y deja una marca
+  `FUENTE_ENTRENAMIENTO.txt` en el checkpoint registrando de qué archivo se entrenó.
+- **`13_evaluacion_holdout.py` (nuevo):** reentrena TF-IDF+LR desde cero solo con `train_val.csv`
+  (GridSearchCV, mismos hiperparámetros que `05_entrenar_modelos.py`) y lo evalúa una única vez
+  sobre `holdout_test.csv`. Para BETO, carga el checkpoint de `12_beto_finetuning.py` pero **solo
+  si** `FUENTE_ENTRENAMIENTO.txt` confirma que se entrenó con `train_val.csv`; si no existe o no
+  coincide, omite BETO con una advertencia en vez de reportar un número contaminado.
+- **Resultado final, ambos modelos (sin fuga de datos), sobre las 197 filas de `holdout_test.csv`,
+  evaluadas una sola vez:**
+  - TF-IDF + LR (C=10): F1-macro = **0.7938**, accuracy = 0.8832. Por clase: INF 0.92, COT 0.86,
+    CUR 0.95, VEN 0.77, TEC 0.47.
+  - BETO fine-tuned (checkpoint reentrenado en Colab solo con `train_val.csv`, verificado vía
+    `FUENTE_ENTRENAMIENTO.txt`): F1-macro = **0.7967**, accuracy = 0.9239. Por clase: INF 0.95,
+    COT 0.98, CUR 0.75, VEN 0.91, TEC 0.40.
+  - Ambos cumplen la meta ≥ 0.75 de Fase 4. Ver `06_resultados/reporte_holdout_final.txt`.
+- **Conclusión revisada — la fuga de datos inflaba la brecha:** con el split contaminado, BETO
+  parecía superar a TF-IDF+LR por +0.10 de F1-macro (0.8552 vs. 0.7516). Sin fuga, quedan
+  prácticamente empatados (+0.003 a favor de BETO), aunque BETO mantiene una accuracy más alta.
+  TEC sigue siendo la clase más débil en ambos modelos (8 filas en el holdout) — ningún cambio de
+  arquitectura la resuelve; probablemente necesite más anotación. La elección de modelo de
+  producción (Fase 3/4) ahora se decide por trade-offs de infraestructura (GPU, latencia,
+  explicabilidad) más que por una diferencia clara de F1 — ver `README.md`.
+
 ## Próxima — Fase 2: Diseño MLOps Pipeline
 Ver `05_documentacion/DISEÑO_MLOPS_FASE2.md`.
