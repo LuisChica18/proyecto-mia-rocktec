@@ -477,7 +477,7 @@ def main():
     print(f"✓ Train: {X_train.shape}  Test: {X_test.shape}")
 
     # ── MLflow ──
-    mlflow.set_tracking_uri('mlruns')
+    mlflow.set_tracking_uri("sqlite:///mlflow.db")
     mlflow.set_experiment(EXPERIMENTO_MLFLOW)
 
     resultados = {}

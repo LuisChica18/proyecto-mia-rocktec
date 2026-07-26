@@ -21,7 +21,7 @@ from pathlib import Path
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import LabelEncoder
 
-INTENCIONES = ['INF', 'COT', 'TEC', 'CUR', 'VEN', 'SEG', 'QUE']
+INTENCIONES = ['INF', 'COT', 'TEC', 'CUR', 'VEN']
 
 STOPWORDS_ES = {
     'de','la','que','el','en','y','a','los','del','se','las','un','por','con',
