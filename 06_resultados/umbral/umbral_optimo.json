@@ -1,0 +1,129 @@
+{
+  "fecha": "2026-07-30 11:57:20",
+  "umbral_optimo": 0.75,
+  "f1_macro_automatico": 0.9214,
+  "pct_automatico": 70.6,
+  "n_automatico": 139,
+  "n_revision_humana": 58,
+  "errores_automatico": 6,
+  "todos_umbrales": [
+    {
+      "umbral": 0.3,
+      "n_automatico": 197,
+      "n_revision_humana": 0,
+      "pct_automatico": 100.0,
+      "f1_macro_auto": 0.799,
+      "precision_auto": 0.8832,
+      "errores_auto": 23
+    },
+    {
+      "umbral": 0.35,
+      "n_automatico": 197,
+      "n_revision_humana": 0,
+      "pct_automatico": 100.0,
+      "f1_macro_auto": 0.799,
+      "precision_auto": 0.8832,
+      "errores_auto": 23
+    },
+    {
+      "umbral": 0.4,
+      "n_automatico": 196,
+      "n_revision_humana": 1,
+      "pct_automatico": 99.5,
+      "f1_macro_auto": 0.7984,
+      "precision_auto": 0.8827,
+      "errores_auto": 23
+    },
+    {
+      "umbral": 0.45,
+      "n_automatico": 192,
+      "n_revision_humana": 5,
+      "pct_automatico": 97.5,
+      "f1_macro_auto": 0.8107,
+      "precision_auto": 0.8958,
+      "errores_auto": 20
+    },
+    {
+      "umbral": 0.5,
+      "n_automatico": 187,
+      "n_revision_humana": 10,
+      "pct_automatico": 94.9,
+      "f1_macro_auto": 0.8277,
+      "precision_auto": 0.9037,
+      "errores_auto": 18
+    },
+    {
+      "umbral": 0.55,
+      "n_automatico": 181,
+      "n_revision_humana": 16,
+      "pct_automatico": 91.9,
+      "f1_macro_auto": 0.8333,
+      "precision_auto": 0.9116,
+      "errores_auto": 16
+    },
+    {
+      "umbral": 0.6,
+      "n_automatico": 174,
+      "n_revision_humana": 23,
+      "pct_automatico": 88.3,
+      "f1_macro_auto": 0.8475,
+      "precision_auto": 0.9195,
+      "errores_auto": 14
+    },
+    {
+      "umbral": 0.65,
+      "n_automatico": 167,
+      "n_revision_humana": 30,
+      "pct_automatico": 84.8,
+      "f1_macro_auto": 0.8635,
+      "precision_auto": 0.9281,
+      "errores_auto": 12
+    },
+    {
+      "umbral": 0.7,
+      "n_automatico": 151,
+      "n_revision_humana": 46,
+      "pct_automatico": 76.6,
+      "f1_macro_auto": 0.915,
+      "precision_auto": 0.9536,
+      "errores_auto": 7
+    },
+    {
+      "umbral": 0.75,
+      "n_automatico": 139,
+      "n_revision_humana": 58,
+      "pct_automatico": 70.6,
+      "f1_macro_auto": 0.9214,
+      "precision_auto": 0.9568,
+      "errores_auto": 6
+    },
+    {
+      "umbral": 0.8,
+      "n_automatico": 124,
+      "n_revision_humana": 73,
+      "pct_automatico": 62.9,
+      "f1_macro_auto": 0.9353,
+      "precision_auto": 0.9677,
+      "errores_auto": 4
+    },
+    {
+      "umbral": 0.85,
+      "n_automatico": 115,
+      "n_revision_humana": 82,
+      "pct_automatico": 58.4,
+      "f1_macro_auto": 0.982,
+      "precision_auto": 0.9826,
+      "errores_auto": 2
+    },
+    {
+      "umbral": 0.9,
+      "n_automatico": 104,
+      "n_revision_humana": 93,
+      "pct_automatico": 52.8,
+      "f1_macro_auto": 0.9812,
+      "precision_auto": 0.9808,
+      "errores_auto": 2
+    }
+  ],
+  "interpretacion": "Con umbral=0.75, el modelo clasifica automáticamente el 70.6% de mensajes con F1-macro=0.9214. El 29.400000000000006% restante se envía a revisión humana por baja confianza del modelo."
+}

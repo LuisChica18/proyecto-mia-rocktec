@@ -1,0 +1,38 @@
+
+================================================================================
+REPORTE UMBRAL DE CONFIANZA ADAPTATIVO — ROCKTEC MIA 2026
+================================================================================
+Fecha: 2026-07-30 11:57:20
+Validado sobre: holdout_test.csv (197 registros, nunca vistos durante entrenamiento)
+
+UMBRAL ÓPTIMO: 0.75
+────────────────────────────────────────────────────────────
+  F1-macro en clasificaciones automáticas: 0.9214
+  Mensajes clasificados automáticamente:   139.0/197 (70.6%)
+  Mensajes enviados a revisión humana:     58.0/197 (29.400000000000006%)
+  Errores en clasificación automática:     6.0
+
+INTERPRETACIÓN PARA ROCKTEC:
+  - Cuando el modelo dice "COT" con confianza >= 0.75 → clasificar automáticamente
+  - Cuando la confianza < 0.75 → marcar para revisión del asesor
+  - Esto reduce errores operativos manteniendo alta automatización
+
+TABLA COMPLETA DE UMBRALES:
+────────────────────────────────────────────────────────────
+  Umbral   Auto%   F1-auto  Errores  N-manual
+────────────────────────────────────────────────────────────
+    0.30  100.0%    0.7990     23.0       0.0
+    0.35  100.0%    0.7990     23.0       0.0
+    0.40   99.5%    0.7984     23.0       1.0
+    0.45   97.5%    0.8107     20.0       5.0
+    0.50   94.9%    0.8277     18.0      10.0
+    0.55   91.9%    0.8333     16.0      16.0
+    0.60   88.3%    0.8475     14.0      23.0
+    0.65   84.8%    0.8635     12.0      30.0
+    0.70   76.6%    0.9150      7.0      46.0
+    0.75   70.6%    0.9214      6.0      58.0 ← ÓPTIMO
+    0.80   62.9%    0.9353      4.0      73.0
+    0.85   58.4%    0.9820      2.0      82.0
+    0.90   52.8%    0.9812      2.0      93.0
+
+======================================================================
