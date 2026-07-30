@@ -1,0 +1,16 @@
+
+================================================================================
+REPORTE ANONIMIZACIÓN v2.0 — ROCKTEC MIA 2026
+================================================================================
+Fecha: 2026-07-30 12:25:51
+Registros procesados: 1500
+Registros modificados: 223 (14.9%)
+
+REEMPLAZOS:
+  [CLIENTE]   → nombres de clientes
+  [TELEFONO]  → números telefónicos 09XXXXXXXX
+  [EMAIL]     → correos electrónicos
+  [DOCUMENTO] → RUC/cédulas
+
+Archivo: 04_anotaciones\dataset_consenso_final_anonimizado.csv
+================================================================================
