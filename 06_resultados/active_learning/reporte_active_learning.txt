@@ -1,0 +1,128 @@
+
+================================================================================
+REPORTE ACTIVE LEARNING TEC — ROCKTEC MIA 2026
+================================================================================
+Fecha: 2026-07-30 12:11:44
+Estrategia: Uncertainty Sampling sobre pool de mensajes
+
+CONTEXTO:
+  TEC es la clase con menor F1 (LR: 0.47, BETO: 0.40) por falta de datos.
+  Solo tiene 51 casos en el dataset de 1,312. El active learning identifica
+  los mensajes más informativos para anotar PRIMERO, en lugar de recolectar
+  datos al azar.
+
+METODOLOGÍA:
+  1. Entrenar LR sobre train_val.csv (1115 registros)
+  2. Aplicar sobre pool de mensajes no anotados (208 mensajes)
+  3. Seleccionar los 30 mensajes con mayor incertidumbre en TEC
+     (prob_TEC entre 0.10 y 0.70 — el modelo duda entre TEC y otra clase)
+
+CANDIDATOS SELECCIONADOS: 30
+────────────────────────────────────────────────────────────
+
+[ 1] Pred: TEC   | P(TEC)=0.393 | Incert=0.607
+     Texto: ¿Cómo limpio las herramientas después de aplicar el oxidante?
+
+[ 2] Pred: COT   | P(TEC)=0.374 | Incert=0.604
+     Texto: CIUDAD: Guayaquil | MENSAJE: Cuando estarán pasando lusta de producto con precios y fichas técnicas?
+
+[ 3] Pred: INF   | P(TEC)=0.382 | Incert=0.601
+     Texto: ¿Qué herramientas necesito para aplicar el concreto decorativo?
+
+[ 4] Pred: COT   | P(TEC)=0.294 | Incert=0.578
+     Texto: CIUDAD: Loja | MENSAJE: Gracias, el ácido se mezcla con agua 1,1, además el valor galón de ácido y s
+
+[ 5] Pred: COT   | P(TEC)=0.281 | Incert=0.573
+     Texto: ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te pue
+
+[ 6] Pred: TEC   | P(TEC)=0.432 | Incert=0.568
+     Texto: ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te pue
+
+[ 7] Pred: INF   | P(TEC)=0.425 | Incert=0.557
+     Texto: ¿Cómo preparo la superficie para aplicar el microcemento en baño?
+
+[ 8] Pred: INF   | P(TEC)=0.376 | Incert=0.555
+     Texto: ¿El sellador es resistente al agua en pisos exteriores?
+
+[ 9] Pred: INF   | P(TEC)=0.285 | Incert=0.549
+     Texto: ¿Necesito lijar entre capas de microcemento?
+
+[10] Pred: INF   | P(TEC)=0.309 | Incert=0.527
+     Texto: CIUDAD: Loja | MENSAJE: No quiero para el sabado
+
+[11] Pred: TEC   | P(TEC)=0.476 | Incert=0.524
+     Texto: CIUDAD: Loja | MENSAJE: Para instalaciones de ese tipo mejor hacerlo con pisos industriales que sopo
+
+[12] Pred: TEC   | P(TEC)=0.488 | Incert=0.512
+     Texto: ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te pue
+
+[13] Pred: COT   | P(TEC)=0.145 | Incert=0.507
+     Texto: CIUDAD: Quito | MENSAJE: Más adelante se les hará llegar todos nuestros catálogos y la lista de prec
+
+[14] Pred: COT   | P(TEC)=0.106 | Incert=0.488
+     Texto: ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te pue
+
+[15] Pred: INF   | P(TEC)=0.417 | Incert=0.480
+     Texto: ETIQUETA: Pichincha, Construex | ESTADO: Construex | CONSULTA: INTERESADO EN MICROCEMENTO PARA BAÑOS
+
+[16] Pred: INF   | P(TEC)=0.129 | Incert=0.475
+     Texto: CIUDAD: Quito | MENSAJE: Hola buen dia, solo por confirmar el valor 28 m2 es material + lnstalacion 
+
+[17] Pred: INF   | P(TEC)=0.213 | Incert=0.467
+     Texto: ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te pue
+
+[18] Pred: TEC   | P(TEC)=0.534 | Incert=0.466
+     Texto: ¿Puedo aplicar el producto sobre piso de madera?
+
+[19] Pred: INF   | P(TEC)=0.288 | Incert=0.447
+     Texto: CIUDAD: Quito | MENSAJE: Muy buenas tardes con  una maquina  pulirdora para pisos de hormigon
+
+[20] Pred: INF   | P(TEC)=0.130 | Incert=0.433
+     Texto: CIUDAD: Loja | MENSAJE: Saludos claro lo puedes mirar en la pagina web en la parte  que dice videos
+
+[21] Pred: COT   | P(TEC)=0.333 | Incert=0.418
+     Texto: CIUDAD: Loja | MENSAJE: Recuerden que el precio final dependerá del concreto u hormigon quw vayan a 
+
+[22] Pred: COT   | P(TEC)=0.141 | Incert=0.417
+     Texto: ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te pue
+
+[23] Pred: TEC   | P(TEC)=0.594 | Incert=0.406
+     Texto: ¿El concreto decorativo se puede usar en paredes o solo en pisos?
+
+[24] Pred: TEC   | P(TEC)=0.611 | Incert=0.389
+     Texto: ¿El producto es apto para zonas de alto tráfico?
+
+[25] Pred: INF   | P(TEC)=0.340 | Incert=0.382
+     Texto: CIUDAD: Quito | MENSAJE: Tengan cuidado de usar pulidoras o productos muy abrasivos
+
+[26] Pred: INF   | P(TEC)=0.158 | Incert=0.355
+     Texto: ¿Cuál es la diferencia entre sellador mate y brillante?
+
+[27] Pred: COT   | P(TEC)=0.148 | Incert=0.341
+     Texto: ETIQUETA: Informacion General | ESTADO: Contactado | CONSULTA: Asesor: Hola, estoy conectada, te pue
+
+[28] Pred: INF   | P(TEC)=0.298 | Incert=0.339
+     Texto: CIUDAD: Quito | MENSAJE: y el acabado final logra con la experiencia del maestro o tecnico de aplica
+
+[29] Pred: INF   | P(TEC)=0.122 | Incert=0.337
+     Texto: CIUDAD: Loja | MENSAJE: Resiste bien a la fricción de las llantas del vehículo siempre y cuando se s
+
+[30] Pred: INF   | P(TEC)=0.114 | Incert=0.334
+     Texto: CIUDAD: Guayaquil | MENSAJE: Amigos buenos dias ,, Tenemos un proyecto de 100 m2 de MIcrocemento en 
+
+────────────────────────────────────────────────────────────
+INSTRUCCIONES PARA ASESORES DE ROCKTEC:
+  1. Abrir active_learning_tec_candidatos.xlsx
+  2. Para cada mensaje, completar:
+     - 'intencion_correcta': la categoría real (INF/COT/TEC/CUR/VEN)
+     - 'es_TEC_real': SÍ si es consulta técnica, NO si no lo es
+     - 'notas': observaciones sobre el caso
+  3. Meta: confirmar al menos 30-40 casos reales de TEC
+  4. Estos casos se agregarán al dataset y se reentrenará el modelo
+
+IMPACTO ESPERADO:
+  Con 30-40 casos TEC adicionales bien anotados:
+  - F1 TEC estimado: de 0.47 → ~0.65+
+  - F1-macro general: de 0.7938 → ~0.82+
+
+================================================================================
