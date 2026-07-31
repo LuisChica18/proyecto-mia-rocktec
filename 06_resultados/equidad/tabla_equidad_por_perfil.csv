@@ -1,0 +1,3 @@
+perfil,n_registros,accuracy,precision_macro,recall_macro,f1_macro,f1_weighted
+Comprador_Activo,106,0.9245,0.4796,0.5917,0.5189,0.9078
+Prospecto_General,719,0.936,0.6899,0.8156,0.7418,0.935

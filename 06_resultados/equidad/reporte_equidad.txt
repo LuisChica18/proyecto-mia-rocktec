@@ -1,0 +1,51 @@
+
+======================================================================
+REPORTE DE EQUIDAD — PROYECTO MIA 2026 ROCKTEC
+Generado: 2026-07-31 16:13:05
+======================================================================
+
+LIMITACIÓN DE DATOS (documentada):
+----------------------------------------------------------------------
+Rocktec no captura el perfil del cliente en la misma fuente que contiene
+el texto de las conversaciones.
+  - JEVA: tiene TIPO DE CLIENTE pero sin texto de conversación (OBSERVACIONES
+    vacías en los 1,155 registros).
+  - Dataset de consenso: tiene texto pero etiqueta_crm es una etiqueta de
+    campaña CRM con 61 valores distintos, no un perfil limpio.
+El perfil usado es un PROXY inferido desde etiqueta_crm.
+497 registros (37.6%) sin etiqueta_crm fueron excluidos.
+
+COBERTURA:
+----------------------------------------------------------------------
+  Total dataset (con intención válida): 1322
+  Con perfil asignado:                  825 (62.4%)
+  Excluidos (sin perfil):               497 (37.6%)
+
+MÉTRICAS POR PERFIL:
+----------------------------------------------------------------------
+  Comprador_Activo
+    n=106 | Accuracy=0.9245 | Precision=0.4796 | Recall=0.5917 | F1-macro=0.5189
+  Prospecto_General
+    n=719 | Accuracy=0.936 | Precision=0.6899 | Recall=0.8156 | F1-macro=0.7418
+
+BRECHA DE EQUIDAD (F1-macro):
+----------------------------------------------------------------------
+  Mejor perfil: Prospecto_General (F1=0.7418)
+  Peor perfil:  Comprador_Activo (F1=0.5189)
+  Brecha:       0.2229 — ⚠ significativa (≥0.10)
+
+RECOMENDACIÓN PARA ROCKTEC:
+----------------------------------------------------------------------
+Incorporar en WhatsApp Business un mensaje de bienvenida con menú de
+selección de perfil al inicio de cada conversación:
+  "¿Con qué perfil nos contactas?"
+  1️⃣  Arquitecto / Diseñador
+  2️⃣  Constructor / Ingeniero
+  3️⃣  Aplicador / Técnico
+  4️⃣  Cliente final / Particular
+Esto permitirá en futuras versiones calcular métricas de equidad reales
+por segmento y personalizar las respuestas automáticas.
+
+Reporte Evidently HTML: generado ✅
+Tabla CSV: 06_resultados\equidad\tabla_equidad_por_perfil.csv
+======================================================================
