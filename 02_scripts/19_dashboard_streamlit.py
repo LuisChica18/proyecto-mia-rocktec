@@ -422,7 +422,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── TABS ─────────────────────────────────────────────────────────────────────
-tab1, tab2, tab3 = st.tabs(["💬  Clasificador", "📊  Dashboard", "📁  Lote de mensajes"])
+tab1, tab2, tab3, tab4 = st.tabs(["💬  Clasificador", "📊  Dashboard", "📁  Lote de mensajes", "📱  Chat WhatsApp"])
 
 # ────────────────────────────────────────────────────────────────────────────
 # TAB 1 — CLASIFICADOR
@@ -623,6 +623,109 @@ with tab3:
             csv = df_res.to_csv(index=False, encoding='utf-8')
             st.download_button("⬇️  Descargar CSV", data=csv,
                 file_name=f"clasificaciones_{datetime.now().strftime('%Y%m%d_%H%M')}.csv", mime="text/csv")
+
+
+# ── TAB 4: CHAT WHATSAPP ──────────────────────────────────────────────────────
+with tab4:
+    modelo_t4, vec_t4 = cargar_modelo()
+    st.markdown("#### 📱 Subir chat exportado de WhatsApp")
+    st.markdown(
+        "<span style='color:#8b949e;font-size:0.9rem;'>"
+        "Martha: exporta el chat desde WhatsApp → sube el .txt aquí → el sistema hace el resto."
+        "</span>", unsafe_allow_html=True
+    )
+    st.markdown(
+        "<div style='background:#161b22;border:1px solid #30363d;border-left:3px solid #58a6ff;"
+        "border-radius:0 8px 8px 0;padding:0.8rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#8b949e;'>"
+        "<strong style='color:#e6edf3;'>¿Cómo exportar el chat?</strong><br>"
+        "WhatsApp → Abrir chat → ⋮ Más → Exportar chat → Sin archivos → Guardar el .txt"
+        "</div>", unsafe_allow_html=True
+    )
+    
+    archivo_wa = st.file_uploader("Chat WhatsApp (.txt)", type=["txt"], key="uploader_wa")
+    
+    if archivo_wa and modelo_t4:
+        import re as re_wa
+        contenido_wa = archivo_wa.read().decode("utf-8", errors="ignore")
+        ROCKTEC_IDS = ["rocktec", "concreto decorativo"]
+        patron_wa = r"\d+/\d+/\d+, \d+:\d+ - ([^:]+): (.+?)(?=\n\d+/\d+/\d+, |\Z)"
+        matches_wa = re_wa.findall(patron_wa, contenido_wa, re_wa.DOTALL)
+        
+        mensajes_wa = []
+        nombre_wa = None
+        EXCLUIR = ["cifrados de extremo", "es un contacto", "multimedia omitido", "archivo adjunto", "imagen omitida", "<multimedia"]
+        
+        for rem, txt in matches_wa:
+            rem = rem.strip(); txt = txt.strip()
+            if any(e in txt.lower() for e in EXCLUIR): continue
+            if len(txt) < 5: continue
+            if any(r in rem.lower() for r in ROCKTEC_IDS): continue
+            if nombre_wa is None: nombre_wa = rem
+            mensajes_wa.append(txt[:200])
+        
+        if mensajes_wa:
+            st.success(f"✅ {len(mensajes_wa)} mensajes del cliente — {nombre_wa}")
+            
+            rows = []
+            for msg in mensajes_wa:
+                intent, conf, _, regla = clasificar(msg, modelo_t4, vec_t4, umbral)
+                label = intent if intent else "REVISAR"
+                rows.append({
+                    "Mensaje": msg[:80] + ("..." if len(msg) > 80 else ""),
+                    "Intención": label,
+                    "Descripción": DESCRIPCIONES.get(label, "Revisión humana"),
+                    "Confianza": f"{conf:.0%}" if conf > 0 else "—",
+                    "Acción": RECOMENDACIONES[label][0] if label in RECOMENDACIONES else "Revisar manualmente",
+                })
+            
+            df_wa = pd.DataFrame(rows)
+            n_auto_wa = sum(1 for r in rows if r["Intención"] != "REVISAR")
+            n_rev_wa = len(rows) - n_auto_wa
+            
+            c1, c2, c3 = st.columns(3)
+            with c1: st.metric("Mensajes cliente", len(mensajes_wa))
+            with c2: st.metric("Clasificados auto", n_auto_wa, f"{n_auto_wa/len(mensajes_wa):.0%}")
+            with c3: st.metric("Para revisión", n_rev_wa)
+            
+            ints = df_wa[df_wa["Intención"] != "REVISAR"]["Intención"].value_counts()
+            if not ints.empty:
+                st.markdown("**Resumen del cliente:**")
+                cols_i = st.columns(min(len(ints), 6))
+                for i, (intent, cnt) in enumerate(ints.items()):
+                    color = COLORES.get(intent, "#58a6ff")
+                    with cols_i[i % 6]:
+                        st.markdown(
+                            f"<div style='background:#161b22;border:1px solid #30363d;border-top:3px solid {color};"
+                            f"border-radius:8px;padding:0.8rem;text-align:center;'>"
+                            f"<div style='font-size:1.3rem;'>{ICONOS.get(intent,'•')}</div>"
+                            f"<div style='color:{color};font-weight:700;font-size:1.2rem;'>{cnt}</div>"
+                            f"<div style='color:#8b949e;font-size:0.75rem;'>{DESCRIPCIONES.get(intent,intent)}</div>"
+                            f"</div>", unsafe_allow_html=True
+                        )
+            
+            st.markdown("<br>", unsafe_allow_html=True)
+            st.dataframe(df_wa, hide_index=True, use_container_width=True)
+            
+            csv_wa = df_wa.to_csv(index=False, encoding="utf-8")
+            fn = (nombre_wa or "cliente").replace(" ", "_")
+            st.download_button(
+                "⬇️ Descargar reporte CSV",
+                data=csv_wa,
+                file_name=f"reporte_{fn}_{datetime.now().strftime('%Y%m%d')}.csv",
+                mime="text/csv"
+            )
+        else:
+            st.warning("No se encontraron mensajes del cliente. Verifica que sea un chat exportado de WhatsApp.")
+    else:
+        st.markdown(
+            "<div style='background:#161b22;border:1px solid #30363d;border-radius:10px;"
+            "padding:3rem;text-align:center;color:#8b949e;'>"
+            "<div style='font-size:3rem;margin-bottom:1rem;'>📱</div>"
+            "<div style='font-size:1rem;color:#e6edf3;margin-bottom:0.5rem;'>Sube el archivo .txt del chat de WhatsApp</div>"
+            "<div>El sistema filtra automáticamente los mensajes del cliente y clasifica sus intenciones</div>"
+            "</div>", unsafe_allow_html=True
+        )
+
 
 # ── FOOTER ───────────────────────────────────────────────────────────────────
 st.markdown("""
