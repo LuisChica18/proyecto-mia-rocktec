@@ -1,0 +1,13 @@
+======================================================================
+REPORTE PIPELINE ORQUESTADO — ROCKTEC MIA 2026
+======================================================================
+Fecha: 2026-08-04 23:07:36
+Duración total: 57.7s
+----------------------------------------------------------------------
+✓ Etapa 1 — ETL (limpieza, consolidación, duplicados) (3.2s)
+✓ Etapa 2 — Feature engineering (verificación) (1.3s)
+✓ Etapa 4 — Evaluación honesta en holdout (F1-macro >= 0.75) (28.6s)
+✓ Producción — Reentrenar artefacto de despliegue (100% datos etiquetados) (13.8s)
+✓ Etapa 5 — Monitoreo de equidad por perfil de cliente (1.6s)
+✓ Etapa 5 — Monitoreo de drift (PSI) (9.2s)
+======================================================================

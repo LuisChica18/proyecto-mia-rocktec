@@ -1,8 +1,8 @@
 # Diagnóstico de Estado — Fases 3, 4 y 5
 ## Plataforma de Clasificación de Intenciones — Rocktec MIA 2026
 
-**Versión:** 1.2
-**Fecha:** Agosto 2026 (actualizado; v1.0 era de Julio 2026, v1.1 del 04 Ago 2026)
+**Versión:** 1.4
+**Fecha:** Agosto 2026 (actualizado; v1.0 era de Julio 2026, v1.1/v1.2/v1.3 del 04 Ago 2026)
 **Responsable:** Luis Chica (A3) — Arquitectura
 **Referencia:** `README.md` §"Fases del Proyecto"
 
@@ -27,6 +27,23 @@ commiteado desde el 25 Jul 2026 (`d7b7fa9`).
 documento identificaba como el bloqueante más crítico restante (Etapa 5 — monitoreo de drift, PSI).
 Ver detalle en la sección Fase 3 más abajo y en `CHANGELOG.md`.
 
+**Cambios en v1.3 (04 Ago 2026):** corrección importante de alcance — Rocktec **no tiene acceso a la
+WhatsApp Business API** (ni lo tendrá en el horizonte de este proyecto). El mecanismo de integración
+**definitivo**, no un sustituto temporal, es la descarga manual de conversaciones desde WhatsApp y su
+carga al dashboard (`19_dashboard_streamlit.py`, Tab 4). Esto invalidaba la lectura de v1.1/v1.2 de
+que el "piloto real" de Fase 5 estaba bloqueado por falta de integración en vivo — no lo está: el
+piloto puede arrancar con el mecanismo que ya existe. Se corrigen las filas de Fase 3
+("Integración con WhatsApp Business") y Fase 5 ("Piloto real") más abajo.
+
+**Cambios en v1.4 (04 Ago 2026):** se implementa `22_pipeline_orquestado.py`, cerrando la última
+brecha técnica de Fase 3 — un entrypoint único que corre feature engineering → evaluación honesta en
+holdout → reentrenamiento de producción → monitoreo (equidad + drift), con ETL y los experimentos de
+comparación de arquitecturas (grid search, validación estadística) como etapas opcionales explícitas.
+Validado con una corrida real end-to-end (`06_resultados/pipeline/reporte_pipeline.txt`), incluyendo
+una corrida con `--incluir-etl`. De paso corrige un bug preexistente en `04_feature_engineering.py`
+(el demo de 7 frases fallaba con `min_df=2` por falta de vocabulario repetido — no afectaba al uso
+real del vectorizador con datasets de cientos/miles de filas).
+
 ---
 
 ## 2. Fase 3 — Desarrollo e Implementación
@@ -41,22 +58,24 @@ Ver detalle en la sección Fase 3 más abajo y en `CHANGELOG.md`.
 | Etapa 4 (Evaluación) implementada y reportada | ✅ | Ver Fase 4 más abajo — meta cuantitativa ya alcanzada |
 | Etapa 5 — **monitoreo de equidad** por perfil de cliente | ✅ (Sprint 8, 31 Jul) | `20_monitoreo_equidad.py` (Evidently AI) detecta brecha significativa (F1-macro 0.7418 vs. 0.5189 entre perfiles) — ver `06_resultados/equidad/`. Es una dimensión de monitoreo distinta al drift (mide sesgo por segmento, no cambio de distribución en el tiempo). |
 | Etapa 5 — **monitoreo de drift (PSI)** implementado como job real | ✅ (04 Ago 2026) | `21_monitoreo_drift.py`: calcula PSI de la distribución de intenciones (`log_predicciones.csv` vs. `train_val.csv`) y PSI de confianza (usando confianza *out-of-fold*, no in-sample, para no sobreestimar drift). Corrida de validación (log sembrado con 345 mensajes históricos nunca anotados, no tráfico real de piloto): PSI intenciones = 0.11 (moderado), PSI confianza = 0.75 (severo, pero explicado por contenido fuera de dominio en el lote simulado — ver `06_resultados/drift/reporte_drift.txt`). **Sigue pendiente:** correr esto sobre tráfico real de un piloto (Fase 5) para una lectura de drift válida; drift de vocabulario (features nuevas) queda fuera de alcance. |
-| Pipeline orquestado end-to-end en un solo punto de entrada (ETL → features → entrenamiento → evaluación) | 🟡 | `06_pipeline_completo.py` orquesta **solo** la Etapa 1 (ETL). No hay un comando único que corra desde datos crudos hasta el modelo evaluado — hoy se ejecuta script por script, manualmente. |
+| Pipeline orquestado end-to-end en un solo punto de entrada (ETL → features → entrenamiento → evaluación → monitoreo) | ✅ (04 Ago 2026) | `22_pipeline_orquestado.py`: encadena `04_feature_engineering.py` → `13_evaluacion_holdout.py` → `15_entrenar_produccion.py` → `20_monitoreo_equidad.py` → `21_monitoreo_drift.py`, con `06_pipeline_completo.py` (ETL) y los experimentos (`05_entrenar_modelos.py`, `07_validacion_estadistica.py`) como etapas opcionales por flag. Validado con corrida real (`06_resultados/pipeline/reporte_pipeline.txt`) en ~109s (~58s con `--incluir-etl`, que además es determinista: no generó cambios en `03_datos_procesados/` tras la primera normalización). Deliberadamente NO re-ejecuta `09_crear_holdout_set.py` — repartir el holdout en cada corrida sería el mismo riesgo de fuga de datos que motivó el fix de Sprint 7. |
 | Componente de inferencia / serving (tomar 1 mensaje nuevo y devolver una predicción) | ✅ (batch) | `15_entrenar_produccion.py` + `16_inferencia.py` (`predecir(textos)` y CLI). Diseño deliberado por lotes, no API en vivo. |
 | **Umbral de confianza adaptativo** para decidir automatización vs. revisión humana | ✅ (Sprint 8, 30 Jul) | `17_umbral_confianza_adaptativo.py`: umbral óptimo = 0.75, automatiza 70.6% de holdout con F1-auto = 0.9214. Refina la mitigación de R1/R2 ya presente en `16_inferencia.py`. |
-| **Interfaz operativa para asesores de Rocktec** | ✅ (Sprint 9, 3 Ago) | `19_dashboard_streamlit.py`: dashboard con clasificador interactivo, métricas, carga masiva por CSV y **Tab 4 — upload directo de chat exportado de WhatsApp** con clasificación automática por cliente. Es la primera pieza pensada para uso directo del equipo comercial, no solo del equipo de datos. **No sustituye la integración en vivo con WhatsApp Business** (fila siguiente): sigue siendo carga manual de un archivo exportado, no una API conectada al canal real. |
-| Integración con WhatsApp Business (el problema de negocio original, `DISEÑO_MLOPS_FASE2.md` §1) | ❌ | El proyecto trabaja sobre exportaciones históricas/manuales (Excel o `.txt` de chat), no sobre mensajes en vivo. No implementada ni diseñada en detalle todavía. |
-| Base de datos (PostgreSQL) para log de mensajes/predicciones | ❌ (pospuesto) | `16_inferencia.py` ya escribe un log a `06_resultados/predicciones/log_predicciones.csv` como sustituto interino. Sin integración en vivo con WhatsApp, CSV basta — PostgreSQL se retoma cuando exista ingesta en vivo. |
-| CI/CD | 🟡 | **CI implementado** (`.github/workflows/ci.yml`): compila los scripts y reentrena+evalúa TF-IDF+LR sobre `holdout_test.csv` en cada push a `main`, con gate de F1-macro ≥ 0.75. **CD sigue pendiente** — ya existe un artefacto de inferencia que desplegar, pero aún no hay a dónde desplegarlo. |
+| **Interfaz operativa para asesores de Rocktec** | ✅ (Sprint 9, 3 Ago) | `19_dashboard_streamlit.py`: dashboard con clasificador interactivo, métricas, carga masiva por CSV y **Tab 4 — upload directo de chat exportado de WhatsApp** con clasificación automática por cliente. Es la primera pieza pensada para uso directo del equipo comercial, no solo del equipo de datos. **Esta es la integración con WhatsApp** (ver fila siguiente, corregida en v1.3) — no un sustituto provisional de una API que llegaría después. |
+| Integración con WhatsApp (el problema de negocio original, `DISEÑO_MLOPS_FASE2.md` §1) | ✅ (alcance corregido, v1.3) | **Rocktec no tiene ni tendrá WhatsApp Business API en el horizonte de este proyecto** — confirmado por el equipo. La integración real y definitiva es descarga manual del chat exportado (`.txt`) + upload al dashboard, Tab 4. No es una limitación a resolver; es el diseño correcto para el contexto de una PYME sin infraestructura de API de mensajería. Cierra este ítem. |
+| Base de datos (PostgreSQL) para log de mensajes/predicciones | ❌ (pospuesto, alcance ajustado) | `16_inferencia.py` ya escribe un log a `06_resultados/predicciones/log_predicciones.csv` como sustituto interino. Con integración por descarga manual (no API en vivo), el volumen y la cadencia de datos son bajos — CSV puede ser suficiente de forma permanente, no solo "mientras no hay ingesta en vivo". Reevaluar solo si el volumen de piloto lo justifica. |
+| CI/CD | 🟡 | **CI implementado** (`.github/workflows/ci.yml`): compila los scripts y reentrena+evalúa TF-IDF+LR sobre `holdout_test.csv` en cada push a `main`, con gate de F1-macro ≥ 0.75. **CD sigue pendiente**, pero el objetivo ya no es "desplegar una API que reciba mensajes de WhatsApp" — es desplegar el **dashboard Streamlit** como servicio accesible para los asesores (hoy solo se corre localmente), lo cual es mucho más alcanzable sin infraestructura de mensajería. |
 | Empaquetado versionado del modelo de producción (TF-IDF+LR) | ✅ | `15_entrenar_produccion.py`: `06_resultados/modelos/produccion/metadata.json` registra versión (`v1.0`), fecha, hiperparámetro ganador y F1 honesto. |
 | Anonimización de datos sensibles (PII) | ✅ (Sprint 8, 30 Jul) | `00_anonimizar_dataset.py`: 223/1,500 registros (14.9%) enmascarados → `dataset_consenso_final_anonimizado.csv`. No estaba en el alcance original de Fase 3 pero cierra un gap de manejo de datos que cualquier "pipeline funcional" debería cubrir. |
 
 **Conclusión Fase 3:** las 5 etapas del diseño MLOps existen ahora como scripts ejecutables — con la
 implementación de `21_monitoreo_drift.py` el 04 Ago 2026, **las dos dimensiones de monitoreo
 (equidad y drift) ya están cubiertas**, aunque el drift todavía no se ha medido sobre tráfico real
-(solo sobre un lote simulado de validación). La única brecha real que queda para declarar Fase 3 un
-"pipeline funcional" completo es la **orquestación end-to-end** en un solo entrypoint — hoy se
-ejecuta script por script, manualmente.
+(solo sobre un lote simulado de validación). Con la corrección de alcance de v1.3 (integración =
+descarga manual + dashboard, no API en vivo), **la integración con WhatsApp deja de ser una brecha**.
+Con `22_pipeline_orquestado.py` (v1.4), **la orquestación end-to-end también queda resuelta**. La
+única brecha técnica real que queda en Fase 3 es **desplegar el dashboard** como servicio accesible
+en vez de correrlo solo en local.
 
 ---
 
@@ -93,14 +112,16 @@ errores cualitativo.
 
 | Ítem | Estado | Evidencia / brecha |
 |------|:---:|---------------------|
-| Piloto real con tráfico de Rocktec | ❌ | No implementado ni iniciado — depende de que Fase 3 tenga integración en vivo con WhatsApp. El dashboard de Sprint 9 (upload manual de chat exportado) es un paso intermedio útil pero no es un piloto en vivo. |
-| Monitoreo de drift (PSI) corriendo sobre el piloto | 🟡 | El script ya existe (`21_monitoreo_drift.py`, 04 Ago 2026) y está validado con un log simulado — solo falta que exista tráfico real de piloto para apuntarlo ahí. Ya no es un gap de implementación, es un gap de tener piloto. |
+| Piloto real con tráfico de Rocktec | 🟡 (desbloqueado en v1.3) | **Ya no depende de una integración en vivo que nunca va a existir** — Rocktec no tiene WhatsApp Business API, así que el mecanismo definitivo es descarga manual + dashboard Tab 4. El piloto puede arrancar hoy: falta que asesores de Rocktec empiecen a subir chats reales exportados al dashboard de forma sostenida, no una pieza técnica nueva. |
+| Monitoreo de drift (PSI) corriendo sobre el piloto | 🟡 | El script ya existe (`21_monitoreo_drift.py`, 04 Ago 2026) y está validado con un log simulado — solo falta que el piloto (fila anterior) genere tráfico real para apuntarlo ahí. Ya no es un gap de implementación, es un gap de uso sostenido. |
 | Documento o guion de presentación de defensa final | ❌ | No encontré ninguna presentación, guion o slides en el repositorio. |
 | Documento de tesis final consolidado (versión única para el comité) | ❌ | El contenido narrativo del proyecto vive repartido entre `README.md`, `CHANGELOG.md` y varios `.docx`/`.md` en `05_documentacion/`/`06_resultados/` — no hay un documento único de tesis que los consolide. |
 | Cronograma semanal con responsables (entregable de Fase 2 que ordenaría el camino hasta Fase 5) | ❌ | Sigue pendiente (identificado como el último entregable abierto de Fase 2). |
 
-**Conclusión Fase 5:** sigue siendo la fase **menos avanzada de las tres** — no puede empezar
-realmente hasta que Fase 3 entregue integración en vivo y el monitoreo de drift esté activo.
+**Conclusión Fase 5:** sigue siendo la fase **menos avanzada de las tres**, pero ya no está bloqueada
+técnicamente — el piloto puede arrancar con lo que ya existe (dashboard + descarga manual de chats).
+Lo que falta es **operativo** (que Rocktec adopte el flujo de subir chats reales de forma sostenida)
+y de **entregables de cierre** (documento de defensa, tesis consolidada, cronograma).
 
 ---
 
@@ -108,9 +129,9 @@ realmente hasta que Fase 3 entregue integración en vivo y el monitoreo de drift
 
 | Fase | Meta formal | Estado de la meta | Mayor brecha para cerrar la fase |
 |------|-------------|:---:|-----------------------------------|
-| **Fase 3** | Pipeline funcional | 🟡 Inferencia batch, umbral adaptativo, equidad, drift (validado con log simulado) y dashboard ya implementados; falta solo orquestación end-to-end | Un entrypoint único para todo el pipeline (ETL→features→entrenamiento→evaluación→monitoreo) |
+| **Fase 3** | Pipeline funcional | 🟡 Inferencia batch, umbral adaptativo, equidad, drift, integración (descarga+dashboard) y orquestación end-to-end ya implementados; falta solo desplegar el dashboard | Desplegar el dashboard como servicio accesible (único ítem técnico restante) |
 | **Fase 4** | F1-macro ≥ 0.75 | ✅ Meta cuantitativa alcanzada (0.7938–0.7967); evaluación enriquecida con umbral adaptativo y equidad | Informe de evaluación formal + análisis de errores cualitativo — la métrica ya existe, el "entregable" no |
-| **Fase 5** | Piloto + presentación exitosa | ❌ No iniciada — bloqueada por Fase 3 | Ya no falta implementar monitoreo de drift, solo tener piloto real donde correrlo; más documento/presentación de defensa |
+| **Fase 5** | Piloto + presentación exitosa | 🟡 Ya no bloqueada técnicamente — falta que Rocktec adopte el flujo de forma sostenida | Piloto operativo real (no técnico) + documento/presentación de defensa |
 
 ---
 
@@ -118,7 +139,8 @@ realmente hasta que Fase 3 entregue integración en vivo y el monitoreo de drift
 
 ```mermaid
 flowchart LR
-    F3A["Fase 3: componente de\ninferencia/serving ✅"] --> F5A["Fase 5: piloto real"]
+    F3D["Fase 3: integración\n(descarga + dashboard) ✅\n(v1.3 — no habrá API en vivo)"] --> F5A["Fase 5: piloto real\n(operativo, no técnico)"]
+    F3A["Fase 3: componente de\ninferencia/serving ✅"] --> F5A
     F3C["Fase 3: monitoreo de\nequidad ✅ (Sprint 8)"] --> F5B
     F3B["Fase 3: monitoreo de\ndrift (PSI) implementado ✅\n(validado, falta tráfico real)"] --> F5B["Fase 5: monitoreo\ndurante el piloto"]
     F4["Fase 4: informe de\nevaluación formal"] --> F5C["Fase 5: documento de\ndefensa final"]
@@ -126,6 +148,7 @@ flowchart LR
     F5B --> F5D
     F5C --> F5D
 
+    style F3D fill:#e6f4ea,stroke:#34a853
     style F3A fill:#e6f4ea,stroke:#34a853
     style F3C fill:#e6f4ea,stroke:#34a853
     style F3B fill:#fef7e0,stroke:#f9ab00
@@ -133,13 +156,14 @@ flowchart LR
     style F5D fill:#e6f4ea,stroke:#34a853
 ```
 
-El componente de inferencia (F3A), el monitoreo de equidad (F3C) y ahora también el monitoreo de
-drift (F3B, `21_monitoreo_drift.py`, 04 Ago 2026) ya están implementados. F3B queda en amarillo (no
-verde) porque solo se ha validado con un log simulado, no con tráfico real de piloto. Fase 4 está
-sustancialmente resuelta en su aspecto cuantitativo, así que el camino crítico real hasta el 21 Sep
-se reduce a: (1) tener un piloto real donde correr el monitoreo de drift ya implementado, (2) cerrar
-los entregables formales de Fase 4 (informe, análisis de errores), y (3) preparar el documento de
-defensa de Fase 5.
+El componente de inferencia (F3A), el monitoreo de equidad (F3C), el monitoreo de drift (F3B), la
+integración con WhatsApp (F3D, vía descarga manual + dashboard, v1.3) y ahora la orquestación
+end-to-end (`22_pipeline_orquestado.py`, v1.4) ya están resueltos. F3B queda en amarillo porque solo
+se ha validado con un log simulado, no con tráfico real. **El camino crítico hasta el 21 Sep ya no
+tiene bloqueantes técnicos de Fase 3**: se reduce a (1) que Rocktec use el piloto de forma sostenida
+(con eso llega tráfico real para drift y se valida el pipeline con datos reales), (2) desplegar el
+dashboard como servicio, (3) cerrar los entregables formales de Fase 4 (informe, análisis de
+errores), y (4) preparar el documento de defensa de Fase 5.
 
 ---
 

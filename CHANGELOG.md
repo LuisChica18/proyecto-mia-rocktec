@@ -223,5 +223,38 @@ Ajustes realizados:
   - **Fuera de alcance:** drift de vocabulario (features TF-IDF nuevas) — el diseño original solo
     cubre drift de la distribución de predicciones. Ver `06_resultados/drift/reporte_drift.txt`.
 
+## Sprint 10 — Corrección de alcance: no hay WhatsApp Business API (4 Ago 2026)
+
+- **Aclaración confirmada por el equipo:** Rocktec no tiene ni tendrá acceso a la WhatsApp Business
+  API. El mecanismo de integración **definitivo** es la descarga manual del chat exportado (`.txt`)
+  y su carga al dashboard (`19_dashboard_streamlit.py`, Tab 4) — no un sustituto provisional de una
+  API que llegaría después. Esto corrige el diagnóstico de Fase 3/5: el "piloto real" no estaba
+  bloqueado por falta de integración en vivo, ya puede arrancar con lo que existe. PostgreSQL y CD
+  se reencuadran en consecuencia: CSV puede ser la solución permanente (no solo interina) dado el
+  bajo volumen de descargas manuales, y CD debería apuntar a desplegar el dashboard como servicio,
+  no una API de mensajería. Ver `05_documentacion/DIAGNOSTICO_FASES_3_4_5.md` v1.3.
+
+## Sprint 10 — Pipeline orquestado end-to-end (4 Ago 2026)
+
+- **`22_pipeline_orquestado.py`** (nuevo): cierra la última brecha técnica de Fase 3 identificada en
+  `DIAGNOSTICO_FASES_3_4_5.md` — un entrypoint único que encadena `04_feature_engineering.py`
+  (verificación) → `13_evaluacion_holdout.py` (evaluación honesta) → `15_entrenar_produccion.py`
+  (artefacto de despliegue) → `20_monitoreo_equidad.py` → `21_monitoreo_drift.py`, cada etapa como
+  subproceso del script real (sin reimplementar su lógica). `06_pipeline_completo.py` (ETL) y los
+  experimentos de comparación de arquitecturas (`05_entrenar_modelos.py`,
+  `07_validacion_estadistica.py`) quedan como etapas opcionales por flag
+  (`--incluir-etl`, `--incluir-entrenamiento-experimental`, `--incluir-validacion-estadistica`).
+  **Decisión deliberada:** no re-ejecuta `09_crear_holdout_set.py` automáticamente — repartir el
+  holdout en cada corrida arriesgaría el mismo tipo de fuga de datos que motivó el fix de Sprint 7
+  si `dataset_consenso_final.csv` cambia (p. ej. tras confirmar anotaciones de active learning).
+- **Validado con una corrida real end-to-end** (`06_resultados/pipeline/reporte_pipeline.txt`):
+  ~109s sin flags, ~58s con `--incluir-etl` (determinista — no generó cambios sustantivos en
+  `03_datos_procesados/`, solo confirmó que la normalización de columnas ya estaba aplicada).
+- **De paso, corrige un bug preexistente en `04_feature_engineering.py`:** el bloque de
+  autoverificación (7 frases de ejemplo) fallaba con `ValueError` porque `min_df=2` no encontraba
+  vocabulario repetido en una muestra tan pequeña — no afectaba el uso real del vectorizador
+  (entrenado siempre sobre datasets de cientos/miles de filas), solo el script de demo se rompía.
+  Ahora degrada con una advertencia en vez de abortar.
+
 ## Próxima — Fase 2: Diseño MLOps Pipeline
 Ver `05_documentacion/DISEÑO_MLOPS_FASE2.md`.

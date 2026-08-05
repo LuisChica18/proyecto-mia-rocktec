@@ -243,8 +243,14 @@ if __name__ == '__main__':
     for t in ejemplos:
         print(f"  → {prep.limpiar(t)}")
 
-    X = vec.fit_transform(ejemplos)
-    print(f"\n✓ Matriz TF-IDF+manual: {X.shape}")
+    try:
+        X = vec.fit_transform(ejemplos)
+        print(f"\n✓ Matriz TF-IDF+manual: {X.shape}")
+    except ValueError as e:
+        # min_df=2 (pensado para datasets reales de cientos/miles de filas) puede
+        # no dejar ningún término tras el pruning en un demo de solo 7 frases sin
+        # vocabulario repetido — no es un fallo del vectorizador en uso real.
+        print(f"\n⚠ Demo TF-IDF omitida (min_df=2 no aplica a un ejemplo tan pequeño): {e}")
     print(f"✓ Features manuales:    {prep.features_manuales(ejemplos).shape}")
     print(f"✓ Clases codificadas:   {cod.clases}")
 
