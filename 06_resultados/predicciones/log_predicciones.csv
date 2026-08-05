@@ -1,0 +1,346 @@
+timestamp,texto,intencion_predicha,confianza,revisar_manual
+2026-08-04T22:01:28,Podrían enviar la ubicación del restaurante por favor,INF,0.712,False
+2026-08-04T22:01:28,En la 5 de junio y manabi,INF,0.6537,False
+2026-08-04T22:01:28,Saludos Arquitecta así es,INF,0.8372,False
+2026-08-04T22:01:28,Se eliminó este mensaje.,INF,0.83,False
+2026-08-04T22:01:28,Ve unas tarde me puede enviar los tonos de micro cemento,INF,0.4419,True
+2026-08-04T22:01:28,y el acabado final logra con la experiencia del maestro o tecnico de aplicacion...,INF,0.6283,False
+2026-08-04T22:01:28,Aproximadamente de 4a5 días depende de la habilidad de los maestros y del estado de la superficie,INF,0.7467,False
+2026-08-04T22:01:28,Son el tipo terminado de placas  que se aprecia en la pared posterior,INF,0.6533,False
+2026-08-04T22:01:28,"Está hermoso, que herramientas uso?",TEC,0.8044,False
+2026-08-04T22:01:28,Buenos días por favor tal vez algún aplicador en Los Ríos (Buena fé)??,INF,0.7939,False
+2026-08-04T22:01:28,Es un efecto marmoleado 😂,INF,0.7853,False
+2026-08-04T22:01:28,"Buena tarde, mil gracias por la información.",INF,0.89,False
+2026-08-04T22:01:28,"Gracias Arq , la experiencia también cuenta",INF,0.82,False
+2026-08-04T22:01:28,"Hola, me refiero a estas dos imágenes",INF,0.789,False
+2026-08-04T22:01:28,Muy buenas tardes estimados clientes sean bienvenidos al grupo de información de Rocktec,INF,0.8517,False
+2026-08-04T22:01:28,"{'searches_user': [{'title': 'elementalstudio_co', 'string_list_data': [{'href': 'https://www.instagram.com/_u/elementalstudio_co', 'timestamp': 1778715397}]}]}",VEN,0.7504,False
+2026-08-04T22:01:28,https://maps.app.goo.gl/y1tnSohkBgGgRD318?g_st=awb,INF,0.738,False
+2026-08-04T22:01:28,"ya le reenvié la información, verifique por favor 👍🏻",INF,0.8075,False
+2026-08-04T22:01:28,El Cidap tiene parqueadero privado 👍🏻 pueden venir en sus autos,INF,0.5125,False
+2026-08-04T22:01:28,Muy buenas tardes estimados clientes sean bienvenidos a este grupo de información...,INF,0.8559,False
+2026-08-04T22:01:28,Buenos días me puede ayudar una información el microcemento reciste para una plataforma de un garaje donde se va a estacionar 3 vehículos,INF,0.5681,False
+2026-08-04T22:01:28,Podrían reenviar el último listado actualizado de precios 🙏,COT,0.9022,False
+2026-08-04T22:01:28,Ok comuníquense con Mayra por interno gracias,INF,0.9038,False
+2026-08-04T22:01:28,Buenas tardes algún aplicador en macas ?,INF,0.7919,False
+2026-08-04T22:01:28,Buenos dias con todos.  Empezamos en 5 minutos  👍🏻,INF,0.7748,False
+2026-08-04T22:01:28,Amigos suban sus videos y fotos del taller. Muchas gracias,CUR,1.0,False
+2026-08-04T22:01:28,"Buenas tardes, gracias.",INF,0.7967,False
+2026-08-04T22:01:28,"Buen dia, es un gusto para nosotros poder integrarlos a este grupo donde vamos a compartir información de gran relevancia para sus aplicaciones.",INF,0.7678,False
+2026-08-04T22:01:28,Las flores son hechas con algún objeto manual,INF,0.6776,False
+2026-08-04T22:01:28,"Buenas noches este es mi diseño,un favor si le pueden sacar en Microcemento con Roktec.??? Gracias.",INF,0.7055,False
+2026-08-04T22:01:28,Sería una te de aluminio,INF,0.8001,False
+2026-08-04T22:01:28,No duden en realizar sus preguntas sobre la aplicación de nuestros productos....,INF,0.7141,False
+2026-08-04T22:01:28,"¡Hola, estimados aplicadores!",INF,0.8723,False
+2026-08-04T22:01:28,Más parece una mala propaganda del microcemento.,TEC,0.5219,False
+2026-08-04T22:01:28,Buenos días lo recomendamos para ese uso,INF,0.5829,False
+2026-08-04T22:01:28,Obra realizada por Aplicador Maestro Patricio Suntasig <Se editó este mensaje.>,INF,0.6844,False
+2026-08-04T22:01:28,la llana de borde de Rocktec esta en 15  dolares,COT,0.891,False
+2026-08-04T22:01:28,Estamos gustosos de servirles,INF,0.8215,False
+2026-08-04T22:01:28,Chévere buen trabajo felicidades,INF,0.8014,False
+2026-08-04T22:01:28,Saludos a todos que bueno tener el grupo para cualquier información y ayuda que nos podamos dar,INF,0.7373,False
+2026-08-04T22:01:28,"Buenos días, en una vered",INF,0.8417,False
+2026-08-04T22:01:28,"ubicación: https://maps.google.com/?q=-1.0448622,-80.4787361",INF,0.8038,False
+2026-08-04T22:01:28,Estamos para servirles,INF,0.823,False
+2026-08-04T22:01:28,La Cartilla de Colores aplica para los morteros Thin-set?,INF,0.5275,False
+2026-08-04T22:01:28,"Buenas tardes por favor me podrían ayudar, cual es el  precios por m2 de microcemeto y microconcreto 🙏🏻",COT,0.9327,False
+2026-08-04T22:01:28,Saludos  Euro el cliente necesita que le hagan ese acabado tipo  duela desencofrada,INF,0.753,False
+2026-08-04T22:01:28,Buenas tardes gracias por toda la información 👍,INF,0.8057,False
+2026-08-04T22:01:28,Qué tipo de canastas ?,INF,0.7408,False
+2026-08-04T22:01:28,¡Saludos a todos 🙋🏻‍♀️!,INF,0.8586,False
+2026-08-04T22:01:28,"{'monetization_eligibility': [{'title': '', 'media_map_data': {}, 'string_map_data': {'Nombre del producto': {'href': '', 'value': 'BRANDED CONTENT', 'timestamp': 0}, 'DecisiÃ³n': {'href': '', 'value': 'Eligible', 'timestamp': 0}, 'Motivo': {'href': '', 'value': '', 'timestamp': 0}}}]}",VEN,0.4768,True
+2026-08-04T22:01:28,"Buenas tardes, por favor me pueden ayudar con algunos productos. Nadie contesta en ventas.",INF,0.643,False
+2026-08-04T22:01:28,"{'settings_allow_comments_from': [{'title': '', 'media_map_data': {}, 'string_map_data': {'Se permiten comentarios de': {'href': '', 'value': 'Everyone', 'timestamp': 0}}}]}",INF,0.5579,False
+2026-08-04T22:01:28,Se eliminó este mensaje.,INF,0.83,False
+2026-08-04T22:01:28,Buenas tardes estimada nos puede compatir los precios de los materiales porfavor,COT,0.9815,False
+2026-08-04T22:01:28,Muy buenas tardes.  Gracias.,INF,0.7855,False
+2026-08-04T22:01:28,Chévere aún mantiene color y forma …,INF,0.7563,False
+2026-08-04T22:01:28,No es por humedad es por resitencia,TEC,0.6351,False
+2026-08-04T22:01:28,La piedra chispa es piedra 3/4 o triturada?,TEC,0.7829,False
+2026-08-04T22:01:28,Expectacular  proyecto  eres un artista !!!,INF,0.8281,False
+2026-08-04T22:01:28,Buenos días aquí tenemos este video para darnos cuenta el movimiento de la llana que el maestro hace.,INF,0.7269,False
+2026-08-04T22:01:28,"{'timestamp': 1666749474, 'media': [], 'label_values': [{'label': 'URL', 'value': ''}, {'label': 'Nombre', 'value': 'Ninay Organics'}, {'label': 'Nombre de usuario', 'value': 'ninayorganics'}], 'fbid': '17841446841521679'}",VEN,0.5224,False
+2026-08-04T22:01:28,o tal vez si tiene un correo Gmail para reenviarle ☺️👍🏻,INF,0.6619,False
+2026-08-04T22:01:28,son precios referenciales,COT,0.9361,False
+2026-08-04T22:01:28,Chicos buenos dias como estan,INF,0.7759,False
+2026-08-04T22:01:28,Los precios son en cualquier color  😉,COT,0.9533,False
+2026-08-04T22:01:28,Básicamente  la diferencia entre las dos lineas de producto es que la Linea Premiun esta fabricada con materia prima Alemana que la importamos directamente.,INF,0.6916,False
+2026-08-04T22:01:28,Exacto asi mismo es !! A medida que uno le pierde el miedo va mejorando 😉,INF,0.7335,False
+2026-08-04T22:01:28,Buenas podría darme el valor del separador de juntas y el de los bordes también porfavor,COT,0.7959,False
+2026-08-04T22:01:28,GRACIAS POR LA INVITACION,INF,0.8831,False
+2026-08-04T22:01:28,Se eliminó este mensaje.,INF,0.83,False
+2026-08-04T22:01:28,Buenas tardes a todos,INF,0.8134,False
+2026-08-04T22:01:28,Y si nos pueden porfa mandar más información técnica,TEC,0.733,False
+2026-08-04T22:01:28,Muy amable le escribo por interno,INF,0.8382,False
+2026-08-04T22:01:28,Que bien Jesus !!! Usted es super habil !!,INF,0.7827,False
+2026-08-04T22:01:28,Comentenme quien esta con disponibilidad por favor,INF,0.7698,False
+2026-08-04T22:01:28,Saludos si quieres  hacerlo mas tenue lo diluyes un poco en agua,INF,0.705,False
+2026-08-04T22:01:28,@⁨+593 99 387 2059⁩ si está dentro del grupo estimado,INF,0.7773,False
+2026-08-04T22:01:28,Que bien maestroooo y solito !!!!,INF,0.7558,False
+2026-08-04T22:01:28,"{'timestamp': 1753319910, 'media': [], 'label_values': [{'label': 'Mensaje', 'value': 'In-app Message 980195444009358'}, {'label': 'Tipo de clic', 'value': 'Dismiss Click'}, {'label': 'Total', 'value': '1'}], 'fbid': '980195444009358:17841400514655793:dis'}",VEN,0.6086,False
+2026-08-04T22:01:28,En micros claros debemos usar por ley fondos grueso blanco,TEC,0.867,False
+2026-08-04T22:01:28,Depende el estructurado de gymsup,INF,0.7834,False
+2026-08-04T22:01:28,De acuerdo a la normativa de la ARCSA?,INF,0.6347,False
+2026-08-04T22:01:28,Ya busco un video y les envio 😉,INF,0.854,False
+2026-08-04T22:01:28,Catálogos de acabados en piso,INF,0.8207,False
+2026-08-04T22:01:28,Se eliminó este mensaje.,INF,0.83,False
+2026-08-04T22:01:28,Gracias por la aclaración?,INF,0.8429,False
+2026-08-04T22:01:28,"Ya para pedidos los enviamos desde acá, recorden sí, ya les voy a tener que hacerlo al teléfono de ventas y ya les voy a pasar el número y ahí hacen el pedido, le dan el código de aplicadora a la persona que les responde para que pueda tener el precio.",COT,0.6973,False
+2026-08-04T22:01:28,"{'timestamp': 1764326492, 'media': [], 'label_values': [{'label': 'URL', 'value': ''}, {'label': 'Nombre', 'value': ''}, {'label': 'Nombre de usuario', 'value': 'jiab.eishi'}], 'fbid': '17841478868358877'}",INF,0.5188,False
+2026-08-04T22:01:28,"Buenos días, por favor me pueden ayudar con un video de aplicación de concreto estampado?",COT,0.4951,True
+2026-08-04T22:01:28,"Muchas gracias, buena tarde.",INF,0.921,False
+2026-08-04T22:01:28,Buenas tardes arquitecta,INF,0.836,False
+2026-08-04T22:01:28,"{'timestamp': 1776692334, 'media': [], 'label_values': [{'label': 'URL', 'value': 'https://youtube.com/fashionistaera'}, {'label': 'Nombre', 'value': 'Hanz'}, {'label': 'Nombre de usuario', 'value': 'fashionistaera21'}], 'fbid': '17841472032372763'}",VEN,0.8774,False
+2026-08-04T22:01:28,estamos atentos para servirles!,INF,0.8211,False
+2026-08-04T22:01:28,Estimados APLICADORES!,INF,0.823,False
+2026-08-04T22:01:28,Luego lo sellas o lo dejas asi ?,TEC,0.809,False
+2026-08-04T22:01:28,Muy buenas tardes a los nuevos aplicadores de Rocktec se les da la bienvenida a nuestro grupo....,INF,0.8076,False
+2026-08-04T22:01:28,Saludos claro lo puedes mirar en la pagina web en la parte  que dice videos,INF,0.6369,False
+2026-08-04T22:01:28,Cuánto tiempo tarda la instalación de 90m2 de microcemento en piso?,INF,0.5205,False
+2026-08-04T22:01:28,Todos los precios son más IVA,COT,0.9685,False
+2026-08-04T22:01:28,Saludos a todos gracias por su entusiasmo e interés en el Taller del fin de semana .,CUR,1.0,False
+2026-08-04T22:01:28,Ese acabado se puede hacer en efecto con un stencil,INF,0.4491,True
+2026-08-04T22:01:28,Qué tal compañeros aplicadores porseacaso alguien tiene 1 galón de ácido verde piedra?? <Se editó este mensaje.>,INF,0.5619,False
+2026-08-04T22:01:28,"Buenas tardes, gracias por la información. Saludos.",INF,0.8638,False
+2026-08-04T22:01:28,https://www.instagram.com/reel/DN3bif02M7M/?igsh=MTlwbDZ2YjV5YWw3MQ==,INF,0.6966,False
+2026-08-04T22:01:28,Eso incluye mano de obra y material,INF,0.5655,False
+2026-08-04T22:01:28,Felicidades !!!! Se ve muy bien esa pared !!!!,INF,0.7857,False
+2026-08-04T22:01:28,"tendremos disponibilidad para la proxima semana , estamos esperando materia prima , por los temas de la guerra los buques estan retrasados",INF,0.7439,False
+2026-08-04T22:01:28,Más adelante se les hará llegar todos nuestros catálogos y la lista de precios actualizados obviamente con los descuentos para nuestros aplicadores,COT,0.5913,False
+2026-08-04T22:01:28,ok el dia de manana les enviamos mas material para no saturar el chat,INF,0.6786,False
+2026-08-04T22:01:28,Y la copia del contrato que usted dijo,INF,0.757,False
+2026-08-04T22:01:28,Muy buenos dias por favor algun aplicador disponible para Quevedo ????,INF,0.7241,False
+2026-08-04T22:01:28,Mañana es dia de coordinación  ajustes etc pero estaremos desde las 9h00,INF,0.5018,False
+2026-08-04T22:01:28,"Mi estimado yo, a unos 10. ¿Tu quieres el precio de los materiales o cuánto podría es cobrarle a la aplicación completa? A mi comentame para poder apoyarte.",COT,0.831,False
+2026-08-04T22:01:28,"Gracias, el ácido se mezcla con agua 1,1, además el valor galón de ácido y sellador si puedo compilar en Loja, caso contrario la cuenta para depositar.",COT,0.5442,False
+2026-08-04T22:01:28,Chicos una consulta .. saben donde puedo alquilar  canastas  ?,INF,0.6394,False
+2026-08-04T22:01:28,"Gracias, páseme por interno",INF,0.9069,False
+2026-08-04T22:01:28,"Ya le enviaron  proforma de los materiales ,m",COT,0.9692,False
+2026-08-04T22:01:28,"Buenos días Estimados: ok, estaré atento a su comunicaciones, un fuerte abrazo a todos, gracias 🤝",INF,0.8212,False
+2026-08-04T22:01:28,Cuando estarán pasando lusta de producto con precios y fichas técnicas? Ya quiero pedir 🤭,COT,0.5343,False
+2026-08-04T22:01:28,Bendecido día a todos,INF,0.8025,False
+2026-08-04T22:01:28,Un piso que se le hizo hace 5 años atrás,INF,0.5625,False
+2026-08-04T22:01:28,Les comparto un poquito del trabajo que  realizo pintura escultura arquitectura carpintería construcción 😇,INF,0.766,False
+2026-08-04T22:01:28,"que si de la misma medida que es, puede ser una lona.",TEC,0.4731,True
+2026-08-04T22:01:28,Muy buenas tardes por favor requiero de un maestro aplicador en Latacunga o Saquisili por favor ?,INF,0.6329,False
+2026-08-04T22:01:28,Limpiarll con paños de fibra húmedos y vinagre,INF,0.5387,False
+2026-08-04T22:01:28,Para pedidos de ofertas y materiales  les pido  hacerlo por interno a cualquier de las 3 personas para que este chat solo nos ocupe en la parte técnica y no saturarlo  con temas Adm,COT,0.4861,True
+2026-08-04T22:01:28,Por favor tiene un costo,COT,0.7741,False
+2026-08-04T22:01:28,Buenas . Le pusiste basecoat  primero y luego microcemento. O directo,TEC,0.8782,False
+2026-08-04T22:01:28,Buenas tardes estimados aplicadores,INF,0.8569,False
+2026-08-04T22:01:28,"Pero el tenía la premura, vamos dando paso a paso, muchas gracias",INF,0.8556,False
+2026-08-04T22:01:28,Necesitas rl precio de los materiales ?,COT,0.9992,False
+2026-08-04T22:01:28,"buenas tardes estimado, por favor reenvíenos su correo tal ves esta mal escrito",INF,0.7221,False
+2026-08-04T22:01:28,Con estos colores seria,INF,0.7262,False
+2026-08-04T22:01:28,"{'timestamp': 1696450614, 'media': [], 'label_values': [{'label': 'Estado de tu historial de enlaces'}, {'label': 'Ã\x9altima actualizaciÃ³n', 'timestamp_value': 1714415174}], 'fbid': '1526269384777640'}",VEN,0.4781,True
+2026-08-04T22:01:28,Ok entonces ya le vamos a responder lo mismo 👍,INF,0.7263,False
+2026-08-04T22:01:28,"El diseño yo ya le hice ,lo que Deseo es en microcemento que me den haciendo una pequeña muestra para ver cómo queda de lujo con los productos de Roktec",INF,0.5012,False
+2026-08-04T22:01:28,Muy buenas tardes tengan cada uno de ustedes compañeros y bienvenidos sean todos a esta maravillosa comunidad,INF,0.762,False
+2026-08-04T22:01:28,Dónde es la ubicación ?,INF,0.708,False
+2026-08-04T22:01:28,Estimado Señor Efrain usted ya realizo el curso si quiere solo recordar con mucho gusto para nuestro siguiente taller,CUR,1.0,False
+2026-08-04T22:01:28,Ala orden Efraín  de la ciudad de Ambato,INF,0.7887,False
+2026-08-04T22:01:28,Hola buenas noches mi estimado todo bien 👍,INF,0.8868,False
+2026-08-04T22:01:28,Oro verde de Portoviejo ?,INF,0.7273,False
+2026-08-04T22:01:28,"""Estimados aplicadores certificados de ROCKTEC,",CUR,1.0,False
+2026-08-04T22:01:28,Escríbeme por interno por favor,INF,0.842,False
+2026-08-04T22:01:28,No se ve el video ? Disculpen pueden reenviar,INF,0.5792,False
+2026-08-04T22:01:28,Si es la misma para todos los sólidos 👍🏻,INF,0.7375,False
+2026-08-04T22:01:28,"""Estimados aplicadores certificados de ROCKTEC,",CUR,1.0,False
+2026-08-04T22:01:28,Pero es para un espacio en donde se venderán cárnicos.,INF,0.6754,False
+2026-08-04T22:01:28,Una junta  de aluminio o madera,INF,0.6886,False
+2026-08-04T22:01:28,Por favor los ácidos tuvimos un pequeño reajuste,INF,0.7284,False
+2026-08-04T22:01:28,"Con todos, un molde qué de la apariencia de piedra, 2  desmoldantes, no se el color",INF,0.7229,False
+2026-08-04T22:01:28,Con quién cordino para hacer las proformas. Buenas tardes gracias por agregarme,INF,0.6159,False
+2026-08-04T22:01:28,gb.arquitecto@hotmail.es,INF,0.8034,False
+2026-08-04T22:01:28,"Por molestarle, el color oro con cual se puede mezclar para bajarle un su intensidad, gracias por ayudarme.",INF,0.4377,True
+2026-08-04T22:01:28,"Deseo que le haga la Arquitecta de Roctec, en Microcemento una pequeña muestra, para ver cómo queda el efecto para poder ofrecer en la constructora en la que trabajo.",INF,0.6245,False
+2026-08-04T22:01:28,Por favor traten de venir a las 8am para poder hacer los registros  con tiempo,INF,0.7537,False
+2026-08-04T22:01:28,por favor me pueden indicar ?,INF,0.5704,False
+2026-08-04T22:01:28,"Buenas tardes,Muchas gracias",INF,0.9161,False
+2026-08-04T22:01:28,Por favor alguno de ustedes esta haciendo mobiliario urbano en concreto?,INF,0.605,False
+2026-08-04T22:01:28,¿Qué ha pasado con ese piso? No se entiende el mensaje que tratan de dar con ese video y los comentarios que le acompañan.,INF,0.6486,False
+2026-08-04T22:01:28,Gracias le escribo por interno,INF,0.8878,False
+2026-08-04T22:01:28,Tenga la bondad le escribo por interno,INF,0.8408,False
+2026-08-04T22:01:28,"Estimados aplicadores,",INF,0.823,False
+2026-08-04T22:01:28,Hola muy buenas tardes,INF,0.8478,False
+2026-08-04T22:01:28,Tengan cuidado de usar pulidoras o productos muy abrasivos,TEC,0.8913,False
+2026-08-04T22:01:28,"Estimados aplicadores, buenas tardes",INF,0.8464,False
+2026-08-04T22:01:28,Recuerden que el microcemento está enfocado más a la parte decorativa,INF,0.6403,False
+2026-08-04T22:01:28,Muy buenas tardes estimados clientes estamos actualizando nuestra base de datos de aplicadores de Quito,INF,0.8445,False
+2026-08-04T22:01:28,Los vamos a mantener !!,INF,0.769,False
+2026-08-04T22:01:28,Me podrían ayudar con esa información por favor,INF,0.7396,False
+2026-08-04T22:01:28,"Le envíe el comprobante de deposito, espero que me envíe el producto.",TEC,0.9045,False
+2026-08-04T22:01:28,Aproximadamente  nosotros cobramos entre 28 y 29 dol m2 mas iva en pisos y entre 20 y 25 dol m2 en paredes dependiendo si nos toca colocar solo micro o con malla y fondo,COT,0.8756,False
+2026-08-04T22:01:28,Saludos ya le responden,INF,0.8404,False
+2026-08-04T22:01:28,Los catálogos de moldes son dos .. el primero son de los moldes que disponemos en bodega  para  alquiler y el segundo  de los que tenemos para venta con tiempo de entrega de 12 a 15 dias aprox,COT,0.4401,True
+2026-08-04T22:01:28,Este lo tenemos y cuesta 15 dol,COT,0.6296,False
+2026-08-04T22:01:28,Muchas gracias por la información.,INF,0.9231,False
+2026-08-04T22:01:28,Material es Morthero Gris claro,INF,0.6333,False
+2026-08-04T22:01:28,Saludos cordiales tal vez algun maestro aplicador en Latacunga o Saquisili ?,INF,0.7174,False
+2026-08-04T22:01:28,Buenas tardes muchas gracias.,INF,0.9087,False
+2026-08-04T22:01:28,Arq buenas noches el fondo blanco seria el mismo precio del fondo gris le pregunto por qué yo necesito para 225 M2 de fondo blanco,COT,0.8744,False
+2026-08-04T22:01:28,Muy buenas tardes compañeros y muchas gracias a los señores de ROCKTEC  por tomarnos en cuenta,INF,0.8108,False
+2026-08-04T22:01:28,Le escribo por interno,INF,0.8489,False
+2026-08-04T22:01:28,Mi estimado buenas noches eso es un concreto pulido,INF,0.7001,False
+2026-08-04T22:01:28,Me pueden ayudar qué material necesito para darle este terminado,INF,0.7858,False
+2026-08-04T22:01:28,"Buenos días, una vereda de 40 m2, quiero paleteale fino y aplicarle ácido, puedo colocarle el ácido terminado el paleteado y cuanto litros necesito,   además del óxido tienen en otros colores y debo lavarse luego de su aplicación, me puede indicar el valor y la cuenta para depositar, grcis",TEC,0.8233,False
+2026-08-04T22:01:28,Perdón yo creí que necesitaba sacar el microcemento,INF,0.7053,False
+2026-08-04T22:01:28,"Amigos buenos dias ,, Tenemos un proyecto de 100 m2 de MIcrocemento en Ayangue , por favor alguien que quiera que le remita el cliente , me avisan",INF,0.4488,True
+2026-08-04T22:01:28,Son otras aplicaciones,INF,0.7792,False
+2026-08-04T22:01:28,"Y a Erika Valencia que es nuestra Supervisora Adminsitrativa , ella es MBA en Admistracion y Negocios y también maneja muy bien la parte técnica.",TEC,0.4228,True
+2026-08-04T22:01:28,Saludos el material que se usa es Mortero Thinset de color,INF,0.7085,False
+2026-08-04T22:01:28,"Buenas noches, por favor, me pueden ayudar con el precio referencial de concreto estampado en pisos?",COT,0.9418,False
+2026-08-04T22:01:28,Si esos son los precios,COT,0.9693,False
+2026-08-04T22:01:28,Asi aporta a que la transición  de los dos pisos se vea muy bien y se cubre  el desnivel,INF,0.6933,False
+2026-08-04T22:01:28,Buenos días este momento se contactan,INF,0.8286,False
+2026-08-04T22:01:28,Buenas noches gracias por la invitación,INF,0.8677,False
+2026-08-04T22:01:28,"¡Hola, estimados aplicadores!",INF,0.8723,False
+2026-08-04T22:01:28,Buenas tardes. Gracias por la información,INF,0.8415,False
+2026-08-04T22:01:28,Estimados buenos días,INF,0.8824,False
+2026-08-04T22:01:28,Pequeño proyecto  ????,INF,0.7445,False
+2026-08-04T22:01:28,"son referenciales pero tambien va a depender si tienes que alquilar andamios , si la obra es lejos de Quito etc",COT,0.4917,True
+2026-08-04T22:01:28,Y la hoja es con la técnica de stencil,TEC,0.8568,False
+2026-08-04T22:01:28,"saludos ., el separador de juntas puedes comprarlo en Kiwy",VEN,0.8551,False
+2026-08-04T22:01:28,"Hola Martha, me podrias indicar un referente de precio m2 de instalacion de microcemento, para piso y pared. Gracias y buen dia.",COT,0.9272,False
+2026-08-04T22:01:28,Hay algún pintor en el grupo que traje también con yeso acartonado,INF,0.5444,False
+2026-08-04T22:01:28,"VGPH+P67, Quito 170144, Ecuador",INF,0.7797,False
+2026-08-04T22:01:28,"{'media': [], 'label_values': [{'label': 'DesactivÃ³ los anuncios sobre Meta', 'value': 'Falso'}, {'label': 'Fecha y hora de la Ãºltima vez que desactivaste los anuncios sobre Meta', 'timestamp_value': 0}], 'fbid': '1465765097656228'}",INF,0.5547,False
+2026-08-04T22:01:28,"Le dejo mi número de contacto 0994706780, me escribe por favor. No llamadas, gracias La Malanita",INF,0.8379,False
+2026-08-04T22:01:28,Buenos días saludos 🤗,INF,0.8865,False
+2026-08-04T22:01:28,Porfavor en  qué ciudad  sería esta aplicación,INF,0.812,False
+2026-08-04T22:01:28,Les voy a compartir  algunos videos de este tipo de pisos,INF,0.7765,False
+2026-08-04T22:01:28,https://vm.tiktok.com/ZMAjqtYK3/,INF,0.8176,False
+2026-08-04T22:01:28,"ubicación: https://maps.google.com/?q=-2.9026817,-79.0033633",INF,0.8038,False
+2026-08-04T22:01:28,A qué horas inician ?,INF,0.8423,False
+2026-08-04T22:01:28,El microcemento se puede aplicar en espacios con fines de comercialización de cárnicos?,TEC,0.8979,False
+2026-08-04T22:01:28,Recuerden que el precio final dependerá del concreto u hormigon quw vayan a usar. Espesor resistencia etc etc,COT,0.598,False
+2026-08-04T22:01:28,Este tipo  de productos y de aplicacion  mata el acabado de Microcemento  que estan hermoso !!!!,INF,0.4746,True
+2026-08-04T22:01:28,"Buenas tardes. Por favor, me pueden ayudar con el precio del m2 de concreto estampado en paredes con oxidos y en estampado tipo piedra?",COT,0.9603,False
+2026-08-04T22:01:28,Los de venta tenemos de 12 a 15 dias de entrega,INF,0.7182,False
+2026-08-04T22:01:28,Tenemos  un cliente que requiere aplicación  de micro en loja,INF,0.7614,False
+2026-08-04T22:01:28,Se necesita tener mucho cuidado en la dosificación y la pala se compra en mercado libre,TEC,0.9393,False
+2026-08-04T22:01:28,Recuerden que esto super fácil hacer ... con codal y espátula no hay ciencia 😉,INF,0.5118,False
+2026-08-04T22:01:28,"{'timestamp': 1778715387, 'media': [], 'label_values': [{'label': 'Consulta de bÃºsqueda', 'value': 'elemental studio'}, {'label': 'Fecha de actualizaciÃ³n', 'timestamp_value': 1778715387}], 'fbid': '18018829259893000'}",VEN,0.6939,False
+2026-08-04T22:01:28,Yo soy pintor si desea,INF,0.8483,False
+2026-08-04T22:01:28,Muy buenas tardes con todos sean bienvenidos al primer Grupo de Aplicadores 2025 de Rocktec,INF,0.8186,False
+2026-08-04T22:01:28,Con microcemento que este un poco espeso como la consistencia  del estuco,INF,0.4453,True
+2026-08-04T22:01:28,En este caso no por qué no va a estar expuesto a la humedad,INF,0.6025,False
+2026-08-04T22:01:28,Así q están en buenas manos 😉😎👍🏻,INF,0.742,False
+2026-08-04T22:01:28,Hola chicos  aprox 28 dol m2 mas iva,COT,0.8025,False
+2026-08-04T22:01:28,Extender el hormigon  (mejor si con piedra  chispa )y  flotarlo,TEC,0.8618,False
+2026-08-04T22:01:28,"Gracias Arqui, es justo la persona que me está preguntando.",INF,0.8003,False
+2026-08-04T22:01:28,Un precio referencial con mano de obra,COT,0.9213,False
+2026-08-04T22:01:28,Buenas tardes estimados clientes solo para indicarles que nuestro show room esta ubicado en nuestra fabrica Bomanite el lugar donde algunos de ustedes recibieron el taller en Carcelén... Todo con la finalidad de brindarles un mejor servicio.,CUR,0.9668,False
+2026-08-04T22:01:28,Los precios de los kits son en cemento gris??,COT,0.9318,False
+2026-08-04T22:01:28,De que se trata el trabajo?,INF,0.6801,False
+2026-08-04T22:01:28,Buenos días estimados adjuntamos catálogos y manuales instructivos para su conocimiento,INF,0.8624,False
+2026-08-04T22:01:28,Una consulta tenemos un cliente que necesita intervenir 140 m2 de Microcemento  en Manta,INF,0.6,False
+2026-08-04T22:01:28,"{'searches_keyword': [{'title': '', 'media_map_data': {}, 'string_map_data': {'BÃºsqueda': {'href': '', 'value': 'elemental studio', 'timestamp': 0}, 'Fecha y hora': {'href': '', 'value': '', 'timestamp': 1778715385}}}]}",INF,0.4597,True
+2026-08-04T22:01:28,No quiero para el sabado,INF,0.7162,False
+2026-08-04T22:01:28,"{'timestamp': 1776348323, 'media': [], 'label_values': [{'label': 'URL', 'value': ''}, {'label': 'Nombre', 'value': 'Manuel Bassanini'}, {'label': 'Nombre de usuario', 'value': 'mbassanini'}], 'fbid': '17841401437153356'}",VEN,0.5071,False
+2026-08-04T22:01:28,Las juntas si com malla no con papel,INF,0.6404,False
+2026-08-04T22:01:28,Quiero comprarlo soy de loja,VEN,0.9915,False
+2026-08-04T22:01:28,Sera una gran muestra  de lo que podemos hacer con el material y seria fantastico que Usted lo vayan incluyendo  en sus ofertas !! 😉👍🏻,INF,0.5009,False
+2026-08-04T22:01:28,"Perfecto, estoy a la orden",INF,0.8028,False
+2026-08-04T22:01:28,Orgullosos de que seas parte de esta nueva y gran familia 😊,INF,0.7611,False
+2026-08-04T22:01:28,Muchísimas gracias  estaré  pendiente muy pronto estaré asiendo adquisiciones  para una decoración  especial,INF,0.8041,False
+2026-08-04T22:01:28,Que tal está una mano de lechada con el aditivo que se prepara el microcemento luego está el tincel,TEC,0.9773,False
+2026-08-04T22:01:28,"Buenos días, solo se usa la  liana,clavo y codal ,más los materiales del microcemento <Se editó este mensaje.>",TEC,0.7568,False
+2026-08-04T22:01:28,Eso es lo que dice específicamente la normativa,INF,0.7699,False
+2026-08-04T22:01:28,"Les voy a presentar a Dubraska Aguilar que estará muy atenta a sus requerimientos,  ella es Arquitecta por lo tanto va a poder apoyarlos muy bien técnicamente",INF,0.6694,False
+2026-08-04T22:01:28,Muy buenas tardes estimados clientes adjuntamos  información de Rocktec,INF,0.84,False
+2026-08-04T22:01:28,Vengan con ropa cómoda dispuestos a ensuciarse un poquito 😉,INF,0.6687,False
+2026-08-04T22:01:28,Para instalaciones de ese tipo mejor hacerlo con pisos industriales que soportan choques térmicos y caída constante de agua y sangre,INF,0.4888,True
+2026-08-04T22:01:28,Muchas gracias por la información,INF,0.9223,False
+2026-08-04T22:01:28,Estamos a las órdenes 👌🏻😌,INF,0.791,False
+2026-08-04T22:01:28,Buenos días nesesito un litro de sellador de microcemento y un litro de componente para mezclar el microcemento por favor,TEC,0.5158,False
+2026-08-04T22:01:28,"el día de mañana le hacemos llegar, estamos realizando algunos cambios",INF,0.7559,False
+2026-08-04T22:01:28,"va a depender si vas a utilizar o no malla y fondos ... de ser asi el costo apro material y mano de obra $ 25.00 mas iva , si no usas malla y fondo aprox $ 17.00 mas iva esto seria 3 manos de micro y sellado nada mas",COT,0.9932,False
+2026-08-04T22:01:28,"Hola buen dia, solo por confirmar el valor 28 m2 es material + lnstalacion en Quito?",COT,0.6943,False
+2026-08-04T22:01:28,Recuerden que pueden hacerlo con laminas de acetato,INF,0.732,False
+2026-08-04T22:01:28,Los grupos anteriores serán eliminados y nos quedaremos con este grupo,INF,0.8688,False
+2026-08-04T22:01:28,Buenas noches por favor me pueden confirmar nuevamente con es te documento,INF,0.6844,False
+2026-08-04T22:01:28,"Gracias por la ayuda ,que pase bien",INF,0.817,False
+2026-08-04T22:01:28,Jajaajaj usted ya es pro jajajaa,INF,0.8047,False
+2026-08-04T22:01:28,Calle Cristobal  Ayala N5181,INF,0.7316,False
+2026-08-04T22:01:28,Buenas tardes compañeros aplicadores por ciacaso yo ago todo lo que es pintura y revestimiento he instalación de gypsum,INF,0.7402,False
+2026-08-04T22:01:28,Vamos a estar un poco mas de un mes en la aplicacion de 1200 m2 .. asi que pasen cuando puedo puedan para  quw vean como va quedando el acabado !!,INF,0.3923,True
+2026-08-04T22:01:28,Ok gracias mi estimado,INF,0.8713,False
+2026-08-04T22:01:28,Aún no hemos recibido la información por correo,INF,0.8331,False
+2026-08-04T22:01:28,Cuántos metros son gracias,INF,0.813,False
+2026-08-04T22:01:28,"Gracias por sus mensajes de explicar los precios, nosotros estamos muy seguros de q los vamos a húsar nuestro proyecto, y estoy muy interesado en un quip para las muestras..",COT,0.8632,False
+2026-08-04T22:01:28,"O si quiere mas claro puedes usar cuarzo gris claro ,desmoldante gris y luego le envejeces un poquito",TEC,0.9724,False
+2026-08-04T22:01:28,Con barios materiales,COT,0.9541,False
+2026-08-04T22:01:28,https://vt.tiktok.com/ZSH14kPU7/,INF,0.8176,False
+2026-08-04T22:01:28,Y no es factible la placa de humedad en vez de la normal,TEC,0.4067,True
+2026-08-04T22:01:28,seria el valor del m2 por la aplicación completa por favor,COT,0.6714,False
+2026-08-04T22:01:28,Pero el precio seria el mismo  de un nuevo,COT,0.8775,False
+2026-08-04T22:01:28,Se eliminó este mensaje.,INF,0.83,False
+2026-08-04T22:01:28,"Hola buen día,  muchas gracias la recomendación",INF,0.8491,False
+2026-08-04T22:01:28,Buenos días ya está emplasticado,INF,0.8015,False
+2026-08-04T22:01:28,Muchas gracias nos vemos mañana!’,INF,0.9099,False
+2026-08-04T22:01:28,Gracias muy proactivo  Robert,INF,0.8889,False
+2026-08-04T22:01:28,Hola Walter te envio audio,INF,0.9283,False
+2026-08-04T22:01:28,Yo soy de la ciudad de Latacunga,INF,0.8381,False
+2026-08-04T22:01:28,Muy buenas tardes con  una maquina  pulirdora para pisos de hormigon,INF,0.6839,False
+2026-08-04T22:01:28,Si tenemos ese molde para alquiler,INF,0.8298,False
+2026-08-04T22:01:28,"Compañeros buenas tardes, favor alguien que me ayude a aplicar el Tinzet en unas bancas que tenga disponibilidad está semana, de antemano muchas gracias 🫂",INF,0.726,False
+2026-08-04T22:01:28,Tenga la amabilidad quiero hacer esta aplicación en la,INF,0.7421,False
+2026-08-04T22:01:28,Muchas gracias por lá bienvenida el entusiasmo y la actitud  de mi parte es lo que más entregaré.,INF,0.8457,False
+2026-08-04T22:01:28,"{'media': [], 'label_values': [{'label': 'Lugar', 'dict': [{'label': 'PaÃ\xads', 'value': 'Ecuador'}, {'label': 'RegiÃ³n', 'value': 'Pichincha Province'}, {'label': 'Ciudad', 'value': 'Quito, Ecuador'}]}], 'fbid': '370769155'}",INF,0.487,True
+2026-08-04T22:01:28,Ya me comunico con usted por interno,INF,0.849,False
+2026-08-04T22:01:28,"ubicación: https://maps.google.com/?q=-0.1429627,-78.4703949",INF,0.8038,False
+2026-08-04T22:01:28,Levanten la mano los artistas que están disponibles 👋,INF,0.7223,False
+2026-08-04T22:01:28,"Muy buenos dias estimados tengan un excelente Viernes por favor necesito un maestro aplicador en Cuenca, hay  alguien disponible por favor?????",INF,0.6707,False
+2026-08-04T22:01:28,Buenas noches disculpe la hora,INF,0.8246,False
+2026-08-04T22:01:28,Exelente información gracias,INF,0.8945,False
+2026-08-04T22:01:28,Hola mi estimado buenas tardes ok,INF,0.8342,False
+2026-08-04T22:01:28,Puede ser 4 litroz de agua por 1 vaso de vinagre,TEC,0.6954,False
+2026-08-04T22:01:28,Pasó a adjuntar precios actualizados catálogos etc,COT,0.9475,False
+2026-08-04T22:01:28,"Ahora a sellar bonito sin dejar marcas , estirando bien el sello",INF,0.6917,False
+2026-08-04T22:01:28,Se eliminó este mensaje.,INF,0.83,False
+2026-08-04T22:01:28,Yo hice algo parecido y luego se me agrieto.  Le puse la de humedad y una capa ligera de base coat y luego de 3 días el micro... ya lleva un año sin rasguños,TEC,0.9618,False
+2026-08-04T22:01:28,Buenas tardes disculpen talvez alguien tiene un precio referencial de colocación de microcemento en paredes ?,COT,0.8428,False
+2026-08-04T22:01:28,Saludos chicos los que hicieron el taller y quieren volver a repetirlo no tiene costo pero máximo podemos recibir 3 personas extras por curso,CUR,0.9998,False
+2026-08-04T22:01:28,Gracias querido !!! Igualmente para todos ustedes !!,INF,0.8548,False
+2026-08-04T22:01:28,"hay algún inconveniente de pedir aditivos de impermeabilización, acelerante, etc a la hormigonera",TEC,0.8988,False
+2026-08-04T22:01:28,"Ok, muy agradecido, un fuerte abrazo a todo el equipo de Rocktec.🤝",INF,0.7326,False
+2026-08-04T22:01:28,"Arquitecda, buenos días y todo el personal de Rotec, de que me felicitarles a ayudarles a ustedes excelente y a todos los técnicos pues un hermoso día.",TEC,0.4318,True
+2026-08-04T22:01:28,Buenas tardes por favor algún maestro aplicador de microcemento en Cuenca ???,INF,0.685,False
+2026-08-04T22:01:28,Poniendo en práctica lo aprendido 😁😁😁 Arq,INF,0.7709,False
+2026-08-04T22:01:28,Buen día grupo disculpen que escriba x aqui pero es por el motivo que deseo comprar un galón de ácido oxidante pero por medio del WhatsApp de la empresa que dan respuesta será que alguien tiene algún otro contacto para poder comprar,VEN,0.9595,False
+2026-08-04T22:01:28,"Solo limpieza diaria  del piso,",INF,0.6315,False
+2026-08-04T22:01:28,Sí le comenté al cliente,INF,0.8659,False
+2026-08-04T22:01:28,"Buenas tardes arquitecta, gracias por mantenernos informados, estaré haciendo llegar mis consultas.",INF,0.8364,False
+2026-08-04T22:01:28,Estimado buenas tardes envio catalogo de moldes y herramientas en las ultimas hojas puede visualizar el precio de las herramientas solicitadas,COT,0.7702,False
+2026-08-04T22:01:28,Alguien tiene dos maestros  para que nos apoyen  en esta obra de Portoviejo  ?? Que sean buenos por fa,TEC,0.4125,True
+2026-08-04T22:01:28,"Muchas gracias, saludos al grupo por agregarme mi correo es delgadov683@gmail.com",INF,0.9123,False
+2026-08-04T22:01:28,Por favor el contenido de este grupo es únicamente para temas de Concreto . Muchas gracias 😉🙋🏻‍♀️,INF,0.807,False
+2026-08-04T22:01:28,Maeatro que bien !!!!,INF,0.7731,False
+2026-08-04T22:01:28,Nos puede enviar costos de productos porfavor,COT,0.6644,False
+2026-08-04T22:01:28,Una excelente tarde muchas gracias por la información éxitos...,INF,0.9174,False
+2026-08-04T22:01:28,Esta semana proxima les  tenemos buenas noticias asi que esten atentos !!,INF,0.8093,False
+2026-08-04T22:01:28,Buenas noches en qué materia es si no es micro,INF,0.8271,False
+2026-08-04T22:01:28,Este ise el miercoles,INF,0.7141,False
+2026-08-04T22:01:28,Ojo por favor este catálogo es el que tenemos a disposición *para alquiler*,INF,0.7968,False
+2026-08-04T22:01:28,Se eliminó este mensaje.,INF,0.83,False
+2026-08-04T22:01:28,Tenemos un cliente en Portoviejo que requiere hacer unos acabados en concreto entablonado,INF,0.776,False
+2026-08-04T22:01:28,Bueno chicos muchísimas gracias por todo fue un taller muy enriquecedor,CUR,1.0,False
+2026-08-04T22:01:28,Restaurante la esquina,INF,0.7835,False
+2026-08-04T22:01:28,"A todos, que tengan un excelente feriado.",INF,0.7325,False
+2026-08-04T22:01:28,por favor me pueden confirmar ?,INF,0.5853,False
+2026-08-04T22:01:28,El molde es para la piedra qué va bajo la escultura por favor,INF,0.7957,False
+2026-08-04T22:01:28,https://vm.tiktok.com/ZMSmrAkdt/,INF,0.8176,False
+2026-08-04T22:01:28,"Buenas tardes, muchas gracias por toda la información enviada, nos ayudará mucho para despejar dudas.  Y será de gran ayuda para nuestro proyectos",INF,0.7281,False
+2026-08-04T22:01:28,Mñanaa te verifico 👍🏻,INF,0.8371,False
+2026-08-04T22:01:28,Alguien me puede ayudar donde consigo estas placas,INF,0.6495,False
+2026-08-04T22:01:28,preyesarqui@hotmail.com,INF,0.8142,False
+2026-08-04T22:01:28,Nosotros cobramos entre 23 y 25 dol m2 cualquier acabado en paredes . Mas iva,COT,0.7854,False
+2026-08-04T22:01:28,Apoyemos con un voto para Ecuador.,INF,0.7669,False
+2026-08-04T22:01:28,Podria ser molde Mt49 que lo puedes ver en el catalogo..se puede usar cuarzo gris y desmoldante  gris obscuro,TEC,0.9527,False
+2026-08-04T22:01:28,Resiste bien a la fricción de las llantas del vehículo siempre y cuando se selle con poliuretanos.,TEC,0.8064,False
+2026-08-04T22:01:28,Muy buenas tardes Sr. Suarez bienvenido al grupo de Rocktec este grupo se creo con la intención de brindarles un mejor servicio y también para que podamos compartir nuestras obras de arte con materiales de Rocktec,COT,0.552,False
+2026-08-04T22:01:28,"Gara! Conocer amig@s de cuenca, pay por compartir un pedacito de su universo de conocimiento 👊💪",INF,0.6856,False
+2026-08-04T22:01:28,Este momento me llegaron 2 correos gracias,INF,0.8238,False
+2026-08-04T22:01:28,Por favor tengo un cliente que necesita saber los precios más detallados en cuanto a concreto estampado,COT,0.9539,False
+2026-08-04T22:01:28,Cómo está muy buenos días Inge dígame en qué le podemos servir,INF,0.8253,False

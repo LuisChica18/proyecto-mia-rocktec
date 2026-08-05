@@ -136,5 +136,92 @@ Ajustes realizados:
   reevaluar si el monitoreo en producción muestra errores costosos de TF-IDF+LR en esas categorías.
   Ver la tabla de criterios completa en `05_documentacion/DISEÑO_MLOPS_FASE2.md` §8.
 
+## Sprint 7 — Ajuste adicional: léxico QUE/SEG v2.0 (26 Jul 2026)
+
+- **`08_buscar_candidatos_que_seg.py` corregido:** se agregaron patrones léxicos adicionales
+  (p. ej. "no contesta") para detectar candidatos QUE (queja/reclamo) y SEG (seguimiento).
+  Recall sobre los candidatos revisados: QUE pasó de 66% a **100% (9/9)**, SEG se mantiene en
+  **100% (15/15)**. Sigue siendo una herramienta de *búsqueda de candidatos* para ampliar las
+  clases QUE/SEG en una futura ronda de anotación — no cambia la decisión de alcance de 5 clases
+  para el modelo de producción (ver Sprint 7 arriba).
+
+## Sprint 8 — Umbral adaptativo, active learning TEC y anonimización (30 Jul 2026)
+
+- **Umbral de confianza adaptativo** (`17_umbral_confianza_adaptativo.py`, nuevo): barrido de
+  umbrales sobre `holdout_test.csv` (197 registros) para decidir cuándo automatizar una
+  clasificación y cuándo enviarla a revisión humana. **Umbral óptimo = 0.75**: automatiza 70.6%
+  de los mensajes (139/197) con F1-macro = **0.9214** y solo 6 errores; el 29.4% restante se
+  marca para revisión de un asesor. Resultados en `06_resultados/umbral/`.
+- **Active learning para TEC** (`18_active_learning_tec.py`, nuevo): TEC es la clase más débil
+  (F1 LR 0.47 / BETO 0.40, solo 51 casos en el dataset de 1,312). Se entrenó LR sobre
+  `train_val.csv` y se aplicó uncertainty sampling sobre un pool de 208 mensajes no anotados,
+  seleccionando los **30 candidatos más informativos** (probabilidad de TEC entre 0.10 y 0.70)
+  → `04_anotaciones/active_learning_tec_candidatos.xlsx`. Meta: confirmar 30-40 casos reales de
+  TEC con los asesores de Rocktec; impacto estimado si se logra: F1 TEC 0.47→~0.65+, F1-macro
+  general 0.7938→~0.82+.
+- **Plan formal de ampliación del dataset TEC** (`05_documentacion/S8_Plan_Ampliacion_Dataset_TEC.docx`):
+  guía de anotación dirigida a los asesores comerciales de Rocktec (no al equipo de anotación
+  original) para que etiqueten los candidatos de active learning directamente desde su
+  conocimiento de producto.
+- **Anonimización v2.0** (`00_anonimizar_dataset.py`, nuevo): sobre las 1,500 filas del dataset
+  de consenso, **223 registros (14.9%)** contenían PII y fueron enmascarados — nombres→`[CLIENTE]`,
+  teléfonos→`[TELEFONO]`, correos→`[EMAIL]`, cédulas/RUC→`[DOCUMENTO]` → `04_anotaciones/dataset_consenso_final_anonimizado.csv`.
+
+## Sprint 8 — Monitoreo de equidad por perfil de cliente (31 Jul 2026)
+
+- **`20_monitoreo_equidad.py`** (nuevo; creado como `18_monitoreo_equidad.py` y renumerado a 20
+  el 04 Ago 2026 para no colisionar con `18_active_learning_tec.py`, que ya ocupaba ese número):
+  mide equidad del modelo de producción (F1-macro por segmento) usando Evidently AI.
+  **Limitación de datos documentada:** Rocktec no captura el perfil del cliente en la misma
+  fuente que el texto de la conversación (JEVA tiene tipo de cliente pero sin texto; el dataset
+  de consenso tiene texto pero `etiqueta_crm` es una etiqueta de campaña CRM, no un perfil
+  limpio). El perfil usado es un *proxy* inferido desde `etiqueta_crm`; 497 registros (37.6%)
+  sin esa etiqueta quedan excluidos, cubriendo 825/1,322 filas (62.4%).
+  **Resultado:** brecha de equidad significativa entre perfiles — `Prospecto_General` (n=719)
+  F1-macro = 0.7418 vs. `Comprador_Activo` (n=106) F1-macro = **0.5189** (brecha 0.2229, ≥0.10
+  se considera relevante). Recomendación entregada a Rocktec: agregar un menú de selección de
+  perfil al inicio de la conversación de WhatsApp Business para capturar este dato de forma
+  confiable a futuro. Reportes en `06_resultados/equidad/`.
+
+## Sprint 9 — Dashboard de inteligencia comercial en Streamlit (3 Ago 2026)
+
+- **`19_dashboard_streamlit.py`** (nuevo): dashboard dark-mode para uso operativo de Rocktec,
+  con clasificador híbrido (reglas léxicas expandidas + modelo de producción TF-IDF+LR, umbral
+  configurable) sobre 3 tabs: Clasificador (mensaje individual), Dashboard (métricas) y Lote de
+  mensajes (CSV masivo con descarga de resultados).
+- **Tab 4 — upload directo de chat de WhatsApp:** permite subir el `.txt` exportado directamente
+  desde WhatsApp; el sistema filtra automáticamente los mensajes propios de Rocktec y el
+  contenido multimedia, clasifica cada mensaje del cliente, resume sus intenciones y genera un
+  reporte CSV descargable por cliente — pensado para que un asesor cargue una conversación
+  completa sin preprocesar nada manualmente.
+
+## Sprint 10 — Monitoreo de drift (PSI) y housekeeping (4 Ago 2026)
+
+- **Housekeeping:** renombrado `18_monitoreo_equidad.py` → `20_monitoreo_equidad.py` (colisionaba
+  con `18_active_learning_tec.py`, ambos numerados 18 tras crearse en la misma ventana de Sprint 8);
+  `CHANGELOG.md` y `05_documentacion/DIAGNOSTICO_FASES_3_4_5.md` actualizados para reflejar Sprint
+  8/9, que no estaban documentados todavía (incluye corregir el ítem de explicabilidad BETO, que el
+  diagnóstico marcaba erróneamente como sin commitear).
+- **`21_monitoreo_drift.py`** (nuevo): implementa la Etapa 5 (monitoreo de drift) diseñada en
+  `DISEÑO_MLOPS_FASE2.md` §3 — hasta ahora solo existía como diseño, sin ningún script real.
+  Calcula PSI (Population Stability Index) de dos distribuciones: (1) intención predicha, comparando
+  `log_predicciones.csv` (el log que genera `16_inferencia.py`) contra `train_val.csv`; (2) confianza
+  del modelo, usando confianza **out-of-fold** (`cross_val_predict`, 5 folds) como referencia en vez
+  de `predict_proba` in-sample — evaluar el modelo sobre los mismos datos con los que se ajustó
+  sobrestima sistemáticamente la confianza, el mismo tipo de error que motivó el fix de fuga de datos
+  de Sprint 7.
+  - **Log sembrado para poder probar el script de punta a punta:** como todavía no existe tráfico
+    real de piloto (Fase 5 no ha empezado), se corrió `16_inferencia.py` sobre un lote de 345
+    mensajes históricos de WhatsApp (`03_datos_procesados/rocktec_base_validada.csv`, un pipeline de
+    2 fuentes de Fase 1 disjunto del pipeline de 4 fuentes que generó el dataset de anotación —
+    0% de solape verificado por texto exacto con `train_val`/`holdout_test`).
+  - **Resultado de esa corrida de validación:** PSI intenciones = 0.11 (drift moderado); PSI
+    confianza = 0.75 (drift severo, pero explicado por contenido fuera de dominio —comentarios de
+    Instagram/Facebook ajenos a Rocktec— que quedó mezclado en `rocktec_base_validada.csv` por un
+    problema de calidad de datos previo, no por drift real del negocio). Documentado explícitamente
+    en el reporte como una corrida de **validación del mecanismo, no una medición de drift real**.
+  - **Fuera de alcance:** drift de vocabulario (features TF-IDF nuevas) — el diseño original solo
+    cubre drift de la distribución de predicciones. Ver `06_resultados/drift/reporte_drift.txt`.
+
 ## Próxima — Fase 2: Diseño MLOps Pipeline
 Ver `05_documentacion/DISEÑO_MLOPS_FASE2.md`.

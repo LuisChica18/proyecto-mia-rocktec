@@ -1,7 +1,7 @@
 """
 ================================================================================
 PROYECTO MIA 2026 - ROCKTEC
-Script 18: Monitoreo de Equidad por Perfil de Cliente
+Script 20: Monitoreo de Equidad por Perfil de Cliente
 ================================================================================
 Autor: Equipo Rocktec MIA 2026 | Versión: 1.1 | Julio 2026
 
@@ -133,7 +133,7 @@ def generar_reporte_evidently(df_con_perfil):
 # ── MAIN ─────────────────────────────────────────────────────────────────────
 def main():
     print("=" * 70)
-    print("SCRIPT 18 — MONITOREO DE EQUIDAD POR PERFIL DE CLIENTE")
+    print("SCRIPT 20 — MONITOREO DE EQUIDAD POR PERFIL DE CLIENTE")
     print("Proyecto MIA 2026 - Rocktec")
     print("=" * 70)
 
@@ -272,7 +272,7 @@ Tabla CSV: {ruta_csv}
     ruta_txt = RUTA_SALIDA / 'reporte_equidad.txt'
     with open(ruta_txt, 'w', encoding='utf-8') as f:
         f.write(reporte)
-    print(f"✅ Script 18 completado. Outputs en: {RUTA_SALIDA}")
+    print(f"✅ Script 20 completado. Outputs en: {RUTA_SALIDA}")
 
 
 if __name__ == '__main__':

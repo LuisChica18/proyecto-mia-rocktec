@@ -1,0 +1,14 @@
+{
+  "fecha": "2026-08-04 22:09:57",
+  "log_analizado": "06_resultados/predicciones/log_predicciones.csv",
+  "n_mensajes_log": 345,
+  "psi_distribucion_intenciones": 0.11,
+  "interpretacion_intenciones": "drift moderado — revisar",
+  "psi_distribucion_confianza": 0.7543,
+  "interpretacion_confianza": "drift severo — reentrenar",
+  "umbrales": {
+    "moderado": 0.1,
+    "severo": 0.25
+  },
+  "limitacion": "Log sembrado con un lote simulado de mensajes históricos nunca anotados (no es tráfico real de piloto en producción, que todavía no existe)."
+}

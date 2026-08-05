@@ -1,0 +1,52 @@
+
+================================================================================
+REPORTE DE MONITOREO DE DRIFT — ROCKTEC MIA 2026
+================================================================================
+Fecha: 2026-08-04 22:09:57
+Log analizado: 06_resultados/predicciones/log_predicciones.csv (345 registros)
+
+LIMITACIÓN DOCUMENTADA:
+  Este log fue sembrado con un lote simulado de 345 mensajes históricos de
+  WhatsApp nunca anotados (0% de solape con train_val/holdout_test), NO con
+  tráfico real de un piloto en producción — Fase 5 no ha comenzado todavía.
+  Este reporte valida que el mecanismo de PSI funciona correctamente; no debe
+  citarse como una medición de drift real de producción. El PSI de confianza
+  en particular sale alto en esta corrida porque el lote simulado incluye
+  comentarios de Instagram/Facebook ajenos a Rocktec (temas sin relación,
+  ej. crypto) que quedaron mezclados en rocktec_base_validada.csv por un
+  problema de calidad de datos previo, no por drift real del negocio — un
+  lote de mensajes genuinamente nuevos de clientes de Rocktec debería mostrar
+  un PSI de confianza más bajo.
+
+PSI — DISTRIBUCIÓN DE INTENCIONES: 0.1100 (drift moderado — revisar)
+──────────────────────────────────────────────────────────────────────
+intencion  n_esperado  pct_esperado  n_actual  pct_actual  contribucion_psi
+      INF         739         66.28       253       73.33            0.0071
+      COT         246         22.06        44       12.75            0.0510
+      TEC          43          3.86        29        8.41            0.0354
+      CUR          52          4.66         8        2.32            0.0164
+      VEN          35          3.14        11        3.19            0.0000
+
+PSI — DISTRIBUCIÓN DE CONFIANZA: 0.7543 (drift severo — reentrenar)
+──────────────────────────────────────────────────────────────────────
+bin_confianza  pct_esperado  pct_actual
+      0.0-0.1          0.00        0.00
+      0.1-0.2          0.00        0.00
+      0.2-0.3          0.00        0.00
+      0.3-0.4          0.54        0.29
+      0.4-0.5          4.04        5.80
+      0.5-0.6          9.96        8.70
+      0.6-0.7          9.96       13.04
+      0.7-0.8         10.94       24.93
+      0.8-0.9         15.61       34.20
+      0.9-1.0         48.97       13.04
+
+UMBRALES DE REFERENCIA:
+  PSI < 0.1          -> sin drift significativo
+  0.1 <= PSI <= 0.25 -> drift moderado, revisar
+  PSI > 0.25          -> drift severo, reentrenar
+
+FUERA DE ALCANCE:
+  Drift de vocabulario (palabras nuevas fuera del TF-IDF) — no cubierto por
+  este script. Ver docstring del script para detalle.
+================================================================================
