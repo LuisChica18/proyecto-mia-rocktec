@@ -25,6 +25,12 @@ except ImportError:
     st.error("No se encontró feature_engineering.py en 02_scripts/")
     st.stop()
 
+try:
+    from tab5_panel_comercial import render_tab5
+    TAB5_DISPONIBLE = True
+except ImportError:
+    TAB5_DISPONIBLE = False
+
 # ── CONFIG ───────────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="Rocktec | Inteligencia Comercial",
@@ -33,125 +39,110 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ── DARK MODE CSS ─────────────────────────────────────────────────────────────
+# ── LIGHT MODE CSS ────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-    /* Base dark */
-    .stApp { background-color: #0d1117; color: #e6edf3; }
-    [data-testid="stSidebar"] { background-color: #161b22; border-right: 1px solid #30363d; }
-    [data-testid="stSidebar"] * { color: #e6edf3 !important; }
+    /* Base blanco */
+    .stApp { background-color: #FFFFFF; color: #1A1A1A; }
+    [data-testid="stSidebar"] { background-color: #F8F9FA; border-right: 1px solid #E8E8E8; }
+    [data-testid="stSidebar"] * { color: #1A1A1A !important; }
 
     /* Tabs */
-    .stTabs [data-baseweb="tab-list"] { background: #161b22; border-radius: 8px; padding: 4px; gap: 4px; }
-    .stTabs [data-baseweb="tab"] { background: transparent; color: #8b949e; border-radius: 6px; padding: 8px 20px; font-weight: 500; }
-    .stTabs [aria-selected="true"] { background: #21262d !important; color: #58a6ff !important; }
+    .stTabs [data-baseweb="tab-list"] { background: #F5F5F5; border-radius: 8px; padding: 4px; gap: 4px; }
+    .stTabs [data-baseweb="tab"] { background: transparent; color: #777; border-radius: 6px; padding: 8px 20px; font-weight: 500; }
+    .stTabs [aria-selected="true"] { background: #FFFFFF !important; color: #C0392B !important; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
 
     /* Cards métricas */
     [data-testid="metric-container"] {
-        background: #161b22;
-        border: 1px solid #30363d;
+        background: #FAFAFA;
+        border: 1px solid #E8E8E8;
         border-radius: 10px;
         padding: 1rem 1.2rem;
     }
-    [data-testid="metric-container"] label { color: #8b949e !important; font-size: 0.8rem; }
-    [data-testid="metric-container"] [data-testid="stMetricValue"] { color: #58a6ff !important; font-size: 1.8rem; font-weight: 700; }
+    [data-testid="metric-container"] label { color: #777 !important; font-size: 0.8rem; }
+    [data-testid="metric-container"] [data-testid="stMetricValue"] { color: #C0392B !important; font-size: 1.8rem; font-weight: 700; }
 
     /* Inputs */
     .stTextArea textarea {
-        background: #0d1117 !important;
-        color: #e6edf3 !important;
-        border: 1px solid #30363d !important;
+        background: #FAFAFA !important;
+        color: #1A1A1A !important;
+        border: 1px solid #E0E0E0 !important;
         border-radius: 8px !important;
-        font-family: 'JetBrains Mono', monospace;
         font-size: 14px;
     }
-    .stTextArea textarea:focus { border-color: #58a6ff !important; box-shadow: 0 0 0 3px rgba(88,166,255,0.1) !important; }
+    .stTextArea textarea:focus { border-color: #C0392B !important; box-shadow: 0 0 0 3px rgba(192,57,43,0.08) !important; }
 
     /* Botón primario */
     .stButton > button[kind="primary"] {
-        background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%) !important;
+        background: #C0392B !important;
         color: white !important;
         border: none !important;
         border-radius: 8px !important;
         font-weight: 600;
-        letter-spacing: 0.5px;
         transition: all 0.2s;
     }
-    .stButton > button[kind="primary"]:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(31,111,235,0.4) !important; }
+    .stButton > button[kind="primary"]:hover { background: #A93226 !important; }
 
     /* Botones secundarios */
     .stButton > button {
-        background: #21262d !important;
-        color: #e6edf3 !important;
-        border: 1px solid #30363d !important;
+        background: #FFFFFF !important;
+        color: #1A1A1A !important;
+        border: 1px solid #E0E0E0 !important;
         border-radius: 8px !important;
         font-size: 0.85rem;
         transition: all 0.2s;
     }
-    .stButton > button:hover { border-color: #58a6ff !important; color: #58a6ff !important; }
+    .stButton > button:hover { border-color: #C0392B !important; color: #C0392B !important; }
 
     /* Slider */
     .stSlider [data-baseweb="slider"] { margin-top: 0.5rem; }
 
     /* Tablas */
-    [data-testid="stDataFrame"] { border: 1px solid #30363d; border-radius: 8px; overflow: hidden; }
-    .dvn-scroller { background: #161b22 !important; }
+    [data-testid="stDataFrame"] { border: 1px solid #E8E8E8; border-radius: 8px; overflow: hidden; }
 
     /* Alerts */
     .stAlert { border-radius: 8px; border: none; }
 
     /* Divider */
-    hr { border-color: #30363d; }
+    hr { border-color: #E8E8E8; }
 
     /* Download button */
     .stDownloadButton > button {
-        background: #21262d !important;
-        color: #3fb950 !important;
-        border: 1px solid #3fb950 !important;
+        background: #FFFFFF !important;
+        color: #1E8449 !important;
+        border: 1px solid #1E8449 !important;
         border-radius: 8px !important;
     }
 
     /* Header custom */
     .rt-header {
-        background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
-        border: 1px solid #30363d;
-        border-top: 3px solid #1f6feb;
+        background: #FFFFFF;
+        border: 1px solid #E8E8E8;
+        border-top: 3px solid #C0392B;
         border-radius: 12px;
         padding: 2rem 3rem;
         margin-bottom: 1.5rem;
-        position: relative;
-        overflow: hidden;
     }
-    .rt-header::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -10%;
-        width: 400px;
-        height: 400px;
-        background: radial-gradient(circle, rgba(31,111,235,0.08) 0%, transparent 70%);
-        pointer-events: none;
-    }
-    .rt-title { font-size: 2rem; font-weight: 700; color: #e6edf3; margin: 0; letter-spacing: -0.5px; }
-    .rt-title span { color: #58a6ff; }
-    .rt-subtitle { color: #8b949e; margin: 0.3rem 0 0 0; font-size: 0.9rem; }
+    .rt-title { font-size: 2rem; font-weight: 700; color: #1A1A1A; margin: 0; letter-spacing: -0.5px; }
+    .rt-title span { color: #C0392B; }
+    .rt-subtitle { color: #777; margin: 0.3rem 0 0 0; font-size: 0.9rem; }
     .rt-badge {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background: rgba(31,111,235,0.1);
-        border: 1px solid rgba(31,111,235,0.3);
+        background: rgba(192,57,43,0.06);
+        border: 1px solid rgba(192,57,43,0.2);
         border-radius: 20px;
         padding: 3px 12px;
         font-size: 0.75rem;
-        color: #58a6ff;
+        color: #C0392B;
         margin-top: 0.8rem;
     }
 
     /* Result card */
     .result-card {
-        background: #161b22;
-        border: 1px solid #30363d;
+        background: #FAFAFA;
+        border: 1px solid #E8E8E8;
         border-radius: 12px;
         padding: 1.5rem;
         position: relative;
@@ -164,44 +155,44 @@ st.markdown("""
         height: 3px;
         border-radius: 12px 12px 0 0;
     }
-    .intent-title { font-size: 1.8rem; font-weight: 700; margin: 0.3rem 0; }
-    .intent-code { font-family: monospace; background: #21262d; border-radius: 4px; padding: 2px 8px; font-size: 1rem; }
-    .confidence-text { color: #8b949e; font-size: 0.9rem; margin: 0.5rem 0 0 0; }
+    .intent-title { font-size: 1.8rem; font-weight: 700; margin: 0.3rem 0; color: #1A1A1A; }
+    .intent-code { font-family: monospace; background: #F0F0F0; border-radius: 4px; padding: 2px 8px; font-size: 1rem; color: #1A1A1A; }
+    .confidence-text { color: #777; font-size: 0.9rem; margin: 0.5rem 0 0 0; }
     .method-badge {
         display: inline-flex;
         align-items: center;
         gap: 4px;
-        background: #21262d;
-        border: 1px solid #30363d;
+        background: #F5F5F5;
+        border: 1px solid #E0E0E0;
         border-radius: 12px;
         padding: 2px 10px;
         font-size: 0.75rem;
-        color: #8b949e;
+        color: #777;
         margin-bottom: 0.8rem;
     }
 
     /* Intent bar */
     .intent-bar-row { margin-bottom: 0.6rem; }
-    .intent-bar-label { color: #e6edf3; font-size: 0.85rem; margin-bottom: 3px; display: flex; justify-content: space-between; }
-    .intent-bar-bg { background: #21262d; border-radius: 4px; height: 6px; }
+    .intent-bar-label { color: #1A1A1A; font-size: 0.85rem; margin-bottom: 3px; display: flex; justify-content: space-between; }
+    .intent-bar-bg { background: #F0F0F0; border-radius: 4px; height: 6px; }
     .intent-bar-fill { height: 6px; border-radius: 4px; transition: width 0.5s ease; }
 
     /* Recomendacion box */
     .rec-box {
-        background: #161b22;
-        border: 1px solid #30363d;
+        background: #FAFAFA;
+        border: 1px solid #E8E8E8;
         border-left: 3px solid;
         border-radius: 0 8px 8px 0;
         padding: 0.8rem 1rem;
         margin-top: 1rem;
         font-size: 0.9rem;
-        color: #e6edf3;
+        color: #1A1A1A;
     }
 
     /* Sidebar stat */
     .sidebar-stat {
-        background: #0d1117;
-        border: 1px solid #30363d;
+        background: #FFFFFF;
+        border: 1px solid #E8E8E8;
         border-radius: 8px;
         padding: 0.6rem 0.8rem;
         margin-bottom: 0.4rem;
@@ -209,8 +200,8 @@ st.markdown("""
         justify-content: space-between;
         align-items: center;
     }
-    .sidebar-stat-label { color: #8b949e; font-size: 0.8rem; }
-    .sidebar-stat-value { color: #58a6ff; font-weight: 700; font-size: 0.9rem; }
+    .sidebar-stat-label { color: #777; font-size: 0.8rem; }
+    .sidebar-stat-value { color: #C0392B; font-weight: 700; font-size: 0.9rem; }
 
     /* Intent chip */
     .intent-chip {
@@ -308,7 +299,7 @@ PATRONES_COT = [
 
 # TEC: consulta técnica, cómo aplicar, dosificación, proceso
 PATRONES_TEC = [
-    r'\b(cómo|como)\s+(se\s+)?(aplica|usa|prepara|mezcla|instala|coloca|sella|pule|limpia|mantiene|trabaja|pega)\b',
+    r'\b(cómo|como)\s+(se\s+)?(aplica|usa|prepara|mezcla|instala|coloca|sella|pule|limpia|mantiene|trabaja|pega|realiza|hace|utiliza|maneja|diluye|mezcla|aplican|instalan)\b',
     r'\b(visita\s+técnica|visita\s+tecnica|asesoría\s+técnica|asesoria\s+tecnica|asistencia\s+técnica)\b',
     r'\b(dosis|dosificación|proporci|rendimiento|cobertura|cuánto\s+rinde|cuanto\s+rinde|cuánto\s+necesito|cuanto\s+necesito)\b',
     r'\b(tiempo\s+de\s+secado|secado|curado|fraguado|temperatura|humedad|superficie|preparación\s+de\s+superficie)\b',
@@ -316,6 +307,11 @@ PATRONES_TEC = [
     r'\b(cuántas\s+capas|cuantas\s+capas|cuánto\s+tiempo|cuanto\s+tiempo|puede\s+ir\s+sobre|compatible\s+con)\b',
     r'\b(herramientas|moldes|estampar|estampado|textura|patrón|patron)\s+(necesito|requiero|se\s+usa|se\s+usan)\b',
     r'\b(medida|medidas|cantidad|cantidades)\s+(de|del|para)\s+(sellante|sellador|microcemento|oxidante|material)\b',
+    r'\b(mezcla|mezclado|mezclando|mezclar|realizo\s+la\s+mezcla|hago\s+la\s+mezcla|hacer\s+la\s+mezcla|preparar\s+la\s+mezcla)\b',
+    r'\b(como|cómo)\s+(realizo|realizamos|realizan|hago|hacemos|haces|realiza|preparo|preparamos|prepara|aplico|aplicamos|aplica|instalo|instalamos|instala|coloco|colocamos|coloca|mezclo|mezclamos|uso|usamos|usa|diluyo|diluimos|diluye)\b',
+    r'\b(visita|asesor[ií]a|asistencia|apoyo|ayuda)\s+(t[eé]cnica|tecnico|del\s+t[eé]cnico)\b',
+    r'\b(para|antes\s+de)\s+(aplicar|instalar|colocar|sellar|mezclar|preparar)\b',
+    r'\b(el\s+piso|las\s+paredes|la\s+superficie|el\s+concreto|el\s+microcemento)\s+(se\s+puede|puede|se\s+aplica|se\s+coloca|necesita|requiere)\b',
 ]
 
 def detectar_reglas(texto):
@@ -369,17 +365,17 @@ def clasificar(texto, modelo, vectorizador, umbral=0.65):
 # ── SIDEBAR ──────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("""
-    <div style="padding: 1rem 0 0.5rem 0; border-bottom: 1px solid #30363d; margin-bottom: 1rem;">
-        <div style="font-size: 1.3rem; font-weight: 700; color: #e6edf3;">🏗️ Rocktec</div>
-        <div style="font-size: 0.75rem; color: #8b949e; margin-top: 2px;">Inteligencia Comercial · MIA 2026</div>
+    <div style="padding: 1rem 0 0.5rem 0; border-bottom: 1px solid #E0E0E0; margin-bottom: 1rem;">
+        <div style="font-size: 1.3rem; font-weight: 700; color: #1A1A1A;">🏗️ Rocktec</div>
+        <div style="font-size: 0.75rem; color: #777777; margin-top: 2px;">Inteligencia Comercial · MIA 2026</div>
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown("**⚙️ Umbral de confianza**")
     umbral = st.slider("Umbral", 0.30, 0.95, 0.65, 0.05, label_visibility="collapsed")
-    st.markdown(f"<div style='color:#8b949e; font-size:0.8rem; margin-top:-0.5rem'>Mensajes con confianza < {umbral:.0%} van a revisión humana</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='color:#777777; font-size:0.8rem; margin-top:-0.5rem'>Mensajes con confianza < {umbral:.0%} van a revisión humana</div>", unsafe_allow_html=True)
 
-    st.markdown("<div style='margin: 1rem 0; border-top: 1px solid #30363d;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='margin: 1rem 0; border-top: 1px solid #E0E0E0;'></div>", unsafe_allow_html=True)
     st.markdown("**📊 Métricas del modelo**")
     for label, val in [("F1-macro CV", "0.75 ✅"), ("F1 Holdout", "0.72"), ("Kappa", "0.8854"), ("Dataset", "1,312")]:
         st.markdown(f"""
@@ -388,7 +384,7 @@ with st.sidebar:
             <span class="sidebar-stat-value">{val}</span>
         </div>""", unsafe_allow_html=True)
 
-    st.markdown("<div style='margin: 1rem 0; border-top: 1px solid #30363d;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='margin: 1rem 0; border-top: 1px solid #E0E0E0;'></div>", unsafe_allow_html=True)
     st.markdown("**🏷️ Intenciones**")
     for cod, desc in DESCRIPCIONES.items():
         color = COLORES[cod]
@@ -396,7 +392,7 @@ with st.sidebar:
         st.markdown(f"""
         <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
             <div style="width:8px; height:8px; border-radius:50%; background:{color}; flex-shrink:0;"></div>
-            <span style="color:#8b949e; font-size:0.8rem;"><strong style="color:#e6edf3;">{cod}</strong> — {icono} {desc}</span>
+            <span style="color:#777777; font-size:0.8rem;"><strong style="color:#1A1A1A;">{cod}</strong> — {icono} {desc}</span>
         </div>""", unsafe_allow_html=True)
 
 # ── HEADER ───────────────────────────────────────────────────────────────────
@@ -407,14 +403,14 @@ st.markdown("""
             <h1 class="rt-title">🏗️ Rocktec <span>Intelligence</span></h1>
             <p class="rt-subtitle">Clasificación automática de intenciones comerciales · PLN + MLOps</p>
             <div class="rt-badge">
-                <div style="width:6px; height:6px; border-radius:50%; background:#3fb950; animation: pulse 2s infinite;"></div>
+                <div style="width:6px; height:6px; border-radius:50%; background:#1E8449; animation: pulse 2s infinite;"></div>
                 Modelo activo · LR · F1-macro 0.75
             </div>
         </div>
-        <div style="text-align:right; color:#8b949e; font-size:0.8rem; line-height:1.8;">
+        <div style="text-align:right; color:#777777; font-size:0.8rem; line-height:1.8;">
             <div>Universidad de Las Américas</div>
             <div>Maestría en IA Aplicada · 2026</div>
-            <div style="color:#30363d;">────────────────</div>
+            <div style="color:#E0E0E0;">────────────────</div>
             <div>Mosquera · Cruel · Chica</div>
         </div>
     </div>
@@ -422,7 +418,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── TABS ─────────────────────────────────────────────────────────────────────
-tab1, tab2, tab3, tab4 = st.tabs(["💬  Clasificador", "📊  Dashboard", "📁  Lote de mensajes", "📱  Chat WhatsApp"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["💬  Clasificador", "📊  Dashboard", "📁  Lote de mensajes", "📱  Chat WhatsApp", "📊  Panel Comercial"])
 
 # ────────────────────────────────────────────────────────────────────────────
 # TAB 1 — CLASIFICADOR
@@ -431,7 +427,7 @@ with tab1:
     modelo, vectorizador = cargar_modelo()
     if not modelo:
         st.error("❌ Modelo no encontrado. Verifica la ruta: 06_resultados/modelos/produccion/")
-        st.stop()
+        pass
 
     col_izq, col_der = st.columns([1.4, 1], gap="large")
 
@@ -477,7 +473,7 @@ with tab1:
                 Un asesor debe revisar esta conversación manualmente.</div>""", unsafe_allow_html=True)
 
             elif intencion:
-                color = COLORES.get(intencion, '#58a6ff')
+                color = COLORES.get(intencion, '#C0392B')
                 desc = DESCRIPCIONES.get(intencion, intencion)
                 icono = ICONOS.get(intencion, '•')
                 metodo = "📏 Reglas léxicas" if es_regla else "🤖 Modelo ML"
@@ -497,7 +493,7 @@ with tab1:
                 if not es_regla and probas:
                     st.markdown("<br>**Probabilidades:**", unsafe_allow_html=True)
                     for k, v in sorted(probas.items(), key=lambda x: -x[1]):
-                        c = COLORES.get(k, '#58a6ff')
+                        c = COLORES.get(k, '#C0392B')
                         ic = ICONOS.get(k, '•')
                         desc_k = DESCRIPCIONES.get(k, k)
                         pct = int(v * 100)
@@ -512,12 +508,12 @@ with tab1:
                             </div>
                         </div>""", unsafe_allow_html=True)
         elif btn and not texto_input:
-            st.markdown("""<div class="result-card" style="border-top-color:#30363d; text-align:center; color:#8b949e; padding:2rem;">
+            st.markdown("""<div class="result-card" style="border-top-color:#E0E0E0; text-align:center; color:#777777; padding:2rem;">
             Escribe un mensaje para clasificar</div>""", unsafe_allow_html=True)
         else:
-            st.markdown("""<div class="result-card" style="border-top-color:#30363d; text-align:center; color:#8b949e; padding:3rem 2rem;">
+            st.markdown("""<div class="result-card" style="border-top-color:#E0E0E0; text-align:center; color:#777777; padding:3rem 2rem;">
             <div style="font-size:2rem; margin-bottom:0.5rem;">💬</div>
-            <div>Ingresa un texto y presiona<br><strong style="color:#58a6ff;">Clasificar intención</strong></div>
+            <div>Ingresa un texto y presiona<br><strong style="color:#C0392B;">Clasificar intención</strong></div>
             </div>""", unsafe_allow_html=True)
 
 # ────────────────────────────────────────────────────────────────────────────
@@ -534,7 +530,7 @@ with tab2:
         with col3: st.metric("Cohen's Kappa", "0.8854")
         with col4: st.metric("F1-macro CV", "0.75")
 
-        st.markdown("<div style='margin: 1.5rem 0; border-top: 1px solid #30363d;'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='margin: 1.5rem 0; border-top: 1px solid #E0E0E0;'></div>", unsafe_allow_html=True)
 
         col_a, col_b = st.columns([1, 1], gap="large")
 
@@ -542,17 +538,17 @@ with tab2:
             st.markdown("#### 📊 Distribución de intenciones")
             dist = df['intencion_consenso'].value_counts()
             for cod, cnt in dist.items():
-                color = COLORES.get(cod, '#58a6ff')
+                color = COLORES.get(cod, '#C0392B')
                 icono = ICONOS.get(cod, '•')
                 desc = DESCRIPCIONES.get(cod, cod)
                 pct = cnt / len(df) * 100
                 st.markdown(f"""
                 <div style="margin-bottom:0.8rem;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                        <span style="color:#e6edf3; font-size:0.85rem;">{icono} <strong>{cod}</strong> — {desc}</span>
+                        <span style="color:#1A1A1A; font-size:0.85rem;">{icono} <strong>{cod}</strong> — {desc}</span>
                         <span style="color:{color}; font-weight:700; font-size:0.85rem;">{cnt} ({pct:.1f}%)</span>
                     </div>
-                    <div style="background:#21262d; border-radius:4px; height:8px;">
+                    <div style="background:#F0F0F0; border-radius:4px; height:8px;">
                         <div style="width:{pct}%; height:8px; border-radius:4px; background:{color};"></div>
                     </div>
                 </div>""", unsafe_allow_html=True)
@@ -576,7 +572,7 @@ with tab2:
             })
             st.dataframe(kappa_hist, hide_index=True, use_container_width=True)
 
-        st.markdown("<div style='margin: 1.5rem 0; border-top: 1px solid #30363d;'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='margin: 1.5rem 0; border-top: 1px solid #E0E0E0;'></div>", unsafe_allow_html=True)
         st.markdown("#### 🗂️ Muestra del dataset")
         cols_m = [c for c in ['texto_conversacion', 'intencion_consenso', 'fuente'] if c in df.columns]
         st.dataframe(df[cols_m].sample(min(8, len(df)), random_state=42), hide_index=True, use_container_width=True)
@@ -590,7 +586,7 @@ with tab3:
     modelo, vectorizador = cargar_modelo()
 
     st.markdown("#### Clasificar múltiples mensajes")
-    st.markdown("<span style='color:#8b949e; font-size:0.9rem;'>Un mensaje por línea. Útil para procesar exportaciones de WhatsApp.</span>", unsafe_allow_html=True)
+    st.markdown("<span style='color:#777777; font-size:0.9rem;'>Un mensaje por línea. Útil para procesar exportaciones de WhatsApp.</span>", unsafe_allow_html=True)
 
     texto_lote = st.text_area("Texto", placeholder="necesito cotización para 100m²\ncómo se aplica el microcemento sobre cerámica\ncuándo es el próximo curso de aplicadores\nya pagué cuándo me despachan", height=180, label_visibility="collapsed")
 
@@ -630,14 +626,14 @@ with tab4:
     modelo_t4, vec_t4 = cargar_modelo()
     st.markdown("#### 📱 Subir chat exportado de WhatsApp")
     st.markdown(
-        "<span style='color:#8b949e;font-size:0.9rem;'>"
+        "<span style='color:#777777;font-size:0.9rem;'>"
         "Martha: exporta el chat desde WhatsApp → sube el .txt aquí → el sistema hace el resto."
         "</span>", unsafe_allow_html=True
     )
     st.markdown(
-        "<div style='background:#161b22;border:1px solid #30363d;border-left:3px solid #58a6ff;"
-        "border-radius:0 8px 8px 0;padding:0.8rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#8b949e;'>"
-        "<strong style='color:#e6edf3;'>¿Cómo exportar el chat?</strong><br>"
+        "<div style='background:#F8F9FA;border:1px solid #E0E0E0;border-left:3px solid #C0392B;"
+        "border-radius:0 8px 8px 0;padding:0.8rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#777777;'>"
+        "<strong style='color:#1A1A1A;'>¿Cómo exportar el chat?</strong><br>"
         "WhatsApp → Abrir chat → ⋮ Más → Exportar chat → Sin archivos → Guardar el .txt"
         "</div>", unsafe_allow_html=True
     )
@@ -692,14 +688,14 @@ with tab4:
                 st.markdown("**Resumen del cliente:**")
                 cols_i = st.columns(min(len(ints), 6))
                 for i, (intent, cnt) in enumerate(ints.items()):
-                    color = COLORES.get(intent, "#58a6ff")
+                    color = COLORES.get(intent, "#C0392B")
                     with cols_i[i % 6]:
                         st.markdown(
-                            f"<div style='background:#161b22;border:1px solid #30363d;border-top:3px solid {color};"
+                            f"<div style='background:#F8F9FA;border:1px solid #E0E0E0;border-top:3px solid {color};"
                             f"border-radius:8px;padding:0.8rem;text-align:center;'>"
                             f"<div style='font-size:1.3rem;'>{ICONOS.get(intent,'•')}</div>"
                             f"<div style='color:{color};font-weight:700;font-size:1.2rem;'>{cnt}</div>"
-                            f"<div style='color:#8b949e;font-size:0.75rem;'>{DESCRIPCIONES.get(intent,intent)}</div>"
+                            f"<div style='color:#777777;font-size:0.75rem;'>{DESCRIPCIONES.get(intent,intent)}</div>"
                             f"</div>", unsafe_allow_html=True
                         )
             
@@ -718,19 +714,32 @@ with tab4:
             st.warning("No se encontraron mensajes del cliente. Verifica que sea un chat exportado de WhatsApp.")
     else:
         st.markdown(
-            "<div style='background:#161b22;border:1px solid #30363d;border-radius:10px;"
-            "padding:3rem;text-align:center;color:#8b949e;'>"
+            "<div style='background:#F8F9FA;border:1px solid #E0E0E0;border-radius:10px;"
+            "padding:3rem;text-align:center;color:#777777;'>"
             "<div style='font-size:3rem;margin-bottom:1rem;'>📱</div>"
-            "<div style='font-size:1rem;color:#e6edf3;margin-bottom:0.5rem;'>Sube el archivo .txt del chat de WhatsApp</div>"
+            "<div style='font-size:1rem;color:#1A1A1A;margin-bottom:0.5rem;'>Sube el archivo .txt del chat de WhatsApp</div>"
             "<div>El sistema filtra automáticamente los mensajes del cliente y clasifica sus intenciones</div>"
             "</div>", unsafe_allow_html=True
         )
 
 
+# ── TAB 5: PANEL COMERCIAL ───────────────────────────────────────────────────
+with tab5:
+    if TAB5_DISPONIBLE:
+        try:
+            render_tab5()
+        except Exception as e:
+            import traceback
+            st.error(f"Error en Panel Comercial: {e}")
+            st.code(traceback.format_exc())
+    else:
+        st.error("No se encontró tab5_panel_comercial.py en 02_scripts/")
+        st.info("Asegúrate de que tab5_panel_comercial.py esté en la misma carpeta que este script.")
+
 # ── FOOTER ───────────────────────────────────────────────────────────────────
 st.markdown("""
-<div style="margin-top:3rem; padding:1.5rem; border-top: 1px solid #30363d; text-align:center;">
-    <div style="color:#30363d; font-size:0.75rem; line-height:2;">
+<div style="margin-top:3rem; padding:1.5rem; border-top: 1px solid #E0E0E0; text-align:center;">
+    <div style="color:#AAAAAA; font-size:0.75rem; line-height:2;">
         Rocktec Intelligence Platform · MIA 2026 · UDLA<br>
         Mosquera Castro A.P. · Cruel Chang L.C. · Chica Moncayo L.M.<br>
         LR · F1=0.75 · Kappa=0.8854 · Dataset: 1,312 registros
