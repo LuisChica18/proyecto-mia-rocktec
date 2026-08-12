@@ -16,7 +16,141 @@ ASESORES = [
     {"nombre": "Gerencia Rocktec", "numero": "+593 99 380 2851", "clave": "gerencia"},
 ]
 
-ESTADO_PATH = Path("estado_panel.json")
+SHEET_ID = "1sgPf6RUl_T9eDv2B6R1Vpi5nNEsSYZY-i5r7QKT6r1g"
+ESTADO_PATH = Path("estado_panel.json")  # fallback local
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# GOOGLE SHEETS — conexión y operaciones
+# ─────────────────────────────────────────────────────────────────────────────
+@st.cache_resource
+def get_gsheet_client():
+    """Conecta a Google Sheets usando las credenciales de Streamlit Secrets."""
+    try:
+        import gspread
+        from google.oauth2.service_account import Credentials
+        scopes = [
+            "https://spreadsheets.google.com/feeds",
+            "https://www.googleapis.com/auth/drive",
+        ]
+        creds = Credentials.from_service_account_info(
+            st.secrets["gcp_service_account"], scopes=scopes
+        )
+        return gspread.authorize(creds)
+    except Exception:
+        return None
+
+
+def get_worksheets():
+    """Retorna (ws_mensajes, ws_estado) o (None, None) si no hay conexión."""
+    gc = get_gsheet_client()
+    if gc is None:
+        return None, None
+    try:
+        sh = gc.open_by_key(SHEET_ID)
+        hojas = [w.title for w in sh.worksheets()]
+        if "mensajes" not in hojas:
+            sh.add_worksheet(title="mensajes", rows=5000, cols=15)
+            sh.worksheet("mensajes").append_row([
+                "fecha", "asesor", "remitente", "texto",
+                "intencion", "razon_perdida", "tipo_negocio",
+                "es_lead", "es_perdida", "es_venta"
+            ])
+        if "estado" not in hojas:
+            sh.add_worksheet(title="estado", rows=10, cols=3)
+            sh.worksheet("estado").append_row(["asesor_clave", "ultima_fecha"])
+        return sh.worksheet("mensajes"), sh.worksheet("estado")
+    except Exception:
+        return None, None
+
+
+def cargar_estado():
+    """Carga el estado desde Google Sheets o archivo local."""
+    ws_msgs, ws_estado = get_worksheets()
+    if ws_estado:
+        try:
+            rows = ws_estado.get_all_records()
+            return {r["asesor_clave"]: r["ultima_fecha"] for r in rows if r.get("asesor_clave")}
+        except Exception:
+            pass
+    # Fallback local
+    if ESTADO_PATH.exists():
+        with open(ESTADO_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
+
+def guardar_estado(estado):
+    """Guarda el estado en Google Sheets y también localmente como backup."""
+    ws_msgs, ws_estado = get_worksheets()
+    if ws_estado:
+        try:
+            ws_estado.clear()
+            ws_estado.append_row(["asesor_clave", "ultima_fecha"])
+            for clave, fecha in estado.items():
+                ws_estado.append_row([clave, str(fecha)])
+        except Exception:
+            pass
+    # Backup local
+    with open(ESTADO_PATH, "w", encoding="utf-8") as f:
+        json.dump(estado, f, ensure_ascii=False, indent=2, default=str)
+
+
+def guardar_mensajes_en_sheets(msgs_por_asesor):
+    """Guarda los mensajes nuevos procesados en la pestaña 'mensajes' de Sheets."""
+    ws_msgs, _ = get_worksheets()
+    if ws_msgs is None:
+        return
+    try:
+        filas = []
+        for clave, msgs in msgs_por_asesor.items():
+            asesor_nombre = next((a["nombre"] for a in ASESORES if a["clave"] == clave), clave)
+            for m in msgs:
+                filas.append([
+                    str(m.get("fecha", "")),
+                    asesor_nombre,
+                    m.get("remitente", ""),
+                    m.get("texto", "")[:300],
+                    m.get("intencion", ""),
+                    m.get("razon_perdida", "") or "",
+                    m.get("tipo_negocio", ""),
+                    str(m.get("es_lead", False)),
+                    str(m.get("es_perdida", False)),
+                    str(m.get("es_venta", False)),
+                ])
+        if filas:
+            ws_msgs.append_rows(filas)
+    except Exception:
+        pass
+
+
+def cargar_mensajes_desde_sheets():
+    """Carga todos los mensajes guardados desde Google Sheets."""
+    ws_msgs, _ = get_worksheets()
+    if ws_msgs is None:
+        return {}
+    try:
+        records = ws_msgs.get_all_records()
+        msgs_por_asesor = defaultdict(list)
+        for r in records:
+            clave = next((a["clave"] for a in ASESORES if a["nombre"] == r.get("asesor", "")), None)
+            if not clave:
+                continue
+            msgs_por_asesor[clave].append({
+                "fecha": r.get("fecha", ""),
+                "remitente": r.get("remitente", ""),
+                "texto": r.get("texto", ""),
+                "intencion": r.get("intencion", ""),
+                "razon_perdida": r.get("razon_perdida", "") or None,
+                "tipo_negocio": r.get("tipo_negocio", ""),
+                "es_lead": r.get("es_lead", "False") == "True",
+                "es_perdida": r.get("es_perdida", "False") == "True",
+                "es_venta": r.get("es_venta", "False") == "True",
+            })
+        return dict(msgs_por_asesor)
+    except Exception:
+        return {}
+
 
 PATRONES_PERDIDA = {
     "Competencia": [r"ya lo hice con otro|con otra empresa|con otro proveedor|encontré otro"],
@@ -272,15 +406,26 @@ def render_tab5():
                         existentes = st.session_state.get(key, [])
                         st.session_state[key] = existentes + msgs
                     guardar_estado(estado)
+                    guardar_mensajes_en_sheets(nuevos_msgs)
                     st.info("✅ Listo. Cierra este panel para ver los totales actualizados.")
 
-    # Cargar datos de sesión y filtrar por período
+    # Cargar datos — primero de session_state, si está vacío carga desde Google Sheets
     datos_por_asesor = {}
+    hay_datos_en_sesion = any(st.session_state.get(f"msgs_{a['clave']}") for a in ASESORES)
+
+    if not hay_datos_en_sesion:
+        # Intentar cargar desde Google Sheets
+        msgs_sheets = cargar_mensajes_desde_sheets()
+        if msgs_sheets:
+            for clave, msgs in msgs_sheets.items():
+                st.session_state[f"msgs_{clave}"] = msgs
+
     for a in ASESORES:
         msgs = st.session_state.get(f"msgs_{a['clave']}", [])
         if msgs:
             df = pd.DataFrame(msgs)
-            df["fecha"] = pd.to_datetime(df["fecha"]).dt.date
+            df["fecha"] = pd.to_datetime(df["fecha"], errors="coerce").dt.date
+            df = df.dropna(subset=["fecha"])
             datos_por_asesor[a["clave"]] = filtrar_por_periodo(df, periodo)
         else:
             datos_por_asesor[a["clave"]] = pd.DataFrame()

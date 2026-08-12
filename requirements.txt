@@ -6,3 +6,5 @@ pysentimiento
 mlflow
 evidently
 plotly
+gspread
+google-auth
