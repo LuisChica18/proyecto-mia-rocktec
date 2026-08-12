@@ -31,6 +31,40 @@ try:
 except ImportError:
     TAB5_DISPONIBLE = False
 
+# ── AUTENTICACIÓN POR CONTRASEÑA ─────────────────────────────────────────────
+def check_password():
+    """Pide contraseña antes de mostrar el dashboard."""
+    if "autenticado" not in st.session_state:
+        st.session_state.autenticado = False
+
+    if st.session_state.autenticado:
+        return True
+
+    # Pantalla de login
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.markdown("""
+        <div style='text-align:center; padding: 3rem 0 1rem 0;'>
+            <h1 style='color:#C0392B; font-size:2rem; margin-bottom:0.5rem;'>🏗️ Rocktec</h1>
+            <p style='color:#777; font-size:1rem; margin-bottom:2rem;'>Panel de Inteligencia Comercial</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        password = st.text_input("Contraseña de acceso", type="password", placeholder="Ingresa la contraseña")
+
+        if st.button("Ingresar", type="primary", use_container_width=True):
+            # Contraseña almacenada en Streamlit Secrets o valor por defecto
+            clave_correcta = st.secrets.get("DASHBOARD_PASSWORD", "Rocktec2026#")
+            if password == clave_correcta:
+                st.session_state.autenticado = True
+                st.rerun()
+            else:
+                st.error("Contraseña incorrecta. Intenta de nuevo.")
+    return False
+
+if not check_password():
+    st.stop()
+
 # ── CONFIG ───────────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="Rocktec | Inteligencia Comercial",
@@ -427,7 +461,7 @@ with tab1:
     modelo, vectorizador = cargar_modelo()
     if not modelo:
         st.error("❌ Modelo no encontrado. Verifica la ruta: 06_resultados/modelos/produccion/")
-        pass
+        st.stop()
 
     col_izq, col_der = st.columns([1.4, 1], gap="large")
 
