@@ -452,7 +452,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── TABS ─────────────────────────────────────────────────────────────────────
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["💬  Clasificador", "📊  Dashboard", "📁  Lote de mensajes", "📱  Chat WhatsApp", "📊  Panel Comercial"])
+tab1, tab2, tab4, tab5 = st.tabs(["💬  Clasificador", "📊  Dashboard", "📱  Chat WhatsApp", "📊  Panel Comercial"])
 
 # ────────────────────────────────────────────────────────────────────────────
 # TAB 1 — CLASIFICADOR
@@ -550,6 +550,42 @@ with tab1:
             <div>Ingresa un texto y presiona<br><strong style="color:#C0392B;">Clasificar intención</strong></div>
             </div>""", unsafe_allow_html=True)
 
+    # ── SECCIÓN LOTE ──────────────────────────────────────────────────────────
+    st.divider()
+    st.markdown("#### 📁 Clasificar múltiples mensajes")
+    st.markdown("<span style='color:#777777; font-size:0.9rem;'>Un mensaje por línea. Útil para probar varios textos de una vez.</span>", unsafe_allow_html=True)
+
+    texto_lote = st.text_area("Lote", placeholder="necesito cotización para 100m²
+cómo se aplica el microcemento sobre cerámica
+cuándo es el próximo curso de aplicadores
+ya pagué cuándo me despachan", height=150, label_visibility="collapsed", key="lote_txt")
+
+    if st.button("🔍  Clasificar todos", type="primary", key="btn_lote") and texto_lote and modelo:
+        mensajes = [m.strip() for m in texto_lote.strip().split('\n') if m.strip()]
+        if mensajes:
+            resultados = []
+            for msg in mensajes:
+                intencion_l, confianza_l, _, es_regla_l = clasificar(msg, modelo, vectorizador, umbral)
+                label_l = intencion_l if intencion_l else "⚠️ REVISAR"
+                resultados.append({
+                    'Mensaje': msg[:80] + ('...' if len(msg) > 80 else ''),
+                    'Intención': label_l,
+                    'Descripción': DESCRIPCIONES.get(label_l, 'Revisión humana'),
+                    'Confianza': f"{confianza_l:.0%}" if confianza_l > 0 else "—",
+                    'Método': "Reglas" if es_regla_l else ("ML" if intencion_l else "⚠️ Baja confianza"),
+                })
+            df_res = pd.DataFrame(resultados)
+            n_auto = sum(1 for r in resultados if r['Intención'] != '⚠️ REVISAR')
+            n_rev = len(resultados) - n_auto
+            col1, col2, col3 = st.columns(3)
+            with col1: st.metric("Total mensajes", len(mensajes))
+            with col2: st.metric("Clasificados auto", n_auto, f"{n_auto/len(mensajes):.0%}")
+            with col3: st.metric("Requieren revisión", n_rev, f"{n_rev/len(mensajes):.0%}")
+            st.dataframe(df_res, hide_index=True, use_container_width=True)
+            csv_l = df_res.to_csv(index=False, encoding='utf-8')
+            st.download_button("⬇️  Descargar CSV", data=csv_l,
+                file_name=f"clasificaciones_{datetime.now().strftime('%Y%m%d_%H%M')}.csv", mime="text/csv")
+
 # ────────────────────────────────────────────────────────────────────────────
 # TAB 2 — DASHBOARD
 # ────────────────────────────────────────────────────────────────────────────
@@ -616,45 +652,6 @@ with tab2:
 # ────────────────────────────────────────────────────────────────────────────
 # TAB 3 — LOTE
 # ────────────────────────────────────────────────────────────────────────────
-with tab3:
-    modelo, vectorizador = cargar_modelo()
-
-    st.markdown("#### Clasificar múltiples mensajes")
-    st.markdown("<span style='color:#777777; font-size:0.9rem;'>Un mensaje por línea. Útil para procesar exportaciones de WhatsApp.</span>", unsafe_allow_html=True)
-
-    texto_lote = st.text_area("Texto", placeholder="necesito cotización para 100m²\ncómo se aplica el microcemento sobre cerámica\ncuándo es el próximo curso de aplicadores\nya pagué cuándo me despachan", height=180, label_visibility="collapsed")
-
-    if st.button("🔍  Clasificar todos", type="primary") and texto_lote and modelo:
-        mensajes = [m.strip() for m in texto_lote.strip().split('\n') if m.strip()]
-        if mensajes:
-            resultados = []
-            for msg in mensajes:
-                intencion, confianza, _, es_regla = clasificar(msg, modelo, vectorizador, umbral)
-                label = intencion if intencion else "⚠️ REVISAR"
-                resultados.append({
-                    'Mensaje': msg[:80] + ('...' if len(msg) > 80 else ''),
-                    'Intención': label,
-                    'Descripción': DESCRIPCIONES.get(label, 'Revisión humana'),
-                    'Confianza': f"{confianza:.0%}" if confianza > 0 else "—",
-                    'Método': "Reglas" if es_regla else ("ML" if intencion else "⚠️ Baja confianza"),
-                })
-
-            df_res = pd.DataFrame(resultados)
-            n_auto = sum(1 for r in resultados if r['Intención'] != '⚠️ REVISAR')
-            n_rev = len(resultados) - n_auto
-
-            col1, col2, col3 = st.columns(3)
-            with col1: st.metric("Total mensajes", len(mensajes))
-            with col2: st.metric("Clasificados auto", n_auto, f"{n_auto/len(mensajes):.0%}")
-            with col3: st.metric("Requieren revisión", n_rev, f"{n_rev/len(mensajes):.0%}")
-
-            st.dataframe(df_res, hide_index=True, use_container_width=True)
-
-            csv = df_res.to_csv(index=False, encoding='utf-8')
-            st.download_button("⬇️  Descargar CSV", data=csv,
-                file_name=f"clasificaciones_{datetime.now().strftime('%Y%m%d_%H%M')}.csv", mime="text/csv")
-
-
 # ── TAB 4: CHAT WHATSAPP ──────────────────────────────────────────────────────
 with tab4:
     modelo_t4, vec_t4 = cargar_modelo()
