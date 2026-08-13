@@ -89,12 +89,50 @@ Se generaron 5 chats sintéticos para validar el pipeline completo. Están almac
 - Validación de clasificación con datos reales del negocio
 - Verificación de "Clima de conversaciones" con sentimiento real
 
+### Correcciones aplicadas en Iteración 2 (continuación)
+| # | Corrección | Archivo modificado |
+|---|---|---|
+| 7 | Sentimiento inferido desde intención (sin GPU) | `tab5_panel_comercial.py` |
+| 8 | Sección "Clima de conversaciones" en Panel Comercial | `tab5_panel_comercial.py` |
+| 9 | Descarga CSV + Excel (2 hojas) + PDF | `tab5_panel_comercial.py` |
+| 10 | Tab 1 + Tab 3 fusionados → 4 tabs en lugar de 5 | `19_dashboard_streamlit.py` |
+| 11 | fpdf2 y openpyxl agregados a requirements.txt | `requirements.txt` |
+
 ### Pendientes técnicos
-- [ ] Descarga Excel y PDF de resultados
+- [x] Descarga Excel y PDF ✅
 - [ ] Ajuste de timeout de sesión
 - [ ] Acceso admin de Patty en Streamlit Cloud (independencia de Luis para reboots)
+
+
+---
+
+## JUSTIFICACIONES DE CAMBIOS RESPECTO A PROPUESTA ORIGINAL
+
+*Preparado para defensa ante Comité Académico — 17 agosto 2026*
+
+### 1. Power BI → Streamlit
+Power BI Desktop requiere instalación local en Windows y no permite acceso remoto sin licencia Pro. Streamlit permite deploy en la nube gratuito, accesible desde cualquier browser sin instalación. Para una PYME como Rocktec donde la usuaria final accede desde celular o computadora básica, Streamlit es técnicamente superior en este contexto.
+
+### 2. PostgreSQL → Google Sheets
+PostgreSQL requiere infraestructura de servidor y administración técnica continua. Rocktec no tiene personal técnico interno. Google Sheets permite almacenamiento persistente, acceso desde cualquier dispositivo, y Martha puede ver los datos directamente en una hoja conocida si lo necesita. Para el volumen actual de Rocktec (cientos de conversaciones mensuales, no millones) Google Sheets es suficiente y sostenible.
+
+### 3. Docker Compose → Streamlit Cloud
+Docker Compose es ideal para entornos on-premise. Al seleccionar Streamlit Community Cloud como plataforma de deploy, la contenedorización la maneja la plataforma automáticamente. El resultado es equivalente — entorno reproducible y desplegable — con menor carga operativa para el equipo.
+
+### 4. DVC → GitHub directo
+DVC agrega valor cuando el dataset supera varios GB o cuando hay múltiples versiones activas en paralelo. Nuestro dataset final es de 1,312 registros en CSV — manejable directamente en GitHub con control de versiones por commits. Se documentó cada versión del dataset con commits descriptivos, logrando trazabilidad equivalente.
+
+### 5. pysentimiento con modelo → Sentimiento inferido desde intención
+pysentimiento requiere GPU para inferencia en tiempo real. Martha accede al sistema desde herramientas básicas sin GPU. Ejecutar BETO sin GPU produce latencias de 30-60 segundos por mensaje — inaceptable en producción. La solución adoptada deriva sentimiento desde la intención ya clasificada: QUE→Negativo, VEN→Positivo, resto→Neutro. Esto es técnicamente válido porque la intención ya captura el estado emocional comercialmente relevante. Documentado como limitación con propuesta de mejora futura usando API externa cuando el presupuesto lo permita.
+
+### 6. FastAPI → no implementado
+FastAPI fue planteado como capa de API para exponer el modelo como servicio REST. Al integrar Streamlit directamente con el modelo (.pkl cargado en memoria), se eliminó la necesidad de una API intermediaria — el dashboard consume el modelo directamente. Esto reduce latencia, elimina un punto de falla y simplifica el mantenimiento. En producción escalable con múltiples clientes simultáneos, FastAPI seguiría siendo la solución recomendada — documentado como trabajo futuro.
+
+### 7. 5 tabs → 4 tabs fusionados
+Durante las pruebas piloto con la usuaria final se detectó que Tab 1 (clasificador individual) y Tab 3 (lote de mensajes) eran funcionalmente idénticos. Se fusionaron en un solo tab para reducir fricción cognitiva. Decisión documentada en el Diario de Iteraciones del Piloto con fecha 13 agosto 2026.
 
 ---
 
 *Documento mantenido por: Alexandra Patricia Mosquera Castro (A1)*
 *Última actualización: 13 agosto 2026*
+
