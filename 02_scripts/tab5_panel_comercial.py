@@ -438,8 +438,8 @@ def render_tab5():
     datos_por_asesor = {}
     hay_datos_en_sesion = any(st.session_state.get(f"msgs_{a['clave']}") for a in ASESORES)
 
-    if not hay_datos_en_sesion:
-        # Intentar cargar desde Google Sheets
+    if not hay_datos_en_sesion and not st.session_state.get("sesion_limpiada", False):
+        # Intentar cargar desde Google Sheets (solo si no se acaba de limpiar)
         msgs_sheets = cargar_mensajes_desde_sheets()
         if msgs_sheets:
             for clave, msgs in msgs_sheets.items():
@@ -455,7 +455,7 @@ def render_tab5():
         else:
             datos_por_asesor[a["clave"]] = pd.DataFrame()
 
-    # 3 tarjetas por asesor
+    # 3 tarjetas por asesor — diseño compacto con colores
     st.markdown("### Resumen por asesor")
     cols = st.columns(3)
     for i, asesor in enumerate(ASESORES):
@@ -464,12 +464,27 @@ def render_tab5():
         n_leads    = int(df["es_lead"].sum())    if not df.empty else 0
         n_ventas   = int(df["es_venta"].sum())   if not df.empty else 0
         with cols[i]:
-            st.metric(asesor["nombre"], "")
-            st.caption(asesor["numero"])
-            c1, c2, c3 = st.columns(3)
-            with c1: st.metric("Pérdidas", n_perdidas)
-            with c2: st.metric("Leads",    n_leads)
-            with c3: st.metric("Ventas",   n_ventas)
+            st.markdown(f"""
+            <div style='border:1px solid #E0E0E0; border-top:3px solid #C0392B;
+                        border-radius:8px; padding:12px 14px; background:#FFFFFF;'>
+                <div style='font-weight:700; font-size:13px; color:#1A1A1A; margin-bottom:2px;'>{asesor["nombre"]}</div>
+                <div style='font-size:11px; color:#888; margin-bottom:10px;'>{asesor["numero"]}</div>
+                <div style='display:flex; gap:6px;'>
+                    <div style='flex:1; background:#FDEDEC; border-radius:6px; padding:7px 6px; text-align:center;'>
+                        <div style='font-size:18px; font-weight:700; color:#C0392B;'>{n_perdidas}</div>
+                        <div style='font-size:10px; color:#C0392B;'>Pérdidas</div>
+                    </div>
+                    <div style='flex:1; background:#EBF5FB; border-radius:6px; padding:7px 6px; text-align:center;'>
+                        <div style='font-size:18px; font-weight:700; color:#1A5276;'>{n_leads}</div>
+                        <div style='font-size:10px; color:#1A5276;'>Leads</div>
+                    </div>
+                    <div style='flex:1; background:#EAFAF1; border-radius:6px; padding:7px 6px; text-align:center;'>
+                        <div style='font-size:18px; font-weight:700; color:#1E8449;'>{n_ventas}</div>
+                        <div style='font-size:10px; color:#1E8449;'>Ventas</div>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
 
     st.divider()
 
@@ -636,8 +651,11 @@ def render_tab5():
     col_a, col_b = st.columns(2)
     with col_a:
         if st.button("🗑️ Limpiar sesión", use_container_width=True):
+            # Solo limpia la vista — Sheets conserva el histórico
             for a in ASESORES:
                 st.session_state.pop(f"msgs_{a['clave']}", None)
+            st.session_state["sesion_limpiada"] = True
+            st.success("✅ Vista limpiada. El histórico en la base de datos se conserva.")
             st.rerun()
     with col_b:
         todos = []
