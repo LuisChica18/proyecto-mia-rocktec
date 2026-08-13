@@ -96,16 +96,37 @@ def guardar_estado(estado):
         json.dump(estado, f, ensure_ascii=False, indent=2, default=str)
 
 
-def guardar_mensajes_en_sheets(msgs_por_asesor):
-    """Guarda los mensajes nuevos procesados en la pestaña 'mensajes' de Sheets."""
+def get_claves_existentes_sheets():
+    """Retorna set de claves unicas ya guardadas en Sheets para control de duplicados."""
     ws_msgs, _ = get_worksheets()
     if ws_msgs is None:
-        return
+        return set()
+    try:
+        records = ws_msgs.get_all_records()
+        claves = set()
+        for r in records:
+            clave = f"{r.get('remitente','')}|{r.get('fecha','')}|{str(r.get('texto',''))[:50]}"
+            claves.add(clave)
+        return claves
+    except Exception:
+        return set()
+
+
+def guardar_mensajes_en_sheets(msgs_por_asesor, claves_existentes=None):
+    """Guarda solo mensajes nuevos (no duplicados) en Sheets."""
+    ws_msgs, _ = get_worksheets()
+    if ws_msgs is None:
+        return 0
+    if claves_existentes is None:
+        claves_existentes = get_claves_existentes_sheets()
     try:
         filas = []
         for clave, msgs in msgs_por_asesor.items():
             asesor_nombre = next((a["nombre"] for a in ASESORES if a["clave"] == clave), clave)
             for m in msgs:
+                clave_unica = f"{m.get('remitente','')}|{str(m.get('fecha',''))}|{str(m.get('texto',''))[:50]}"
+                if clave_unica in claves_existentes:
+                    continue
                 filas.append([
                     str(m.get("fecha", "")),
                     asesor_nombre,
@@ -118,10 +139,12 @@ def guardar_mensajes_en_sheets(msgs_por_asesor):
                     str(m.get("es_perdida", False)),
                     str(m.get("es_venta", False)),
                 ])
+                claves_existentes.add(clave_unica)
         if filas:
             ws_msgs.append_rows(filas)
+        return len(filas)
     except Exception:
-        pass
+        return 0
 
 
 def cargar_mensajes_desde_sheets():
@@ -400,11 +423,13 @@ def render_tab5():
 
             # Paso 2: botón para confirmar y procesar
             if st.button("✅ Procesar chats", type="primary", use_container_width=True):
+                with st.spinner("Verificando duplicados..."):
+                    claves_existentes = get_claves_existentes_sheets()
+
                 for archivo in archivos:
                     asesor = asignaciones[archivo.name]
                     contenido = archivo.read().decode("utf-8", errors="ignore")
 
-                    # Excluir chats grupales
                     if es_chat_grupal(contenido):
                         st.warning(
                             f"⚠️ **'{archivo.name}'** es un chat grupal — no aplica para el panel comercial. "
@@ -413,26 +438,31 @@ def render_tab5():
                         continue
 
                     mensajes = parsear_txt_whatsapp(contenido)
-                    ultima_str = estado.get(asesor["clave"])
-                    ultima = datetime.strptime(ultima_str, "%Y-%m-%d").date() if ultima_str else None
-                    procesados = procesar_mensajes(mensajes, ultima)
-                    if procesados:
-                        nuevos_msgs[asesor["clave"]].extend(procesados)
-                        nueva_ultima = max(m["fecha"] for m in procesados)
-                        if ultima is None or nueva_ultima > ultima:
-                            estado[asesor["clave"]] = str(nueva_ultima)
-                        st.success(f"✅ {asesor['nombre']}: {len(procesados)} mensajes nuevos procesados")
+                    procesados = procesar_mensajes(mensajes, ultima_fecha=None)
+
+                    # Filtrar duplicados por clave unica remitente+fecha+texto
+                    nuevos = []
+                    for m in procesados:
+                        clave_unica = f"{m.get('remitente','')}|{str(m.get('fecha',''))}|{str(m.get('texto',''))[:50]}"
+                        if clave_unica not in claves_existentes:
+                            nuevos.append(m)
+                            claves_existentes.add(clave_unica)
+
+                    if nuevos:
+                        nuevos_msgs[asesor["clave"]].extend(nuevos)
+                        st.success(f"✅ {asesor['nombre']} — {archivo.name}: {len(nuevos)} mensajes nuevos")
                     else:
-                        st.info(f"ℹ️ {asesor['nombre']}: sin mensajes nuevos desde la última carga")
+                        st.info(f"ℹ️ '{archivo.name}': todos los mensajes ya estaban registrados")
 
                 if any(nuevos_msgs.values()):
                     for clave, msgs in nuevos_msgs.items():
                         key = f"msgs_{clave}"
                         existentes = st.session_state.get(key, [])
                         st.session_state[key] = existentes + msgs
-                    guardar_estado(estado)
-                    guardar_mensajes_en_sheets(nuevos_msgs)
-                    st.info("✅ Listo. Cierra este panel para ver los totales actualizados.")
+                    guardar_mensajes_en_sheets(nuevos_msgs, claves_existentes)
+                    st.session_state.pop("sesion_limpiada", None)
+                    total = sum(len(v) for v in nuevos_msgs.values())
+                    st.success(f"✅ {total} mensajes nuevos guardados en la base de datos.")
 
     # Cargar datos — primero de session_state, si está vacío carga desde Google Sheets
     datos_por_asesor = {}
