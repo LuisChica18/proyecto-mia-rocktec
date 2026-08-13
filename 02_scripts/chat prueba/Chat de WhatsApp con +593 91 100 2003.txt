@@ -1,0 +1,12 @@
+11/8/2026, 07:00 - +593 91 100 2003: Buenos días, quiero información sobre sus cursos de aplicación de microcemento
+11/8/2026, 07:05 - Rocktec Concreto Decorativo: Hola! Tenemos cursos presenciales y virtuales
+11/8/2026, 07:06 - +593 91 100 2003: Cuándo es el próximo curso presencial?
+11/8/2026, 07:10 - Rocktec Concreto Decorativo: El próximo es el 20 de agosto en Quito
+11/8/2026, 07:11 - +593 91 100 2003: Cuánto cuesta la certificación?
+11/8/2026, 07:15 - Rocktec Concreto Decorativo: El curso con certificación tiene un costo de $150
+11/8/2026, 07:16 - +593 91 100 2003: Perfecto me interesa, cómo me inscribo?
+11/8/2026, 07:20 - Rocktec Concreto Decorativo: Le enviamos el formulario de inscripción
+11/8/2026, 07:25 - +593 91 100 2003: Ya llené el formulario, cuándo me confirman el cupo?
+11/8/2026, 07:30 - +593 91 100 2003: También quisiera saber si hay descuento por grupo, somos 3 personas interesadas
+11/8/2026, 07:35 - Rocktec Concreto Decorativo: Sí hay descuento del 10% por grupo de 3 o más
+11/8/2026, 07:36 - +593 91 100 2003: Excelente, confirmamos los 3, mándenos la factura por favor
