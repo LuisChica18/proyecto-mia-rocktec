@@ -136,16 +136,27 @@ def cargar_mensajes_desde_sheets():
             clave = next((a["clave"] for a in ASESORES if a["nombre"] == r.get("asesor", "")), None)
             if not clave:
                 continue
+            # Parsear fecha con múltiples formatos
+            fecha_raw = str(r.get("fecha", ""))
+            fecha_obj = None
+            for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%d/%m/%y", "%m/%d/%Y", "%m/%d/%y", "%Y/%m/%d"):
+                try:
+                    fecha_obj = datetime.strptime(fecha_raw.strip(), fmt).date()
+                    break
+                except ValueError:
+                    pass
+            if fecha_obj is None:
+                continue
             msgs_por_asesor[clave].append({
-                "fecha": r.get("fecha", ""),
+                "fecha": fecha_obj,
                 "remitente": r.get("remitente", ""),
                 "texto": r.get("texto", ""),
                 "intencion": r.get("intencion", ""),
                 "razon_perdida": r.get("razon_perdida", "") or None,
                 "tipo_negocio": r.get("tipo_negocio", ""),
-                "es_lead": r.get("es_lead", "False") == "True",
-                "es_perdida": r.get("es_perdida", "False") == "True",
-                "es_venta": r.get("es_venta", "False") == "True",
+                "es_lead": str(r.get("es_lead", "False")) == "True",
+                "es_perdida": str(r.get("es_perdida", "False")) == "True",
+                "es_venta": str(r.get("es_venta", "False")) == "True",
             })
         return dict(msgs_por_asesor)
     except Exception:
@@ -161,7 +172,11 @@ PATRONES_PERDIDA = {
 PATRONES_COT = [r"cotiz|presupuest|precio|a como sale|cuánto cuesta|proforma|cuánto vale"]
 PATRONES_VEN = [r"confirmo|adelante|acepto|mándame la factura|forma de pago|ya realicé el pago"]
 PATRONES_QUE = [r"dañado|no funciona|no estoy conforme|reclamo|nadie me responde|se demoran|mala atención"]
-PATRONES_SEG = [r"en qué estado|cuándo despachan|ya llegó|sigo esperando|sin respuesta"]
+PATRONES_SEG = [r"en qué estado|cuándo despachan|ya llegó|sigo esperando|sin respuesta|"
+               r"insisto|que insista|siguen sin|llevan días|hace días|segunda vez|"
+               r"tercera vez|por qué no responden|cuándo me responden|"
+               r"no me han respondido|seguimos esperando|aún no|todavía no|"
+               r"cuándo me confirman|cuándo me dan|cuándo me envían|cuándo está listo"]
 PALABRAS_PROYECTO = ["m2", "metros", "obra", "proyecto", "instalación", "área", "piso", "pared"]
 
 
@@ -206,11 +221,16 @@ def detectar_razon_perdida(texto):
     return None
 
 
+PATRONES_CUR = [r"curso|taller|capacitación|certificación|certificado|inscripción|inscribir|"
+               r"cuándo es el.*curso|precio del curso|costo del curso|quiero aprender|"
+               r"cupo.*curso|me interesa.*curso"]
+
 def detectar_intencion(texto):
     if coincide_patron(texto, PATRONES_QUE): return "QUE"
     if coincide_patron(texto, PATRONES_VEN): return "VEN"
-    if coincide_patron(texto, PATRONES_COT): return "COT"
     if coincide_patron(texto, PATRONES_SEG): return "SEG"
+    if coincide_patron(texto, PATRONES_CUR): return "CUR"
+    if coincide_patron(texto, PATRONES_COT): return "COT"
     return "INF"
 
 
@@ -320,6 +340,11 @@ def procesar_mensajes(mensajes, ultima_fecha):
 
 def filtrar_por_periodo(df, periodo):
     hoy = date.today()
+    if df.empty:
+        return df
+    df = df.copy()
+    df["fecha"] = pd.to_datetime(df["fecha"], errors="coerce").dt.date
+    df = df.dropna(subset=["fecha"])
     if periodo == "Hoy":
         return df[df["fecha"] == hoy]
     elif periodo == "Esta semana":
@@ -327,7 +352,7 @@ def filtrar_por_periodo(df, periodo):
         return df[df["fecha"] >= inicio]
     elif periodo == "Este mes":
         return df[df["fecha"] >= date(hoy.year, hoy.month, 1)]
-    return df
+    return df  # Histórico — sin filtro, todo
 
 
 def render_tab5():
@@ -453,7 +478,6 @@ def render_tab5():
 
     hoy = date.today()
 
-    # Consolidar todos los mensajes
     todos_msgs = []
     for asesor in ASESORES:
         df = datos_por_asesor[asesor["clave"]]
@@ -466,21 +490,18 @@ def render_tab5():
         df_all = pd.concat(todos_msgs, ignore_index=True)
         df_all["fecha"] = pd.to_datetime(df_all["fecha"], errors="coerce").dt.date
         df_all = df_all.dropna(subset=["fecha"])
-
-        # Calcular días desde el último mensaje
         df_all["dias"] = df_all["fecha"].apply(lambda f: (hoy - f).days if f else 999)
 
-        # Clasificar en categorías
         def clasificar(row):
             if row["intencion"] == "QUE":
                 return "urgente"
             elif row["intencion"] == "VEN":
                 return "cierre"
-            elif row["intencion"] == "COT" and row["dias"] <= 2:
+            elif row["intencion"] in ("COT", "SEG") and row["dias"] <= 2:
                 return "interes_alto"
-            elif row["intencion"] == "COT" and 3 <= row["dias"] <= 6:
+            elif row["intencion"] in ("COT", "SEG") and 3 <= row["dias"] <= 6:
                 return "seguimiento"
-            elif row["intencion"] == "COT" and row["dias"] >= 7:
+            elif row["intencion"] in ("COT", "SEG") and row["dias"] >= 7:
                 return "posible_perdida"
             return None
 
@@ -488,44 +509,74 @@ def render_tab5():
         df_actividades = df_all[df_all["categoria"].notna()].copy()
 
         CATEGORIAS = [
-            ("urgente",        "🔴 URGENTES — ATENDER AHORA",        "#FDEDEC", "#C0392B", "Llamar ahora"),
-            ("cierre",         "🟢 LISTOS PARA CERRAR",               "#EAFAF1", "#1E8449", "Enviar factura"),
-            ("interes_alto",   "🟡 INTERÉS ALTO — COTIZAR HOY",       "#FEF9E7", "#B7770D", "Cotizar hoy"),
-            ("seguimiento",    "🕐 SEGUIMIENTO +3 DÍAS",              "#EBF5FB", "#1A5276", "Recontactar"),
-            ("posible_perdida","⚪ POSIBLE PÉRDIDA — ÚLTIMO INTENTO", "#F8F9FA", "#555555", "Último intento"),
+            ("urgente",         "⚠️ URGENTES — ATENDER AHORA",        "#FDEDEC", "#C0392B", "#FADBD8", "Llamar ahora"),
+            ("cierre",          "💲 LISTOS PARA CERRAR",               "#EAFAF1", "#1E8449", "#A9DFBF", "Enviar factura"),
+            ("interes_alto",    "🔥 INTERÉS ALTO — COTIZAR HOY",       "#FEF9E7", "#B7770D", "#FAD7A0", "Cotizar hoy"),
+            ("seguimiento",     "🕐 SEGUIMIENTO +3 DÍAS",              "#EBF5FB", "#1A5276", "#AED6F1", "Recontactar"),
+            ("posible_perdida", "⚪ POSIBLE PÉRDIDA — ÚLTIMO INTENTO", "#F8F9FA", "#555555", "#D5DBDB", "Último intento"),
         ]
 
+        BADGE_COLORS = {
+            "QUE": ("#C0392B", "#FADBD8"),
+            "VEN": ("#1E8449", "#A9DFBF"),
+            "COT": ("#B7770D", "#FAD7A0"),
+            "SEG": ("#1A5276", "#AED6F1"),
+            "CUR": ("#6C3483", "#D7BDE2"),
+            "TEC": ("#117A65", "#A2D9CE"),
+            "INF": ("#555555", "#D5DBDB"),
+        }
+
         hay_actividades = False
-        for cat_clave, cat_titulo, bg_color, text_color, accion in CATEGORIAS:
+        for cat_clave, cat_titulo, bg_color, text_color, badge_bg, accion in CATEGORIAS:
             subset = df_actividades[df_actividades["categoria"] == cat_clave].sort_values("dias")
             if subset.empty:
                 continue
             hay_actividades = True
+
             st.markdown(
-                f"<div style='background:{bg_color}; border-left:4px solid {text_color}; "
-                f"padding:8px 14px; border-radius:4px; margin:8px 0 4px 0;'>"
-                f"<strong style='color:{text_color};'>{cat_titulo}</strong></div>",
+                f"""<div style='background:{badge_bg}; border-left:4px solid {text_color};
+                padding:10px 16px; border-radius:6px; margin:16px 0 6px 0;'>
+                <strong style='color:{text_color}; font-size:13px;'>{cat_titulo}</strong>
+                </div>""",
                 unsafe_allow_html=True
             )
+
             for _, row in subset.iterrows():
-                dias_txt = "hoy" if row["dias"] == 0 else f"hace {int(row['dias'])} día{'s' if row['dias']>1 else ''}"
+                dias = int(row["dias"])
+                if dias == 0:
+                    dias_txt = "hoy"
+                elif dias == 1:
+                    dias_txt = "hace 1 día"
+                else:
+                    dias_txt = f"hace {dias} días"
+
+                intent = row["intencion"]
+                badge_text_color, badge_bg_color = BADGE_COLORS.get(intent, ("#555", "#eee"))
+                texto = row["texto"][:90] + "…" if len(str(row["texto"])) > 90 else str(row["texto"])
+                remitente = str(row.get("remitente", "—"))
+                asesor_n = str(row.get("asesor_nombre", "—"))
+
                 st.markdown(
-                    f"""<div style='background:#FFFFFF; border:1px solid #E8E8E8; border-radius:8px;
-                    padding:12px 16px; margin:4px 0; display:flex; justify-content:space-between; align-items:center;'>
-                    <div>
-                        <div style='font-size:13px; color:#1A1A1A; font-weight:500;'>
-                            "{row['texto'][:80]}…"
+                    f"""<div style='background:#FFFFFF; border:1px solid {badge_bg};
+                    border-left: 4px solid {text_color};
+                    border-radius:8px; padding:14px 18px; margin:4px 0;
+                    display:flex; justify-content:space-between; align-items:center;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.06);'>
+                    <div style='flex:1; margin-right:16px;'>
+                        <div style='font-size:13px; color:#1A1A1A; font-weight:500; margin-bottom:5px;'>
+                            "{texto}"
                         </div>
-                        <div style='font-size:11px; color:#888; margin-top:4px;'>
-                            {row['asesor_nombre']} · {row.get('remitente','—')} · {dias_txt}
+                        <div style='font-size:11px; color:#888;'>
+                            {asesor_n} · {remitente} · {dias_txt}
                         </div>
                     </div>
-                    <div style='text-align:right; min-width:120px;'>
-                        <span style='background:{bg_color}; color:{text_color}; border:1px solid {text_color};
-                        border-radius:4px; padding:3px 10px; font-size:11px; font-weight:600;'>
-                            {row['intencion']}
+                    <div style='text-align:right; min-width:110px;'>
+                        <span style='background:{badge_bg_color}; color:{badge_text_color};
+                        border:1px solid {badge_text_color}; border-radius:4px;
+                        padding:3px 10px; font-size:12px; font-weight:700; display:inline-block; margin-bottom:6px;'>
+                            {intent}
                         </span><br>
-                        <span style='font-size:11px; color:{text_color}; font-weight:600; margin-top:4px; display:block;'>
+                        <span style='font-size:11px; color:{text_color}; font-weight:600;'>
                             {accion}
                         </span>
                     </div>
