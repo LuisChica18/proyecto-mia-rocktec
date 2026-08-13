@@ -534,55 +534,42 @@ def render_tab5():
             hay_actividades = True
 
             st.markdown(
-                f"""<div style='background:{badge_bg}; border-left:4px solid {text_color};
-                padding:10px 16px; border-radius:6px; margin:16px 0 6px 0;'>
-                <strong style='color:{text_color}; font-size:13px;'>{cat_titulo}</strong>
-                </div>""",
+                f"""<div style='background:{text_color}; padding:7px 14px;
+                border-radius:6px 6px 0 0; margin-top:14px;'>
+                <strong style='color:#FFFFFF; font-size:12px; letter-spacing:0.3px;'>
+                {cat_titulo}</strong></div>""",
                 unsafe_allow_html=True
             )
 
+            filas_html = ""
             for _, row in subset.iterrows():
                 dias = int(row["dias"])
-                if dias == 0:
-                    dias_txt = "hoy"
-                elif dias == 1:
-                    dias_txt = "hace 1 día"
-                else:
-                    dias_txt = f"hace {dias} días"
-
+                dias_txt = "hoy" if dias == 0 else f"hace {dias}d"
                 intent = row["intencion"]
-                badge_text_color, badge_bg_color = BADGE_COLORS.get(intent, ("#555", "#eee"))
-                texto = row["texto"][:90] + "…" if len(str(row["texto"])) > 90 else str(row["texto"])
+                texto = str(row["texto"])[:75] + "…" if len(str(row["texto"])) > 75 else str(row["texto"])
                 remitente = str(row.get("remitente", "—"))
                 asesor_n = str(row.get("asesor_nombre", "—"))
+                iconos = {"urgente":"⚠️","cierre":"💲","interes_alto":"🔥","seguimiento":"🕐","posible_perdida":"↩️"}
+                icono = iconos.get(cat_clave, "•")
 
-                st.markdown(
-                    f"""<div style='background:#FFFFFF; border:1px solid {badge_bg};
-                    border-left: 4px solid {text_color};
-                    border-radius:8px; padding:14px 18px; margin:4px 0;
-                    display:flex; justify-content:space-between; align-items:center;
-                    box-shadow: 0 1px 3px rgba(0,0,0,0.06);'>
-                    <div style='flex:1; margin-right:16px;'>
-                        <div style='font-size:13px; color:#1A1A1A; font-weight:500; margin-bottom:5px;'>
-                            "{texto}"
-                        </div>
-                        <div style='font-size:11px; color:#888;'>
-                            {asesor_n} · {remitente} · {dias_txt}
-                        </div>
+                filas_html += f"""
+                <div style='display:flex; align-items:center; padding:9px 14px;
+                border-bottom:1px solid {badge_bg}; background:#FFFFFF; gap:10px;'>
+                    <span style='font-size:16px; flex-shrink:0;'>{icono}</span>
+                    <div style='flex:1; min-width:0;'>
+                        <div style='font-size:12px; color:#1A1A1A; font-style:italic; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;'>"{texto}"</div>
+                        <div style='font-size:11px; color:#555; margin-top:1px;'>{remitente} · {asesor_n} · <span style='color:#999;'>{dias_txt}</span></div>
                     </div>
-                    <div style='text-align:right; min-width:110px;'>
-                        <span style='background:{badge_bg_color}; color:{badge_text_color};
-                        border:1px solid {badge_text_color}; border-radius:4px;
-                        padding:3px 10px; font-size:12px; font-weight:700; display:inline-block; margin-bottom:6px;'>
-                            {intent}
-                        </span><br>
-                        <span style='font-size:11px; color:{text_color}; font-weight:600;'>
-                            {accion}
-                        </span>
+                    <div style='text-align:right; flex-shrink:0;'>
+                        <span style='background:{text_color}; color:#FFF; border-radius:3px; padding:2px 8px; font-size:11px; font-weight:700;'>{intent}</span>
+                        <div style='font-size:11px; color:{text_color}; font-weight:600; margin-top:3px;'>{accion} →</div>
                     </div>
-                    </div>""",
-                    unsafe_allow_html=True
-                )
+                </div>"""
+
+            st.markdown(
+                f"<div style='border:1px solid {badge_bg}; border-top:none; border-radius:0 0 6px 6px; overflow:hidden; margin-bottom:6px;'>{filas_html}</div>",
+                unsafe_allow_html=True
+            )
 
         if not hay_actividades:
             st.info("Sin actividades pendientes en este período. 🎉")
