@@ -599,7 +599,7 @@ def render_tab5():
 
                 filas_html += f"""
                 <div style='display:flex; align-items:center; padding:9px 14px;
-                border-bottom:1px solid {badge_bg}; background:#FFFFFF; gap:10px;'>
+                border-bottom:1px solid {badge_bg}; background:{bg_color}; gap:10px;'>
                     <span style='font-size:16px; flex-shrink:0;'>{icono}</span>
                     <div style='flex:1; min-width:0;'>
                         <div style='font-size:12px; color:#1A1A1A; font-style:italic; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;'>"{texto}"</div>
