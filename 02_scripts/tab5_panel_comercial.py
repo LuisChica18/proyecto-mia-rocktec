@@ -745,34 +745,142 @@ def render_tab5():
 
     st.divider()
 
-    # Botones
-    col_a, col_b = st.columns(2)
+    # Botones — limpiar + descargas
+    col_a, col_b, col_c, col_d = st.columns(4)
     with col_a:
         if st.button("🗑️ Limpiar sesión", use_container_width=True):
-            # Solo limpia la vista — Sheets conserva el histórico
             for a in ASESORES:
                 st.session_state.pop(f"msgs_{a['clave']}", None)
             st.session_state["sesion_limpiada"] = True
             st.success("✅ Vista limpiada. El histórico en la base de datos se conserva.")
             st.rerun()
-    with col_b:
-        todos = []
-        for a in ASESORES:
-            df = datos_por_asesor[a["clave"]]
-            if not df.empty:
-                df2 = df.copy(); df2["asesor"] = a["nombre"]
-                todos.append(df2)
-        if todos:
-            df_exp = pd.concat(todos, ignore_index=True)
+
+    # Preparar datos para descarga
+    todos_exp = []
+    for a in ASESORES:
+        df = datos_por_asesor[a["clave"]]
+        if not df.empty:
+            df2 = df.copy()
+            df2["asesor"] = a["nombre"]
+            todos_exp.append(df2)
+
+    if todos_exp:
+        df_exp = pd.concat(todos_exp, ignore_index=True)
+
+        # Renombrar columnas para exportación legible
+        cols_export = {
+            "fecha": "Fecha", "asesor": "Asesor", "remitente": "Cliente",
+            "texto": "Mensaje", "intencion": "Intención",
+            "es_lead": "Es Lead", "es_perdida": "Es Pérdida", "es_venta": "Es Venta",
+            "razon_perdida": "Razón Pérdida", "tipo_negocio": "Tipo Negocio"
+        }
+        df_exp_clean = df_exp[[c for c in cols_export if c in df_exp.columns]].rename(columns=cols_export)
+        # Agregar sentimiento
+        if "Intención" in df_exp_clean.columns:
+            df_exp_clean["Sentimiento"] = df_exp_clean["Intención"].apply(
+                lambda x: inferir_sentimiento(x)[0]
+            )
+
+        fecha_hoy = date.today().strftime("%Y%m%d")
+
+        with col_b:
+            # CSV
             st.download_button(
                 "⬇️ Descargar CSV",
-                data=df_exp.to_csv(index=False).encode("utf-8"),
-                file_name=f"reporte_rocktec_{date.today()}.csv",
+                data=df_exp_clean.to_csv(index=False).encode("utf-8"),
+                file_name=f"reporte_rocktec_{fecha_hoy}.csv",
                 mime="text/csv",
                 use_container_width=True,
             )
-        else:
-            st.button("⬇️ Descargar CSV", disabled=True, use_container_width=True)
+
+        with col_c:
+            # Excel
+            import io
+            buffer_excel = io.BytesIO()
+            with pd.ExcelWriter(buffer_excel, engine="openpyxl") as writer:
+                df_exp_clean.to_excel(writer, index=False, sheet_name="Reporte Rocktec")
+                # Hoja resumen
+                resumen = []
+                for a in ASESORES:
+                    df_a = datos_por_asesor[a["clave"]]
+                    resumen.append({
+                        "Asesor": a["nombre"],
+                        "Leads": int(df_a["es_lead"].sum()) if not df_a.empty else 0,
+                        "Ventas": int(df_a["es_venta"].sum()) if not df_a.empty else 0,
+                        "Pérdidas": int(df_a["es_perdida"].sum()) if not df_a.empty else 0,
+                    })
+                pd.DataFrame(resumen).to_excel(writer, index=False, sheet_name="Resumen Asesores")
+            buffer_excel.seek(0)
+            st.download_button(
+                "📊 Descargar Excel",
+                data=buffer_excel,
+                file_name=f"reporte_rocktec_{fecha_hoy}.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                use_container_width=True,
+            )
+
+        with col_d:
+            # PDF — tabla HTML convertida a PDF con pdfkit o fpdf2
+            try:
+                from fpdf import FPDF
+                pdf = FPDF()
+                pdf.add_page()
+                pdf.set_font("Helvetica", "B", 14)
+                pdf.cell(0, 10, f"Reporte Comercial Rocktec — {date.today().strftime('%d/%m/%Y')}", ln=True)
+                pdf.set_font("Helvetica", "", 9)
+                pdf.ln(3)
+
+                # Resumen por asesor
+                pdf.set_font("Helvetica", "B", 10)
+                pdf.cell(0, 8, "Resumen por Asesor", ln=True)
+                pdf.set_font("Helvetica", "", 9)
+                for a in ASESORES:
+                    df_a = datos_por_asesor[a["clave"]]
+                    leads = int(df_a["es_lead"].sum()) if not df_a.empty else 0
+                    ventas = int(df_a["es_venta"].sum()) if not df_a.empty else 0
+                    perdidas = int(df_a["es_perdida"].sum()) if not df_a.empty else 0
+                    pdf.cell(0, 6, f"  {a['nombre']}: Leads={leads}  Ventas={ventas}  Perdidas={perdidas}", ln=True)
+
+                pdf.ln(4)
+                pdf.set_font("Helvetica", "B", 10)
+                pdf.cell(0, 8, "Detalle de Mensajes", ln=True)
+                pdf.set_font("Helvetica", "", 8)
+
+                cols_pdf = ["Fecha", "Asesor", "Cliente", "Intención", "Sentimiento"]
+                col_widths = [22, 45, 40, 22, 22]
+                # Header
+                for col, w in zip(cols_pdf, col_widths):
+                    pdf.cell(w, 6, col, border=1)
+                pdf.ln()
+                # Filas
+                for _, row in df_exp_clean.head(50).iterrows():
+                    for col, w in zip(cols_pdf, col_widths):
+                        val = str(row.get(col, ""))[:20]
+                        pdf.cell(w, 5, val, border=1)
+                    pdf.ln()
+
+                if len(df_exp_clean) > 50:
+                    pdf.set_font("Helvetica", "I", 8)
+                    pdf.cell(0, 6, f"  ... y {len(df_exp_clean)-50} registros más. Descarga el Excel para ver todos.", ln=True)
+
+                buffer_pdf = io.BytesIO(pdf.output())
+                st.download_button(
+                    "📄 Descargar PDF",
+                    data=buffer_pdf,
+                    file_name=f"reporte_rocktec_{fecha_hoy}.pdf",
+                    mime="application/pdf",
+                    use_container_width=True,
+                )
+            except ImportError:
+                st.button("📄 PDF (instalar fpdf2)", disabled=True, use_container_width=True)
+                st.caption("Ejecuta: pip install fpdf2")
+    else:
+        with col_b:
+            st.button("⬇️ CSV", disabled=True, use_container_width=True)
+        with col_c:
+            st.button("📊 Excel", disabled=True, use_container_width=True)
+        with col_d:
+            st.button("📄 PDF", disabled=True, use_container_width=True)
 
 
 if __name__ == "__main__":

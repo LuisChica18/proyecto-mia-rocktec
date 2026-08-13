@@ -8,3 +8,5 @@ evidently
 plotly
 gspread
 google-auth
+fpdf2
+openpyxl
