@@ -41,6 +41,21 @@ def get_gsheet_client():
         return None
 
 
+# ── SENTIMIENTO INFERIDO DESDE INTENCIÓN ─────────────────────────────────────
+SENTIMIENTO_MAP = {
+    "QUE": ("Negativo", "😠", "#C0392B", "#FDEDEC"),
+    "SEG": ("Negativo", "😟", "#C0392B", "#FDEDEC"),
+    "VEN": ("Positivo", "😊", "#1E8449", "#EAFAF1"),
+    "COT": ("Neutro",   "😐", "#B7770D", "#FEF9E7"),
+    "TEC": ("Neutro",   "😐", "#B7770D", "#FEF9E7"),
+    "CUR": ("Neutro",   "😐", "#B7770D", "#FEF9E7"),
+    "INF": ("Neutro",   "😐", "#777777", "#F8F9FA"),
+}
+
+def inferir_sentimiento(intencion):
+    return SENTIMIENTO_MAP.get(intencion, ("Neutro", "😐", "#777777", "#F8F9FA"))
+
+
 def get_worksheets():
     """Retorna (ws_mensajes, ws_estado) o (None, None) si no hay conexión."""
     gc = get_gsheet_client()
@@ -515,6 +530,59 @@ def render_tab5():
                 </div>
             </div>
             """, unsafe_allow_html=True)
+
+    # ── CLIMA DE CONVERSACIONES ─────────────────────────────────────────────
+    st.markdown("### 🌡️ Clima de conversaciones")
+
+    df_todos_clima = pd.concat(
+        [datos_por_asesor[a["clave"]] for a in ASESORES if not datos_por_asesor[a["clave"]].empty],
+        ignore_index=True
+    ) if any(not datos_por_asesor[a["clave"]].empty for a in ASESORES) else pd.DataFrame()
+
+    if not df_todos_clima.empty and "intencion" in df_todos_clima.columns:
+        df_todos_clima["sentimiento"] = df_todos_clima["intencion"].apply(
+            lambda x: inferir_sentimiento(x)[0]
+        )
+        total_clima = len(df_todos_clima)
+        n_pos = int((df_todos_clima["sentimiento"] == "Positivo").sum())
+        n_neu = int((df_todos_clima["sentimiento"] == "Neutro").sum())
+        n_neg = int((df_todos_clima["sentimiento"] == "Negativo").sum())
+        pct_pos = round(n_pos / total_clima * 100) if total_clima > 0 else 0
+        pct_neu = round(n_neu / total_clima * 100) if total_clima > 0 else 0
+        pct_neg = round(n_neg / total_clima * 100) if total_clima > 0 else 0
+
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            st.markdown(f"""
+            <div style='background:#EAFAF1; border-radius:8px; padding:12px; text-align:center;'>
+                <div style='font-size:28px;'>😊</div>
+                <div style='font-size:22px; font-weight:700; color:#1E8449;'>{n_pos}</div>
+                <div style='font-size:12px; color:#1E8449;'>Positivo · {pct_pos}%</div>
+            </div>""", unsafe_allow_html=True)
+        with c2:
+            st.markdown(f"""
+            <div style='background:#FEF9E7; border-radius:8px; padding:12px; text-align:center;'>
+                <div style='font-size:28px;'>😐</div>
+                <div style='font-size:22px; font-weight:700; color:#B7770D;'>{n_neu}</div>
+                <div style='font-size:12px; color:#B7770D;'>Neutro · {pct_neu}%</div>
+            </div>""", unsafe_allow_html=True)
+        with c3:
+            st.markdown(f"""
+            <div style='background:#FDEDEC; border-radius:8px; padding:12px; text-align:center;'>
+                <div style='font-size:28px;'>😠</div>
+                <div style='font-size:22px; font-weight:700; color:#C0392B;'>{n_neg}</div>
+                <div style='font-size:12px; color:#C0392B;'>Negativo · {pct_neg}%</div>
+            </div>""", unsafe_allow_html=True)
+
+        if pct_neg >= 20:
+            st.markdown(f"""
+            <div style='background:#FDEDEC; border:1px solid #FADBD8; border-left:4px solid #C0392B;
+                        border-radius:6px; padding:10px 14px; margin-top:10px; font-size:13px;'>
+                ⚠️ <strong style='color:#C0392B;'>{n_neg} clientes con tono negativo ({pct_neg}%)</strong>
+                — Revisar urgente: quejas o seguimientos sin respuesta acumulados.
+            </div>""", unsafe_allow_html=True)
+    else:
+        st.caption("Sube chats para ver el clima de conversaciones.")
 
     st.divider()
 
