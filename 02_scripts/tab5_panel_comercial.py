@@ -3,6 +3,7 @@ Tab 5: Panel de Inteligencia Comercial - Rocktec MIA 2026
 """
 import re
 import json
+import zipfile
 from datetime import datetime, date, timedelta
 from pathlib import Path
 from collections import defaultdict
@@ -820,7 +821,6 @@ def render_tab5():
         with col_c:
             # Excel
             import io
-import zipfile
             buffer_excel = io.BytesIO()
             with pd.ExcelWriter(buffer_excel, engine="openpyxl") as writer:
                 df_exp_clean.to_excel(writer, index=False, sheet_name="Reporte Rocktec")
