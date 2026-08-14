@@ -408,12 +408,36 @@ def render_tab5():
     st.divider()
 
     # Subida de archivos
-    with st.expander("📁 Subir chats de WhatsApp (.txt)", expanded=True):
-        archivos = st.file_uploader(
-            "Sube uno o varios archivos .txt",
-            type=["txt"],
+    with st.expander("📁 Subir chats de WhatsApp (.txt o .zip)", expanded=True):
+        archivos_raw = st.file_uploader(
+            "Sube uno o varios archivos .txt o .zip (WhatsApp exporta en zip)",
+            type=["txt", "zip"],
             accept_multiple_files=True,
         )
+
+        # Extraer .txt de los zips automáticamente
+        archivos = []
+        if archivos_raw:
+            for f in archivos_raw:
+                if f.name.lower().endswith(".zip"):
+                    try:
+                        z = zipfile.ZipFile(f)
+                        txts = [e for e in z.namelist() if e.lower().endswith(".txt")]
+                        if txts:
+                            import io as _io
+                            contenido = z.read(txts[0])
+                            # Crear objeto file-like con el nombre del zip (sin .zip)
+                            nombre_txt = f.name.replace(".zip", ".txt")
+                            fake_file = _io.BytesIO(contenido)
+                            fake_file.name = nombre_txt
+                            archivos.append(fake_file)
+                        else:
+                            st.warning(f"⚠️ '{f.name}' no contiene archivo .txt")
+                    except Exception as e:
+                        st.warning(f"⚠️ Error leyendo '{f.name}': {e}")
+                else:
+                    archivos.append(f)
+
         if archivos:
             estado = cargar_estado()
             nuevos_msgs = defaultdict(list)
@@ -796,6 +820,7 @@ def render_tab5():
         with col_c:
             # Excel
             import io
+import zipfile
             buffer_excel = io.BytesIO()
             with pd.ExcelWriter(buffer_excel, engine="openpyxl") as writer:
                 df_exp_clean.to_excel(writer, index=False, sheet_name="Reporte Rocktec")
