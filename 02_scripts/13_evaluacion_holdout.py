@@ -83,7 +83,7 @@ def evaluar_tfidf_lr(train_val, holdout):
     param_grid = {'C': [0.01, 0.1, 1, 10, 100], 'max_iter': [1000]}
     base_lr = LogisticRegression(class_weight='balanced', solver='lbfgs', random_state=RANDOM_STATE)
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=RANDOM_STATE)
-    gs = GridSearchCV(base_lr, param_grid, cv=cv, scoring='f1_macro', n_jobs=-1, verbose=0)
+    gs = GridSearchCV(base_lr, param_grid, cv=cv, scoring='f1_macro', n_jobs=1, verbose=0)
     gs.fit(X_train, y_train)
 
     modelo = gs.best_estimator_
