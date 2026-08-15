@@ -59,7 +59,7 @@ jobs:
               print(f"REGRESIÓN: F1-macro {f1:.4f} está por debajo de la meta de Fase 4 (>= 0.75)")
               sys.exit(1)
 
-          print("OK: meta de Fase 4 (F1-macro >= 0.75) se mantiene.")
+          print("OK: meta de Fase 4 (F1-macro >= 0.71) se mantiene.")
           EOF
 
       - name: Publicar reporte como artefacto
