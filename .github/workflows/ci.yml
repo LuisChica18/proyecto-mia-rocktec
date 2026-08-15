@@ -16,31 +16,89 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
 
-      - name: Instalar dependencias mínimas
-        run: pip install pandas==1.5.3 numpy==1.24.3 scikit-learn==1.3.0 scipy==1.11.0 openpyxl==3.1.0
+      - name: Instalar dependencias del proyecto
+        run: pip install -r requirements.txt
 
       - name: Compilar todos los scripts de 02_scripts/
         run: python -m py_compile 02_scripts/*.py
 
+      - name: Verificar que los imports declarados se puedan resolver
+        run: |
+          python - <<'EOF'
+          import ast
+          import importlib.util
+          import sys
+          from pathlib import Path
+
+          SCRIPTS_DIR = Path("02_scripts")
+          EXCLUIR = {
+              "11_beto_clasificador.py",
+              "12_beto_finetuning.py",
+              "14_explicabilidad_beto.py",
+          }
+
+          modulos_locales = {p.stem for p in SCRIPTS_DIR.glob("*.py")}
+          faltantes = {}
+
+          for path in sorted(SCRIPTS_DIR.glob("*.py")):
+              if path.name in EXCLUIR:
+                  continue
+              arbol = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+              nombres = set()
+              for nodo in ast.walk(arbol):
+                  if isinstance(nodo, ast.Import):
+                      nombres.update(alias.name.split(".")[0] for alias in nodo.names)
+                  elif isinstance(nodo, ast.ImportFrom):
+                      if nodo.level and nodo.level > 0:
+                          continue  # import relativo al paquete, no es dependencia externa
+                      if nodo.module:
+                          nombres.add(nodo.module.split(".")[0])
+              for nombre in nombres:
+                  if nombre in modulos_locales or nombre in sys.stdlib_module_names:
+                      continue
+                  try:
+                      resuelto = importlib.util.find_spec(nombre) is not None
+                  except ModuleNotFoundError:
+                      resuelto = False
+                  if not resuelto:
+                      faltantes.setdefault(path.name, set()).add(nombre)
+
+          if faltantes:
+              print("Módulos importados que no se pueden resolver:")
+              for archivo, nombres in sorted(faltantes.items()):
+                  print(f"  {archivo}: {', '.join(sorted(nombres))}")
+              sys.exit(1)
+
+          print("OK: todos los imports declarados en 02_scripts/*.py se pueden resolver.")
+          EOF
+
   reproducibilidad-holdout:
-    name: F1-macro holdout (meta Fase 4 >= 0.71)
+    name: F1-macro holdout (meta Fase 4 >= 0.75)
     runs-on: ubuntu-latest
     needs: sanity-check
+    env:
+      OMP_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-holdout.txt
 
       - name: Instalar dependencias mínimas
-        run: pip install pandas==1.5.3 numpy==1.24.3 scikit-learn==1.3.0 scipy==1.11.0 openpyxl==3.1.0
+        run: pip install -r requirements-holdout.txt
 
       - name: Reentrenar TF-IDF+LR y evaluar sobre holdout_test.csv
         run: python 02_scripts/13_evaluacion_holdout.py
 
-      - name: Verificar que F1-macro (TF-IDF+LR) no haya regresado por debajo de 0.71
+      - name: Verificar que F1-macro (TF-IDF+LR) no haya regresado por debajo de 0.75
         run: |
           python - <<'EOF'
           import re, sys
@@ -55,11 +113,11 @@ jobs:
           f1 = float(match.group(1))
           print(f"F1-macro TF-IDF+LR (holdout): {f1:.4f}")
 
-          if f1 < 0.71:
+          if f1 < 0.75:
               print(f"REGRESIÓN: F1-macro {f1:.4f} está por debajo de la meta de Fase 4 (>= 0.75)")
               sys.exit(1)
 
-          print("OK: meta de Fase 4 (F1-macro >= 0.71) se mantiene.")
+          print("OK: meta de Fase 4 (F1-macro >= 0.75) se mantiene.")
           EOF
 
       - name: Publicar reporte como artefacto

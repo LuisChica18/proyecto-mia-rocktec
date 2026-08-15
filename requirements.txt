@@ -10,3 +10,8 @@ gspread
 google-auth
 fpdf2
 openpyxl
+matplotlib
+joblib
+python-docx
+lime
+shap
