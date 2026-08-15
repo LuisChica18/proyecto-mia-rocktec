@@ -728,7 +728,11 @@ with tab4:
                         )
             
             st.markdown("<br>", unsafe_allow_html=True)
-            st.dataframe(df_wa, hide_index=True, use_container_width=True)
+            def highlight_que(row):
+                if row.get("Intención") == "QUE":
+                    return ["background-color: #fff0f0; color: #c0392b; font-weight: 600"] * len(row)
+                return [""] * len(row)
+            st.dataframe(df_wa.style.apply(highlight_que, axis=1), hide_index=True, use_container_width=True)
             
             csv_wa = df_wa.to_csv(index=False, encoding="utf-8")
             fn = (nombre_wa or "cliente").replace(" ", "_")
