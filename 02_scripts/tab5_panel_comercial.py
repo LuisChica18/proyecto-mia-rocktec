@@ -529,12 +529,6 @@ def render_tab5():
         msgs_sheets = cargar_mensajes_desde_sheets()
         if msgs_sheets:
             for clave, msgs in msgs_sheets.items():
-                # Reclasificar con patrones actuales al cargar desde Sheets
-                for m in msgs:
-                    nueva_intencion = detectar_intencion(m.get("texto", ""))
-                    m["intencion"] = nueva_intencion
-                    m["es_lead"] = nueva_intencion in ("COT", "TEC", "VEN", "SEG", "CUR", "INF", "QUE")
-                    m["es_venta"] = nueva_intencion == "VEN"
                 st.session_state[f"msgs_{clave}"] = msgs
 
     for a in ASESORES:
@@ -657,6 +651,10 @@ def render_tab5():
                 return "urgente"
             elif row["intencion"] == "VEN":
                 return "cierre"
+            elif row["intencion"] == "CUR":
+                return "curso"
+            elif row["intencion"] == "TEC":
+                return "tecnico"
             elif row["intencion"] in ("COT", "SEG") and row["dias"] <= 2:
                 return "interes_alto"
             elif row["intencion"] in ("COT", "SEG") and 3 <= row["dias"] <= 6:
@@ -671,6 +669,8 @@ def render_tab5():
         CATEGORIAS = [
             ("urgente",         "⚠️ URGENTES — ATENDER AHORA",        "#FDEDEC", "#C0392B", "#FADBD8", "Llamar ahora"),
             ("cierre",          "💲 LISTOS PARA CERRAR",               "#EAFAF1", "#1E8449", "#A9DFBF", "Enviar factura"),
+            ("curso",           "🎓 CONSULTAS DE CURSO",               "#F4ECF7", "#7D3C98", "#D2B4DE", "Informar y registrar"),
+            ("tecnico",         "🔧 CONSULTAS TÉCNICAS",               "#EAF2FF", "#1F618D", "#AED6F1", "Responder técnico"),
             ("interes_alto",    "🔥 INTERÉS ALTO — COTIZAR HOY",       "#FEF9E7", "#B7770D", "#FAD7A0", "Cotizar hoy"),
             ("seguimiento",     "🕐 SEGUIMIENTO +3 DÍAS",              "#EBF5FB", "#1A5276", "#AED6F1", "Recontactar"),
             ("posible_perdida", "⚪ POSIBLE PÉRDIDA — ÚLTIMO INTENTO", "#F8F9FA", "#555555", "#D5DBDB", "Último intento"),
@@ -786,17 +786,7 @@ def render_tab5():
                  if not datos_por_asesor[a["clave"]].empty else 0
                  for a in ASESORES}
         if any(leads.values()):
-            nombres = [a["nombre"].replace(" Rocktec", "") for a in ASESORES]
-            valores = [leads[a["nombre"]] for a in ASESORES]
-            filas = "".join(
-                f"<tr><td style='padding:2px 8px;color:#555;font-size:0.82rem;'>{n}</td>"
-                f"<td style='padding:2px 8px;text-align:right;font-weight:600;color:#1A1A1A;font-size:0.82rem;'>{v}</td></tr>"
-                for n, v in zip(nombres, valores)
-            )
-            st.markdown(
-                f"<table style='width:100%;border-collapse:collapse;'>{filas}</table>",
-                unsafe_allow_html=True
-            )
+            st.bar_chart(leads)
         else:
             st.caption("Sin datos aún.")
 
