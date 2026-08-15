@@ -662,7 +662,7 @@ def render_tab5():
                 return "curso"
             elif row["intencion"] == "TEC":
                 return "tecnico"
-            elif row["intencion"] in ("COT", "SEG") and row["dias"] <= 2:
+            elif row["intencion"] in ("COT", "SEG", "INF") and row["dias"] <= 2:
                 return "interes_alto"
             elif row["intencion"] in ("COT", "SEG") and 3 <= row["dias"] <= 6:
                 return "seguimiento"
@@ -793,7 +793,14 @@ def render_tab5():
                  if not datos_por_asesor[a["clave"]].empty else 0
                  for a in ASESORES}
         if any(leads.values()):
-            st.bar_chart(leads)
+            nombres = [a["nombre"].replace(" Rocktec", "") for a in ASESORES]
+            valores = [leads[a["nombre"]] for a in ASESORES]
+            filas = "".join(
+                f"<tr><td style='padding:2px 8px;color:#555;font-size:0.82rem;'>{n}</td>"
+                f"<td style='padding:2px 8px;text-align:right;font-weight:600;color:#1A1A1A;font-size:0.82rem;'>{v}</td></tr>"
+                for n, v in zip(nombres, valores)
+            )
+            st.markdown(f"<table style='width:100%;border-collapse:collapse;'>{filas}</table>", unsafe_allow_html=True)
         else:
             st.caption("Sin datos aún.")
 
