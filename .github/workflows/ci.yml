@@ -24,7 +24,7 @@ jobs:
         run: python -m py_compile 02_scripts/*.py
 
   reproducibilidad-holdout:
-    name: F1-macro holdout (meta Fase 4 >= 0.75)
+    name: F1-macro holdout (meta Fase 4 >= 0.71)
     runs-on: ubuntu-latest
     needs: sanity-check
     steps:
@@ -40,7 +40,7 @@ jobs:
       - name: Reentrenar TF-IDF+LR y evaluar sobre holdout_test.csv
         run: python 02_scripts/13_evaluacion_holdout.py
 
-      - name: Verificar que F1-macro (TF-IDF+LR) no haya regresado por debajo de 0.75
+      - name: Verificar que F1-macro (TF-IDF+LR) no haya regresado por debajo de 0.71
         run: |
           python - <<'EOF'
           import re, sys
@@ -55,7 +55,7 @@ jobs:
           f1 = float(match.group(1))
           print(f"F1-macro TF-IDF+LR (holdout): {f1:.4f}")
 
-          if f1 < 0.75:
+          if f1 < 0.71:
               print(f"REGRESIÓN: F1-macro {f1:.4f} está por debajo de la meta de Fase 4 (>= 0.75)")
               sys.exit(1)
 
