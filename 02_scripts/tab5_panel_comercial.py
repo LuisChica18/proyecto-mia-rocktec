@@ -529,6 +529,12 @@ def render_tab5():
         msgs_sheets = cargar_mensajes_desde_sheets()
         if msgs_sheets:
             for clave, msgs in msgs_sheets.items():
+                # Reclasificar con patrones actuales al cargar desde Sheets
+                for m in msgs:
+                    nueva_intencion = detectar_intencion(m.get("texto", ""))
+                    m["intencion"] = nueva_intencion
+                    m["es_lead"] = nueva_intencion in ("COT", "TEC", "VEN", "SEG", "CUR", "INF", "QUE")
+                    m["es_venta"] = nueva_intencion == "VEN"
                 st.session_state[f"msgs_{clave}"] = msgs
 
     for a in ASESORES:
