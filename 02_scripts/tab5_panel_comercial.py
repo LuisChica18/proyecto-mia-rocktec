@@ -419,6 +419,7 @@ def render_tab5():
         )
 
         # Extraer .txt de los zips automáticamente
+        import zipfile
         archivos = []
         if archivos_raw:
             for f in archivos_raw:
