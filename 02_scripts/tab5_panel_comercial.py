@@ -529,6 +529,8 @@ def render_tab5():
         msgs_sheets = cargar_mensajes_desde_sheets()
         if msgs_sheets:
             for clave, msgs in msgs_sheets.items():
+                for m in msgs:
+                    m["intencion"] = detectar_intencion(m.get("texto", ""))
                 st.session_state[f"msgs_{clave}"] = msgs
 
     for a in ASESORES:
