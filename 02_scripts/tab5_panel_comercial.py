@@ -267,6 +267,7 @@ def detectar_intencion(texto):
     if coincide_patron(texto, PATRONES_QUE): return "QUE"
     if coincide_patron(texto, PATRONES_VEN): return "VEN"
     if coincide_patron(texto, PATRONES_SEG): return "SEG"
+    if coincide_patron(texto, PATRONES_TEC): return "TEC"
     if coincide_patron(texto, PATRONES_CUR): return "CUR"
     if coincide_patron(texto, PATRONES_COT): return "COT"
     return "INF"
