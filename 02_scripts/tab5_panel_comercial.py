@@ -259,10 +259,10 @@ def detectar_razon_perdida(texto):
     return None
 
 
-PATRONES_TEC = [r"aplicar|aplicación|superficie|secado|sellador|herramienta|imprimación|"
-               r"impermeabiliz|humedad|adherencia|preparar|preparación|mezcla|espesor|"
-               r"capa|dilución|rendimiento|compatib|cerámica|porcelanato|cemento|"
-               r"cuánto tiempo.*seca|tiempo de secado|se puede aplicar|cómo se aplica"]
+PATRONES_TEC = [r"cómo se aplica|se puede aplicar|tiempo de secado|cuánto tiempo.*seca|"
+               r"sellador|imprimación|impermeabiliz|adherencia|dilución|espesor de capa|"
+               r"sobre cerámica|sobre porcelanato|sobre cemento|preparación de superficie|"
+               r"mezcla.*microcemento|rendimiento.*m2|herramienta.*aplicar|zona húmeda"]
 PATRONES_CUR = [r"curso|taller|capacitación|certificación|certificado|inscripción|inscribir|"
                r"cuándo es el.*curso|precio del curso|costo del curso|quiero aprender|"
                r"cupo.*curso|me interesa.*curso"]
