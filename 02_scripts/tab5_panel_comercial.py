@@ -259,6 +259,10 @@ def detectar_razon_perdida(texto):
     return None
 
 
+PATRONES_TEC = [r"aplicar|aplicación|superficie|secado|sellador|herramienta|imprimación|"
+               r"impermeabiliz|humedad|adherencia|preparar|preparación|mezcla|espesor|"
+               r"capa|dilución|rendimiento|compatib|cerámica|porcelanato|cemento|"
+               r"cuánto tiempo.*seca|tiempo de secado|se puede aplicar|cómo se aplica"]
 PATRONES_CUR = [r"curso|taller|capacitación|certificación|certificado|inscripción|inscribir|"
                r"cuándo es el.*curso|precio del curso|costo del curso|quiero aprender|"
                r"cupo.*curso|me interesa.*curso"]
@@ -267,6 +271,7 @@ def detectar_intencion(texto):
     if coincide_patron(texto, PATRONES_QUE): return "QUE"
     if coincide_patron(texto, PATRONES_VEN): return "VEN"
     if coincide_patron(texto, PATRONES_SEG): return "SEG"
+    if coincide_patron(texto, PATRONES_TEC): return "TEC"
     if coincide_patron(texto, PATRONES_CUR): return "CUR"
     if coincide_patron(texto, PATRONES_COT): return "COT"
     return "INF"
@@ -369,7 +374,7 @@ def procesar_mensajes(mensajes, ultima_fecha):
             "intencion": intencion,
             "razon_perdida": razon,
             "tipo_negocio": tipo,
-            "es_lead": intencion in ("COT", "TEC", "VEN", "SEG"),
+            "es_lead": intencion in ("COT", "TEC", "VEN", "SEG", "CUR", "INF", "QUE"),
             "es_perdida": razon is not None,
             "es_venta": intencion == "VEN",
         })
@@ -780,17 +785,7 @@ def render_tab5():
                  if not datos_por_asesor[a["clave"]].empty else 0
                  for a in ASESORES}
         if any(leads.values()):
-            nombres = [a["nombre"].replace(" Rocktec", "") for a in ASESORES]
-            valores = [leads[a["nombre"]] for a in ASESORES]
-            filas = "".join(
-                f"<tr><td style='padding:2px 8px;color:#555;font-size:0.82rem;'>{n}</td>"
-                f"<td style='padding:2px 8px;text-align:right;font-weight:600;color:#1A1A1A;font-size:0.82rem;'>{v}</td></tr>"
-                for n, v in zip(nombres, valores)
-            )
-            st.markdown(
-                f"<table style='width:100%;border-collapse:collapse;'>{filas}</table>",
-                unsafe_allow_html=True
-            )
+            st.bar_chart(leads)
         else:
             st.caption("Sin datos aún.")
 
