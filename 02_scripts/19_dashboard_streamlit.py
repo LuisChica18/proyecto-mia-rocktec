@@ -555,10 +555,7 @@ with tab1:
     st.markdown("#### 📁 Clasificar múltiples mensajes")
     st.markdown("<span style='color:#777777; font-size:0.9rem;'>Un mensaje por línea. Útil para probar varios textos de una vez.</span>", unsafe_allow_html=True)
 
-    texto_lote = st.text_area("Lote", placeholder="necesito cotización para 100m²
-cómo se aplica el microcemento sobre cerámica
-cuándo es el próximo curso de aplicadores
-ya pagué cuándo me despachan", height=150, label_visibility="collapsed", key="lote_txt")
+    texto_lote = st.text_area("Lote", placeholder="necesito cotización para 100m²\ncómo se aplica el microcemento sobre cerámica\ncuándo es el próximo curso de aplicadores\nya pagué cuándo me despachan", height=150, label_visibility="collapsed", key="lote_txt")
 
     if st.button("🔍  Clasificar todos", type="primary", key="btn_lote") and texto_lote and modelo:
         mensajes = [m.strip() for m in texto_lote.strip().split('\n') if m.strip()]

@@ -376,6 +376,19 @@ def procesar_mensajes(mensajes, ultima_fecha):
     return resultado
 
 
+def limpiar_para_pdf(texto):
+    """Elimina caracteres Unicode fuera del rango latin-1 que rompen fpdf."""
+    return (str(texto)
+        .replace('\u2014', '-')   # em dash —
+        .replace('\u2013', '-')   # en dash –
+        .replace('\u2019', "'")   # comilla curva '
+        .replace('\u2018', "'")   # comilla curva '
+        .replace('\u201c', '"')   # comilla " abre
+        .replace('\u201d', '"')   # comilla " cierra
+        .replace('\u00b7', '.')   # punto medio ·
+        .encode('latin-1', errors='replace').decode('latin-1')
+    )
+
 def filtrar_por_periodo(df, periodo):
     hoy = date.today()
     if df.empty:
@@ -851,7 +864,7 @@ import zipfile
                 pdf = FPDF()
                 pdf.add_page()
                 pdf.set_font("Helvetica", "B", 14)
-                pdf.cell(0, 10, f"Reporte Comercial Rocktec — {date.today().strftime('%d/%m/%Y')}", ln=True)
+                pdf.cell(0, 10, f"Reporte Comercial Rocktec - {date.today().strftime('%d/%m/%Y')}", ln=True)
                 pdf.set_font("Helvetica", "", 9)
                 pdf.ln(3)
 
@@ -864,7 +877,7 @@ import zipfile
                     leads = int(df_a["es_lead"].sum()) if not df_a.empty else 0
                     ventas = int(df_a["es_venta"].sum()) if not df_a.empty else 0
                     perdidas = int(df_a["es_perdida"].sum()) if not df_a.empty else 0
-                    pdf.cell(0, 6, f"  {a['nombre']}: Leads={leads}  Ventas={ventas}  Perdidas={perdidas}", ln=True)
+                    pdf.cell(0, 6, limpiar_para_pdf(f"  {a['nombre']}: Leads={leads}  Ventas={ventas}  Perdidas={perdidas}"), ln=True)
 
                 pdf.ln(4)
                 pdf.set_font("Helvetica", "B", 10)
@@ -880,7 +893,7 @@ import zipfile
                 # Filas
                 for _, row in df_exp_clean.head(50).iterrows():
                     for col, w in zip(cols_pdf, col_widths):
-                        val = str(row.get(col, ""))[:20]
+                        val = limpiar_para_pdf(str(row.get(col, "")))[:20]
                         pdf.cell(w, 5, val, border=1)
                     pdf.ln()
 
