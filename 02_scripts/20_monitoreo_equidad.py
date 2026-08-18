@@ -25,6 +25,7 @@ Salida:
     - 06_resultados/equidad/reporte_equidad_por_perfil.html
     - 06_resultados/equidad/tabla_equidad_por_perfil.csv
     - 06_resultados/equidad/reporte_equidad.txt
+    - 06_resultados/equidad/grafico_equidad_por_perfil.png
 ================================================================================
 """
 
@@ -41,6 +42,9 @@ warnings.filterwarnings('ignore')
 import pandas as pd
 import numpy as np
 import joblib
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 from pathlib import Path
 from datetime import datetime
 from sklearn.metrics import f1_score, precision_score, recall_score
@@ -97,6 +101,44 @@ def calcular_metricas_perfil(df_perfil, nombre_perfil):
         'f1_macro':         round(f1_score(y_true, y_pred, average='macro', zero_division=0), 4),
         'f1_weighted':      round(f1_score(y_true, y_pred, average='weighted', zero_division=0), 4),
     }
+
+def generar_grafico(tabla, ruta):
+    """Barras agrupadas por perfil (accuracy, precision, recall, F1-macro),
+    con la brecha de equidad marcada sobre la barra de F1-macro."""
+    metricas = ['accuracy', 'precision_macro', 'recall_macro', 'f1_macro']
+    etiquetas = ['Accuracy', 'Precision', 'Recall', 'F1-macro']
+    colores = ['#2196F3', '#8B0000', '#4CAF50', '#FF9800']
+
+    x = np.arange(len(tabla))
+    ancho = 0.2
+    fig, ax = plt.subplots(figsize=(9, 5.5))
+
+    for i, (metrica, etiqueta, color) in enumerate(zip(metricas, etiquetas, colores)):
+        offset = (i - (len(metricas) - 1) / 2) * ancho
+        barras = ax.bar(x + offset, tabla[metrica], ancho, label=etiqueta, color=color)
+        ax.bar_label(barras, fmt='%.2f', fontsize=7, padding=2)
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(tabla['perfil'])
+    ax.set_ylabel('Score')
+    ax.set_ylim(0, 1.05)
+    ax.set_title('Equidad por Perfil de Cliente (proxy)\nRocktec MIA 2026', fontweight='bold')
+    ax.legend(loc='lower right', fontsize=8)
+
+    if len(tabla) >= 2:
+        f1_max = tabla['f1_macro'].max()
+        f1_min = tabla['f1_macro'].min()
+        brecha = round(f1_max - f1_min, 4)
+        ax.text(0.5, 0.965, f'Brecha F1-macro: {brecha:.4f}', transform=ax.transAxes,
+                ha='center', va='top', fontsize=9, style='italic',
+                color='#8B0000' if brecha >= 0.10 else '#4CAF50',
+                bbox=dict(facecolor='white', edgecolor='none', alpha=0.8, pad=2))
+
+    plt.tight_layout()
+    plt.savefig(ruta, dpi=150)
+    plt.close()
+    print(f"  ✓ Gráfico guardado: {ruta}")
+
 
 def generar_reporte_evidently(df_con_perfil):
     try:
@@ -208,6 +250,11 @@ def main():
     ruta_csv = RUTA_SALIDA / 'tabla_equidad_por_perfil.csv'
     tabla.to_csv(ruta_csv, index=False, encoding='utf-8')
     print(f"\n[7] CSV guardado: {ruta_csv}")
+
+    # 7b. Gráfico
+    if len(tabla) >= 1:
+        ruta_grafico = RUTA_SALIDA / 'grafico_equidad_por_perfil.png'
+        generar_grafico(tabla, ruta_grafico)
 
     # 8. Evidently
     print("\n[8] Reporte Evidently...")

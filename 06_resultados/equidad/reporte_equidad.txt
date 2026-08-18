@@ -1,7 +1,7 @@
 
 ======================================================================
 REPORTE DE EQUIDAD — PROYECTO MIA 2026 ROCKTEC
-Generado: 2026-07-31 16:13:05
+Generado: 2026-08-17 20:53:22
 ======================================================================
 
 LIMITACIÓN DE DATOS (documentada):
@@ -46,6 +46,6 @@ selección de perfil al inicio de cada conversación:
 Esto permitirá en futuras versiones calcular métricas de equidad reales
 por segmento y personalizar las respuestas automáticas.
 
-Reporte Evidently HTML: generado ✅
-Tabla CSV: 06_resultados\equidad\tabla_equidad_por_perfil.csv
+Reporte Evidently HTML: no generado ⚠
+Tabla CSV: 06_resultados/equidad/tabla_equidad_por_perfil.csv
 ======================================================================
