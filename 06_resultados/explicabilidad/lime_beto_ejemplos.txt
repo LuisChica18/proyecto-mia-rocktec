@@ -6,67 +6,67 @@ Clase real:      INF
 Predicción:      INF
 Texto (preview): ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: INFO ACIDOS...
 Features que influyeron:
-  'ETIQUETA': +0.0021  → FAVOR
-  'Informacion': +0.0008  → FAVOR
+  'ETIQUETA': +0.0019  → FAVOR
+  'Informacion': +0.0012  → FAVOR
+  'Contactado': +0.0008  → FAVOR
   'ACIDOS': +0.0007  → FAVOR
-  'NOTAS': +0.0007  → FAVOR
+  'INFO': +0.0007  → FAVOR
   'ESTADO': +0.0006  → FAVOR
-  'INFO': +0.0005  → FAVOR
-  'Contactado': +0.0005  → FAVOR
-  'General': +0.0004  → FAVOR
+  'NOTAS': +0.0005  → FAVOR
+  'General': +0.0003  → FAVOR
 
 ──────────────────────────────────────────────────
 Clase real:      COT
 Predicción:      COT
 Texto (preview): ETIQUETA: Cotizacion Materiales, Informacion General | ESTADO: Contactado | NOTAS: se envio cotizaci...
 Features que influyeron:
-  'Cotizacion': +0.2830  → FAVOR
-  'cotizacion': +0.2635  → FAVOR
-  'de': -0.1525  → CONTRA
-  'mateiales': +0.0832  → FAVOR
-  'NOTAS': +0.0749  → FAVOR
-  '6m2': +0.0718  → FAVOR
-  'microcemento': -0.0356  → CONTRA
-  'ETIQUETA': +0.0353  → FAVOR
+  'Cotizacion': +0.3690  → FAVOR
+  'cotizacion': +0.3641  → FAVOR
+  'Informacion': -0.1407  → CONTRA
+  'Contactado': -0.1022  → CONTRA
+  '6m2': +0.0977  → FAVOR
+  'General': +0.0898  → FAVOR
+  'ETIQUETA': +0.0716  → FAVOR
+  'ESTADO': -0.0493  → CONTRA
 
 ──────────────────────────────────────────────────
 Clase real:      TEC
 Predicción:      TEC
 Texto (preview): ETIQUETA: Informacion General | ESTADO: En seguimiento | NOTAS: CLIENTE CONSTRUEX, INF ADITIVO LIGAN...
 Features que influyeron:
-  'ADITIVO': +0.7652  → FAVOR
-  'INF': +0.0362  → FAVOR
-  'LIGANTE': +0.0221  → FAVOR
-  'CONSTRUEX': +0.0180  → FAVOR
-  'NOTAS': +0.0127  → FAVOR
-  'CLIENTE': +0.0101  → FAVOR
-  'seguimiento': +0.0076  → FAVOR
-  'General': -0.0041  → CONTRA
+  'ADITIVO': +0.7636  → FAVOR
+  'INF': +0.0287  → FAVOR
+  'seguimiento': +0.0217  → FAVOR
+  'ETIQUETA': +0.0192  → FAVOR
+  'NOTAS': +0.0166  → FAVOR
+  'CLIENTE': +0.0164  → FAVOR
+  'General': +0.0060  → FAVOR
+  'ESTADO': -0.0020  → CONTRA
 
 ──────────────────────────────────────────────────
 Clase real:      CUR
 Predicción:      CUR
 Texto (preview): ETIQUETA: Informacion General | ESTADO: Contactado | NOTAS: BASE DE DATOS LOJA,Información curso LOJ...
 Features que influyeron:
-  'curso': +0.8833  → FAVOR
-  'ESTADO': +0.0249  → FAVOR
-  'Información': -0.0120  → CONTRA
-  'Contactado': +0.0093  → FAVOR
-  'General': -0.0044  → CONTRA
-  'LOJA': +0.0039  → FAVOR
-  'NOTAS': +0.0030  → FAVOR
-  'Informacion': -0.0021  → CONTRA
+  'curso': +0.8712  → FAVOR
+  'BASE': -0.0260  → CONTRA
+  'ESTADO': +0.0234  → FAVOR
+  'Información': +0.0213  → FAVOR
+  'Contactado': +0.0204  → FAVOR
+  'DATOS': +0.0125  → FAVOR
+  'ETIQUETA': +0.0030  → FAVOR
+  'Informacion': +0.0003  → FAVOR
 
 ──────────────────────────────────────────────────
 Clase real:      VEN
 Predicción:      VEN
 Texto (preview): ETIQUETA: Venta ganada | ESTADO: Cliente Frecuente | NOTAS: Se envia cotizaciones...
 Features que influyeron:
-  'ganada': +0.8375  → FAVOR
-  'Venta': +0.0316  → FAVOR
-  'Cliente': +0.0270  → FAVOR
-  'ETIQUETA': +0.0245  → FAVOR
-  'ESTADO': +0.0160  → FAVOR
-  'cotizaciones': -0.0094  → CONTRA
-  'Se': +0.0045  → FAVOR
-  'NOTAS': +0.0034  → FAVOR
+  'ganada': +0.8454  → FAVOR
+  'Venta': +0.0241  → FAVOR
+  'ESTADO': +0.0239  → FAVOR
+  'NOTAS': -0.0089  → CONTRA
+  'cotizaciones': -0.0057  → CONTRA
+  'ETIQUETA': +0.0039  → FAVOR
+  'envia': -0.0037  → CONTRA
+  'Cliente': +0.0024  → FAVOR

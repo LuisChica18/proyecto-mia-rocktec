@@ -18,6 +18,7 @@ Salida:
     06_resultados/explicabilidad/shap_summary.png
     06_resultados/explicabilidad/shap_top_features.png
     06_resultados/explicabilidad/lime_ejemplos.txt
+    06_resultados/explicabilidad/lime_<clase>.png (1 por clase modelada)
     06_resultados/explicabilidad/reporte_explicabilidad.txt
 
 Uso:
@@ -194,7 +195,14 @@ def lime_explicabilidad(modelo, vec, df):
                 signo = "→ FAVOR" if peso > 0 else "→ CONTRA"
                 reporte_lime += f"  '{feat}': {peso:+.4f}  {signo}\n"
 
-            print(f"  ✓ LIME {clase}: pred={pred}, top_feat='{features_exp[0][0] if features_exp else 'N/A'}'")
+            fig = exp.as_pyplot_figure(label=INTENCIONES.index(clase))
+            fig.suptitle(f'LIME — {clase} (predicción: {pred})\nRocktec MIA 2026', fontsize=11, fontweight='bold')
+            fig.tight_layout()
+            ruta_plot = RUTA_SALIDA / f'lime_{clase}.png'
+            fig.savefig(ruta_plot, dpi=150, bbox_inches='tight')
+            plt.close(fig)
+
+            print(f"  ✓ LIME {clase}: pred={pred}, top_feat='{features_exp[0][0] if features_exp else 'N/A'}' → {ruta_plot.name}")
 
         except Exception as e:
             print(f"  ⚠ LIME {clase}: {e}")
@@ -248,6 +256,7 @@ INTERPRETACIÓN:
 
     print(f"  ✓ shap_top_features_reporte.txt")
     print(f"  ✓ lime_ejemplos.txt")
+    print(f"  ✓ lime_<clase>.png (1 por clase)")
     print(f"  ✓ reporte_explicabilidad.txt")
 
     print("\n" + "=" * 70)

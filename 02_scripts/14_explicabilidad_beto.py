@@ -23,6 +23,7 @@ Salida:
     06_resultados/explicabilidad/shap_beto_ejemplos.png
     06_resultados/explicabilidad/shap_beto_reporte.txt
     06_resultados/explicabilidad/lime_beto_ejemplos.txt
+    06_resultados/explicabilidad/lime_beto_<clase>.png (1 por clase modelada)
     06_resultados/explicabilidad/reporte_explicabilidad_beto.txt
 
 Uso (desde la raíz del repo, no requiere GPU — es solo inferencia):
@@ -116,7 +117,14 @@ def lime_explicabilidad_beto(predict_proba, ejemplos):
                 signo = "→ FAVOR" if peso > 0 else "→ CONTRA"
                 reporte += f"  '{feat}': {peso:+.4f}  {signo}\n"
 
-            print(f"  ✓ LIME {clase}: pred={pred}, top_feat='{features_exp[0][0] if features_exp else 'N/A'}'")
+            fig = exp.as_pyplot_figure(label=INTENCIONES.index(clase))
+            fig.suptitle(f'LIME (BETO) — {clase} (predicción: {pred})\nRocktec MIA 2026', fontsize=11, fontweight='bold')
+            fig.tight_layout()
+            ruta_plot = RUTA_SALIDA / f'lime_beto_{clase}.png'
+            fig.savefig(ruta_plot, dpi=150, bbox_inches='tight')
+            plt.close(fig)
+
+            print(f"  ✓ LIME {clase}: pred={pred}, top_feat='{features_exp[0][0] if features_exp else 'N/A'}' → {ruta_plot.name}")
         except Exception as e:
             print(f"  ⚠ LIME {clase}: {e}")
             continue
@@ -236,6 +244,7 @@ mismo texto para ver si ambos modelos se fijan en las mismas palabras.
     (RUTA_SALIDA / 'reporte_explicabilidad_beto.txt').write_text(reporte_final, encoding='utf-8')
 
     print(f"  ✓ lime_beto_ejemplos.txt")
+    print(f"  ✓ lime_beto_<clase>.png (1 por clase)")
     print(f"  ✓ shap_beto_reporte.txt")
     print(f"  ✓ shap_beto_ejemplos.png")
     print(f"  ✓ reporte_explicabilidad_beto.txt")
