@@ -479,7 +479,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── TABS ─────────────────────────────────────────────────────────────────────
-tab1, tab2, tab4, tab5, tab6 = st.tabs(["💬  Clasificador", "📊  Dashboard", "📱  Chat WhatsApp", "📊  Panel Comercial", "🗂️  Historial"])
+tab1, tab2, tab4, tab5, tab6 = st.tabs(["💬  Clasificador", "📊  Dashboard", "📱  Chat WhatsApp", "📊  Panel Comercial", "🗃️  Base de datos"])
 
 # ────────────────────────────────────────────────────────────────────────────
 # TAB 1 — CLASIFICADOR
@@ -801,7 +801,7 @@ with tab5:
 
 # ── TAB 6: HISTORIAL GOOGLE SHEETS ───────────────────────────────────────────
 with tab6:
-    st.markdown("#### 🗂️ Historial de conversaciones")
+    st.markdown("#### 🗃️ Base de datos de conversaciones")
     st.markdown(
         "<span style='color:#777777;font-size:0.9rem;'>"
         "Todos los mensajes procesados y guardados en la base de datos de Rocktec."
@@ -812,8 +812,8 @@ with tab6:
         import gspread
         from google.oauth2.service_account import Credentials
 
-        @st.cache_data(ttl=300)
-        def cargar_historial():
+        @st.cache_data(ttl=60)
+        def cargar_historial(_cache_buster=0):
             try:
                 scopes = [
                     "https://spreadsheets.google.com/feeds",
@@ -826,22 +826,24 @@ with tab6:
                 sh = gc.open_by_key("1sgPf6RUl_T9eDv2B6R1Vpi5nNEsSYZY-i5r7QKT6r1g")
                 ws = sh.worksheet("mensajes")
                 data = ws.get_all_records()
-                return pd.DataFrame(data) if data else pd.DataFrame()
+                return pd.DataFrame(data) if data else pd.DataFrame(), None
             except Exception as e:
-                return None
+                return pd.DataFrame(), str(e)
 
         col_ref, col_btn = st.columns([3, 1])
         with col_btn:
             if st.button("🔄 Actualizar datos", use_container_width=True):
                 st.cache_data.clear()
+                st.session_state["hist_cache_buster"] = st.session_state.get("hist_cache_buster", 0) + 1
                 st.rerun()
 
-        df_hist = cargar_historial()
+        cache_buster = st.session_state.get("hist_cache_buster", 0)
+        df_hist, error_hist = cargar_historial(cache_buster)
 
-        if df_hist is None:
-            st.warning("⚠️ No se pudo conectar a Google Sheets. Verifica las credenciales.")
+        if error_hist:
+            st.warning(f"⚠️ No se pudo conectar a Google Sheets: {error_hist}")
         elif df_hist.empty:
-            st.info("📭 No hay datos aún. Sube chats desde el Panel Comercial para empezar.")
+            st.info("📭 No hay datos aún. Sube chats desde el Panel Comercial para empezar. Si acabas de subir, espera unos segundos y presiona Actualizar datos.")
         else:
             # Métricas rápidas
             total = len(df_hist)
