@@ -348,6 +348,30 @@ PATRONES_TEC = [
     r'\b(el\s+piso|las\s+paredes|la\s+superficie|el\s+concreto|el\s+microcemento)\s+(se\s+puede|puede|se\s+aplica|se\s+coloca|necesita|requiere)\b',
 ]
 
+# Diccionario de saludos y expresiones cortas — prefiltro antes del modelo
+SALUDOS = {
+    'hola', 'hello', 'holi', 'holis', 'buenas', 'buenos', 'buen', 'hey',
+    'hi', 'ola', 'saludos', 'buen dia', 'buen día', 'buenos dias', 'buenos días',
+    'buenas tardes', 'buenas noches', 'buenas mañanas', 'buen dia', 'gracias',
+    'thanks', 'ok', 'okey', 'okay', 'dale', 'bien', 'si', 'sí', 'no', 'chao',
+    'chau', 'adios', 'adiós', 'bye', 'hasta luego', 'hasta pronto', 'ciao',
+    'info', 'informacion', 'información', 'ayuda', 'help', 'ahi', 'ahí',
+}
+
+def es_saludo(texto):
+    """Detecta si el texto es solo un saludo o expresión muy corta sin intención comercial."""
+    t = texto.strip().lower()
+    # Si el texto completo está en el diccionario de saludos
+    if t in SALUDOS:
+        return True
+    # Si tiene menos de 4 caracteres
+    if len(t) < 4:
+        return True
+    # Si no tiene ninguna letra (solo números o símbolos)
+    if not any(c.isalpha() for c in t):
+        return True
+    return False
+
 def detectar_reglas(texto):
     t = texto.lower()
     # Orden de prioridad: QUE > SEG > VEN > COT > TEC (igual que catálogo v2.0)
@@ -380,8 +404,11 @@ def cargar_dataset():
         return None
 
 def clasificar(texto, modelo, vectorizador, umbral=0.65):
-    if not texto or len(texto.strip()) < 5:
+    if not texto or len(texto.strip()) == 0:
         return None, 0.0, {}, False
+    # Prefiltro: saludos y expresiones cortas sin intención comercial
+    if es_saludo(texto):
+        return 'INF', 0.76, {'INF': 0.76}, False
     intencion_r, conf_r = detectar_reglas(texto)
     if intencion_r:
         return intencion_r, conf_r, {intencion_r: conf_r}, True
@@ -394,7 +421,7 @@ def clasificar(texto, modelo, vectorizador, umbral=0.65):
         pred = clases[np.argmax(proba)]
         return (pred, max_prob, probas_dict, False) if max_prob >= umbral else (None, max_prob, probas_dict, False)
     except:
-        return None, 0.0, {}, False
+        return 'INF', 0.70, {'INF': 0.70}, False
 
 # ── SIDEBAR ──────────────────────────────────────────────────────────────────
 with st.sidebar:

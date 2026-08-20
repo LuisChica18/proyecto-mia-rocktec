@@ -207,23 +207,14 @@ PATRONES_PERDIDA = {
     "Proyecto cancelado": [r"cancelado|suspendido|dejé el proyecto|por ahora no|ya no necesito"],
 }
 
-PATRONES_COT = [
-    r"cotiz|presupuest|precio|a como sale|cu[aá]nto cuesta|proforma|cu[aá]nto vale",
-    r"a cu[aá]nto sale|a cu[aá]nto est[aá]|cu[aá]nto cobran|cu[aá]nto me sale",
-    r"valor.*trabajo|valor.*proyecto|cu[aá]nto.*m2|precio.*m2|me puede dar.*precio",
-    r"me interes[ao] los productos|hacen trabajos|hacen trabajo|trabajan en|hacen trabajados",
-    r"tienen.*microcemento|tienen.*concreto|qu[eé] productos|qu[eé] servicio",
-    r"informaci[oó]n.*producto|informaci[oó]n.*servicio|informaci[oó]n.*precio",
-    r"me pueden ayudar|quisiera.*informaci[oó]n|necesito.*informaci[oó]n",
-]
-PATRONES_VEN = [r"confirmo|adelante|acepto|m[aá]ndame la factura|forma de pago|ya realic[eé] el pago|hice el pago|transferencia|dep[oó]sito|ya pagu[eé]"]
-PATRONES_QUE = [r"da[nñ]ado|no funciona|no estoy conforme|reclamo|nadie me responde|se demoran|mala atenci[oó]n|muy caro|no me gusta el resultado"]
-PATRONES_SEG = [r"en qu[eé] estado|cu[aá]ndo despachan|ya lleg[oó]|sigo esperando|sin respuesta|"
-               r"insisto|que insista|siguen sin|llevan d[ií]as|hace d[ií]as|segunda vez|"
-               r"tercera vez|por qu[eé] no responden|cu[aá]ndo me responden|"
-               r"no me han respondido|seguimos esperando|a[uú]n no|todav[ií]a no|"
-               r"cu[aá]ndo me confirman|cu[aá]ndo me dan|cu[aá]ndo me env[ií]an|cu[aá]ndo est[aá] listo|"
-               r"cuando llega|ya lleg[oó]|me pueden confirmar"]
+PATRONES_COT = [r"cotiz|presupuest|precio|a como sale|cuánto cuesta|proforma|cuánto vale"]
+PATRONES_VEN = [r"confirmo|adelante|acepto|mándame la factura|forma de pago|ya realicé el pago"]
+PATRONES_QUE = [r"dañado|no funciona|no estoy conforme|reclamo|nadie me responde|se demoran|mala atención"]
+PATRONES_SEG = [r"en qué estado|cuándo despachan|ya llegó|sigo esperando|sin respuesta|"
+               r"insisto|que insista|siguen sin|llevan días|hace días|segunda vez|"
+               r"tercera vez|por qué no responden|cuándo me responden|"
+               r"no me han respondido|seguimos esperando|aún no|todavía no|"
+               r"cuándo me confirman|cuándo me dan|cuándo me envían|cuándo está listo"]
 PALABRAS_PROYECTO = ["m2", "metros", "obra", "proyecto", "instalación", "área", "piso", "pared"]
 
 
@@ -268,22 +259,13 @@ def detectar_razon_perdida(texto):
     return None
 
 
-PATRONES_TEC = [
-    r"c[oó]mo se aplica|se puede aplicar|tiempo de secado|cu[aá]nto tiempo.*seca",
-    r"sellador|imprimaci[oó]n|impermeabiliz|adherencia|diluci[oó]n|espesor de capa",
-    r"sobre cer[aá]mica|sobre porcelanato|sobre cemento|preparaci[oó]n de superficie",
-    r"mezcla.*microcemento|rendimiento.*m2|herramienta.*aplicar|zona h[uú]meda",
-    r"visita t[eé]cnica|visita tecnica|es necesario|necesito saber si|aplica sobre",
-    r"es para.*gypsum|es para.*pared|es para.*piso|mm de espesor|3 mm|capas",
-    r"es para.*ba[nñ]o|es para.*cocina|es para.*terraza|para exteriores|para interiores",
-]
-PATRONES_CUR = [
-    r"curso|taller|capacitaci[oó]n|certificaci[oó]n|certificado|inscripci[oó]n|inscribir",
-    r"cu[aá]ndo es el.*curso|precio del curso|costo del curso|quiero aprender",
-    r"cupo.*curso|me interesa.*curso|curso en machala|curso en quito|curso en guayaquil",
-    r"cu[aá]ndo.*curso|d[oó]nde.*curso|horario.*curso|requisito.*curso",
-    r"informaci[oó]n.*curso|informaci[oó]n.*taller",
-]
+PATRONES_TEC = [r"cómo se aplica|se puede aplicar|tiempo de secado|cuánto tiempo.*seca|"
+               r"sellador|imprimación|impermeabiliz|adherencia|dilución|espesor de capa|"
+               r"sobre cerámica|sobre porcelanato|sobre cemento|preparación de superficie|"
+               r"mezcla.*microcemento|rendimiento.*m2|herramienta.*aplicar|zona húmeda"]
+PATRONES_CUR = [r"curso|taller|capacitación|certificación|certificado|inscripción|inscribir|"
+               r"cuándo es el.*curso|precio del curso|costo del curso|quiero aprender|"
+               r"cupo.*curso|me interesa.*curso"]
 
 def detectar_intencion(texto):
     if coincide_patron(texto, PATRONES_QUE): return "QUE"
@@ -304,26 +286,18 @@ def detectar_tipo_negocio(texto):
 def parsear_txt_whatsapp(contenido):
     """Parsea el .txt exportado de WhatsApp Business. Solo mensajes de clientes."""
     mensajes = []
-    # Acepta formato con y sin p. m. / a. m. (incluye espacio fino \u202f)
     patron = re.compile(
-        r"(\d{1,2}/\d{1,2}/\d{2,4}),?\s+(\d{1,2}:\d{2}(?::\d{2})?(?:[\s\u202f][aApP]\.?\s?[mM]\.?)?)\s*[-\u2013]\s*([^:]+):\s*(.*)"
+        r"(\d{1,2}/\d{1,2}/\d{2,4}),?\s+(\d{1,2}:\d{2}(?::\d{2})?(?:\s?[ap]\.?\s?m\.?)?)\s*[-–]\s*([^:]+):\s*(.*)"
     )
-    SISTEMA_SKIP = [
-        "cifrado de extremo a extremo", "servicio seguro de meta",
-        "chat se inició", "messages and calls are end-to-end",
-        "marmolinas", "granillos",  # filtrar números contaminados
-    ]
     lineas = contenido.split("\n")
     msg_actual = None
     for linea in lineas:
-        linea_limpia = linea.strip()
-        m = patron.match(linea_limpia)
+        m = patron.match(linea.strip())
         if m:
             if msg_actual:
                 mensajes.append(msg_actual)
             fecha_str, hora_str, remitente, texto = m.groups()
-            # Saltar mensajes de sistema
-            if any(s in (texto + remitente).lower() for s in SISTEMA_SKIP):
+            if "cifrado de extremo a extremo" in texto.lower():
                 msg_actual = None
                 continue
             fecha_obj = None
@@ -339,10 +313,8 @@ def parsear_txt_whatsapp(contenido):
                 "texto": texto.strip(),
                 "es_rocktec": any(k in remitente.lower() for k in ["rocktec", "admin", "ventas", "gerencia"]),
             }
-        elif msg_actual and linea_limpia:
-            # Saltar continuaciones que son de sistema
-            if not any(s in linea_limpia.lower() for s in SISTEMA_SKIP):
-                msg_actual["texto"] += " " + linea_limpia
+        elif msg_actual and linea.strip():
+            msg_actual["texto"] += " " + linea.strip()
     if msg_actual:
         mensajes.append(msg_actual)
     return [m for m in mensajes if not m["es_rocktec"] and m.get("fecha") is not None]
@@ -690,9 +662,9 @@ def render_tab5():
                 return "curso"
             elif row["intencion"] == "TEC":
                 return "tecnico"
-            elif row["intencion"] in ("COT", "SEG", "INF") and row["dias"] <= 2:
+            elif row["intencion"] in ("COT", "SEG", "INF") and row["dias"] <= 3:
                 return "interes_alto"
-            elif row["intencion"] in ("COT", "SEG") and 3 <= row["dias"] <= 6:
+            elif row["intencion"] in ("COT", "SEG") and 4 <= row["dias"] <= 6:
                 return "seguimiento"
             elif row["intencion"] in ("COT", "SEG") and row["dias"] >= 7:
                 return "posible_perdida"
