@@ -479,7 +479,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── TABS ─────────────────────────────────────────────────────────────────────
-tab1, tab2, tab4, tab5 = st.tabs(["💬  Clasificador", "📊  Dashboard", "📱  Chat WhatsApp", "📊  Panel Comercial"])
+tab1, tab2, tab4, tab5, tab6 = st.tabs(["💬  Clasificador", "📊  Dashboard", "📱  Chat WhatsApp", "📊  Panel Comercial", "🗂️  Historial"])
 
 # ────────────────────────────────────────────────────────────────────────────
 # TAB 1 — CLASIFICADOR
@@ -550,6 +550,10 @@ with tab1:
                 """, unsafe_allow_html=True)
 
                 st.markdown(f"""<div class="rec-box" style="border-left-color:{rec_color};">{rec_txt}</div>""", unsafe_allow_html=True)
+
+                # Botón de copiar resultado
+                resultado_texto = f"Intención: {intencion} — {desc}\nConfianza: {confianza:.0%}\nAcción: {rec_txt}"
+                st.code(resultado_texto, language=None)
 
                 if not es_regla and probas:
                     st.markdown("<br>**Probabilidades:**", unsafe_allow_html=True)
@@ -794,6 +798,98 @@ with tab5:
     else:
         st.error("No se encontró tab5_panel_comercial.py en 02_scripts/")
         st.info("Asegúrate de que tab5_panel_comercial.py esté en la misma carpeta que este script.")
+
+# ── TAB 6: HISTORIAL GOOGLE SHEETS ───────────────────────────────────────────
+with tab6:
+    st.markdown("#### 🗂️ Historial de conversaciones")
+    st.markdown(
+        "<span style='color:#777777;font-size:0.9rem;'>"
+        "Todos los mensajes procesados y guardados en la base de datos de Rocktec."
+        "</span>", unsafe_allow_html=True
+    )
+
+    try:
+        import gspread
+        from google.oauth2.service_account import Credentials
+
+        @st.cache_data(ttl=300)
+        def cargar_historial():
+            try:
+                scopes = [
+                    "https://spreadsheets.google.com/feeds",
+                    "https://www.googleapis.com/auth/drive",
+                ]
+                creds = Credentials.from_service_account_info(
+                    st.secrets["gcp_service_account"], scopes=scopes
+                )
+                gc = gspread.authorize(creds)
+                sh = gc.open_by_key("1sgPf6RUl_T9eDv2B6R1Vpi5nNEsSYZY-i5r7QKT6r1g")
+                ws = sh.worksheet("mensajes")
+                data = ws.get_all_records()
+                return pd.DataFrame(data) if data else pd.DataFrame()
+            except Exception as e:
+                return None
+
+        col_ref, col_btn = st.columns([3, 1])
+        with col_btn:
+            if st.button("🔄 Actualizar datos", use_container_width=True):
+                st.cache_data.clear()
+                st.rerun()
+
+        df_hist = cargar_historial()
+
+        if df_hist is None:
+            st.warning("⚠️ No se pudo conectar a Google Sheets. Verifica las credenciales.")
+        elif df_hist.empty:
+            st.info("📭 No hay datos aún. Sube chats desde el Panel Comercial para empezar.")
+        else:
+            # Métricas rápidas
+            total = len(df_hist)
+            col1, col2, col3, col4 = st.columns(4)
+            with col1: st.metric("Total mensajes", total)
+            with col2: st.metric("Leads (COT+)", int(df_hist.get('es_lead', pd.Series([0]*total)).sum()) if 'es_lead' in df_hist.columns else "—")
+            with col3: st.metric("Ventas", int(df_hist.get('es_venta', pd.Series([0]*total)).sum()) if 'es_venta' in df_hist.columns else "—")
+            with col4: st.metric("Pérdidas", int(df_hist.get('es_perdida', pd.Series([0]*total)).sum()) if 'es_perdida' in df_hist.columns else "—")
+
+            st.markdown("<div style='margin: 1rem 0; border-top: 1px solid #E0E0E0;'></div>", unsafe_allow_html=True)
+
+            # Filtros
+            col_f1, col_f2, col_f3 = st.columns(3)
+            with col_f1:
+                asesores_opts = ["Todos"] + sorted(df_hist['asesor'].dropna().unique().tolist()) if 'asesor' in df_hist.columns else ["Todos"]
+                filtro_asesor = st.selectbox("Asesor", asesores_opts)
+            with col_f2:
+                intenciones_opts = ["Todas"] + sorted(df_hist['intencion'].dropna().unique().tolist()) if 'intencion' in df_hist.columns else ["Todas"]
+                filtro_intencion = st.selectbox("Intención", intenciones_opts)
+            with col_f3:
+                busqueda = st.text_input("🔍 Buscar en mensajes", placeholder="Escribe para filtrar...")
+
+            # Aplicar filtros
+            df_filtrado = df_hist.copy()
+            if filtro_asesor != "Todos" and 'asesor' in df_filtrado.columns:
+                df_filtrado = df_filtrado[df_filtrado['asesor'] == filtro_asesor]
+            if filtro_intencion != "Todas" and 'intencion' in df_filtrado.columns:
+                df_filtrado = df_filtrado[df_filtrado['intencion'] == filtro_intencion]
+            if busqueda and 'texto' in df_filtrado.columns:
+                df_filtrado = df_filtrado[df_filtrado['texto'].str.contains(busqueda, case=False, na=False)]
+
+            st.markdown(f"<span style='color:#777;font-size:0.85rem;'>Mostrando {len(df_filtrado)} de {total} registros</span>", unsafe_allow_html=True)
+
+            # Columnas a mostrar
+            cols_mostrar = [c for c in ['fecha', 'asesor', 'remitente', 'texto', 'intencion', 'razon_perdida'] if c in df_filtrado.columns]
+            st.dataframe(df_filtrado[cols_mostrar].head(200), hide_index=True, use_container_width=True)
+
+            # Descarga
+            csv_hist = df_filtrado.to_csv(index=False, encoding='utf-8')
+            st.download_button(
+                "⬇️ Descargar historial CSV",
+                data=csv_hist,
+                file_name=f"historial_rocktec_{datetime.now().strftime('%Y%m%d')}.csv",
+                mime="text/csv"
+            )
+
+    except ImportError:
+        st.error("❌ Librería gspread no disponible.")
 
 # ── FOOTER ───────────────────────────────────────────────────────────────────
 st.markdown("""
