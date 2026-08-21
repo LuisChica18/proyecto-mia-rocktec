@@ -708,6 +708,9 @@ def render_tab5():
                 unsafe_allow_html=True
             )
 
+            # 1 tarjeta por número — mensaje más reciente
+            subset = subset.sort_values("fecha", ascending=False).drop_duplicates(subset="remitente", keep="first")
+
             filas_html = ""
             for _, row in subset.iterrows():
                 dias = int(row["dias"])
