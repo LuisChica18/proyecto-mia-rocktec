@@ -208,8 +208,22 @@ PATRONES_PERDIDA = {
 }
 
 PATRONES_COT = [r"cotiz|presupuest|precio|a como sale|cuánto cuesta|proforma|cuánto vale"]
-PATRONES_VEN = [r"confirmo|adelante|acepto|mándame la factura|forma de pago|ya realicé el pago"]
-PATRONES_QUE = [r"dañado|no funciona|no estoy conforme|reclamo|nadie me responde|se demoran|mala atención"]
+PATRONES_VEN = [r"confirmo|adelante|acepto|mándame la factura|forma de pago|ya realicé el pago"
+                r"|depósito|dep.sito|comprobante|transferencia|número de cuenta|numero de cuenta"
+                r"|ya pagué|ya pague|hice el pago|realicé el pago|realice el pago"
+                r"|mando el comprobante|le mando el compro|envío el comprobante"
+                r"|cuál es la cuenta|cual es la cuenta|datos de pago|datos bancarios"
+                r"|factura a nombre|necesito la factura|mándeme la factura|me emite la factura"
+                r"|listo para pagar|proceder con el pago|procedo con|vamos adelante"]
+PATRONES_QUE = [r"dañado|no funciona|no estoy conforme|reclamo|nadie me responde|se demoran|mala atenci"
+                r"|queja|queja formal|cobran de m.s|precio abusivo|me est.n cobrando|me cobrar"
+                r"|manchas|burbujas|descascar|se pela|se cay|mal trabajo|mal acabado|mal resultado"
+                r"|no qued|qued. mal|no es lo que|no era lo que|no cumpli|incumpli"
+                r"|devolver|devoluci|reembolso|cambio del producto|cambiar el producto"
+                r"|buscar otra empresa|otro proveedor|me arrepiento|p.simo|terrible|inaceptable"
+                r"|cobr. de m.s|factura mal|error en la factura|me arregl|lo arregl"
+                r"|dejar mi experiencia|dejar experiencia|dejar rese.a|mala experiencia"
+                r"|necesito hablar.*urgente|hablar con alguien urgente"]
 PATRONES_SEG = [r"en qué estado|cuándo despachan|ya llegó|sigo esperando|sin respuesta|"
                r"insisto|que insista|siguen sin|llevan días|hace días|segunda vez|"
                r"tercera vez|por qué no responden|cuándo me responden|"
